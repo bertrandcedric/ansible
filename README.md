@@ -23,3 +23,9 @@ docker run --volumes-from fs -ti test
 ```
 
 cat ~/.ssh/id_rsa.pub | docker exec --interactive centos sh -c 'umask 077; mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+
+## Ansible
+
+```
+ansible -m ping -i hosts all -k -u root -c paramiko
+```
