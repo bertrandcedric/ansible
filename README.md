@@ -27,5 +27,9 @@ cat ~/.ssh/id_rsa.pub | docker exec --interactive centos sh -c 'umask 077; mkdir
 ## Ansible
 
 ```
-ansible -m ping -i hosts all -k -u root -c paramiko
+ansible -m ping -i hosts all -u root -k -c paramiko
+
+ansible-playbook prerequis.yml -i hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
+
+ansible -m ping -i hosts all -u deploy
 ```
