@@ -45,8 +45,8 @@ PermitRootLogin yes
 #MaxSessions 10
 
 #RSAAuthentication yes
-#PubkeyAuthentication yes
-AuthorizedKeysFile ~/.ssh/authorized_keys
+PubkeyAuthentication yes
+#AuthorizedKeysFile ~/.ssh/authorized_keys
 #AuthorizedKeysCommand none
 #AuthorizedKeysCommandRunAs nobody
 
@@ -63,7 +63,7 @@ AuthorizedKeysFile ~/.ssh/authorized_keys
 # To disable tunneled clear text passwords, change to no here!
 #PasswordAuthentication yes
 #PermitEmptyPasswords no
-PasswordAuthentication yes
+PasswordAuthentication no
 
 # Change to no to disable s/key passwords
 #ChallengeResponseAuthentication yes
@@ -93,8 +93,8 @@ GSSAPICleanupCredentials yes
 # If you just want the PAM account and session checks to run without
 # PAM authentication, then enable this but set PasswordAuthentication
 # and ChallengeResponseAuthentication to 'no'.
-UsePAM no
-#UsePAM yes
+#UsePAM no
+UsePAM yes
 
 # Accept locale-related environment variables
 AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
@@ -136,3 +136,7 @@ Subsystem       sftp    /usr/libexec/openssh/sftp-server
 #       X11Forwarding no
 #       AllowTcpForwarding no
 #       ForceCommand cvs server
+
+Match User root
+    PasswordAuthentication yes
+    PubkeyAuthentication no
