@@ -1,0 +1,5 @@
+- hosts: machine
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: test }

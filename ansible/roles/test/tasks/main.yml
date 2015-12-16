@@ -1,0 +1,9 @@
+---
+- name: test shell
+  shell: echo "Hello World !!!" #| exit 1
+  register: rs
+#  changed_when: rs.rc == 1
+#  failed_when: rs.rc > 1
+
+- debug:
+    var: rs.stdout
