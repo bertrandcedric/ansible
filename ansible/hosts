@@ -1,12 +1,31 @@
 #!/bin/bash
 
+NUMBER_OF_MACHINE=4
+COMPOSE_PROJECT=sample
+
+BASE_DIR=$(cd $(dirname $0) && pwd)
+
 docker_ip=$(docker-machine ip dev)
-machine_port=$(docker port centos 22 | sed 's/.*://')
+
+machine_name=''
+
+i=1
+while [ $i -lt $NUMBER_OF_MACHINE ]
+do
+    machine_name="${machine_name} \"machine_$i\", "
+    port=$(cd $BASE_DIR && docker-compose -p $COMPOSE_PROJECT port machine_$i 22 | sed 's/.*://')
+    machine_host="${machine_host} \"machine_$i\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
+    i=$[$i+1]
+done
+
+machine_name="${machine_name} \"machine_$NUMBER_OF_MACHINE\""
+port=$(cd $BASE_DIR && docker-compose -p $COMPOSE_PROJECT port machine_$NUMBER_OF_MACHINE 22 | sed 's/.*://')
+machine_host="${machine_host} \"machine_$NUMBER_OF_MACHINE\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}"
 
 cat << EOF
 {
   "project": {
-    "hosts": ["machine"]
+    "hosts": [ $machine_name ]
   },
   "commons": {
     "children": ["project"]
@@ -16,7 +35,7 @@ cat << EOF
   },
   "_meta": {
     "hostvars": {
-      "machine": {"ansible_ssh_host": "$docker_ip", "ansible_ssh_port": "$machine_port"}
+      $machine_host
     }
   }
 }

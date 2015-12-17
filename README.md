@@ -1,35 +1,33 @@
-# README du container docker
+# Utilisation du container CENTOS
 
-## Lancement d'un premier container
+## Build et lancement d'un container centos
 
-```
+docker build --no-cache -t centos centos_ssh/.
+docker rm -f centos
+docker run -d -P --name centos centos
+
+## Build et lancement de plusieurs containers centos avec docker compose
+
+## Autres commandes
+
 docker run --name=env -d test /bin/sh -c "while true; do echo hello world; sleep 1; done"
-```
-
-## Lancement d'un second container lié au container précédemment crée
-
-```
 docker run --link env -ti test
-
 ping dev
-```
-
-## Montage d'un filesystem externe au container
-
-```
 docker create --volume /c/Users/cb1791dn:/cb1791dn --name fs test /bin/true
-
 docker run --volumes-from fs -ti test
-```
 
 cat ~/.ssh/id_rsa.pub | docker exec --interactive centos sh -c 'umask 077; mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
 
-## Ansible
+
+## Provisionning avec ansible sur les containers centos
 
 ```
-ansible -m ping -i hosts all -u root -k -c paramiko
+docker-compose -p ansible up -d
 
-ansible-playbook prerequis.yml -i hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
+export ANSIBLE_HOST_KEY_CHECKING=False
 
-ansible -m ping -i hosts all -u deploy
+ansible -m ping -i ansible/hosts all -u root -k -c paramiko
+ansible-playbook ansible/prerequis.yml -i ansible/hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
+ansible -m ping -i ansible/hosts all -u deploy
+ansible-playbook ansible/deploy.yml -i ansible/hosts
 ```

@@ -1,4 +1,4 @@
-- hosts: machine
+- hosts: project
   gather_facts: no
   remote_user: root
   roles:

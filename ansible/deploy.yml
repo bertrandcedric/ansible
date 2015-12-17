@@ -1,5 +1,5 @@
-- hosts: machine
-  gather_facts: no
+- hosts: project
+  gather_facts: yes
   remote_user: deploy
   roles:
     - { role: test }
