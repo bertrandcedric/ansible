@@ -30,4 +30,6 @@ ansible -m ping -i ansible/hosts all -u root -k -c paramiko
 ansible-playbook ansible/prerequis.yml -i ansible/hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
 ansible -m ping -i ansible/hosts all -u deploy
 ansible-playbook ansible/deploy.yml -i ansible/hosts
+
+docker-compose -p ansible stop
 ```
