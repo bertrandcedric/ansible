@@ -1,0 +1,30 @@
+---
+- name: Change mode /var
+  file:
+    path=/var
+    mode=777
+  become: yes
+
+- name: Change mode /var/log
+  file:
+    path=/var/log
+    mode=777
+  become: yes
+
+- name: Create the data directory for the namenode metadata
+  file:
+    path=/data/db
+    owner=mongod
+    group=mongod
+    state=directory
+  become: yes
+
+- name: Run MongoDB
+  shell: ./mongod --fork --logpath /var/log/mongodb.log --dbpath /data/db/
+  args:
+    chdir: /opt/mongodb/bin
+  register: st
+  changed_when: st.stdout.find("child process started successfully") == -1
+  failed_when: false
+  become: yes
+  become_user: mongod

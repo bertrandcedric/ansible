@@ -1,6 +1,18 @@
-- hosts: project
+- hosts: all
   gather_facts: yes
   remote_user: deploy
   roles:
     - { role: test }
-    - { role: mongodb }
+
+- hosts: client
+  gather_facts: yes
+  remote_user: deploy
+  roles:
+    - { role: mongodb/commons }
+
+- hosts: server
+  gather_facts: yes
+  remote_user: deploy
+  roles:
+    - { role: mongodb/commons }
+    - { role: mongodb/server }

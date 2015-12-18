@@ -1,0 +1,28 @@
+---
+- name: Create the mongod group
+  group:
+    name=mongod
+  become: yes
+
+- name: Create the mongod user
+  user:
+    name=mongod
+    group=mongod
+  become: yes
+
+- name: Install mongodb
+  unarchive:
+    src=mongodb-linux-x86_64-3.0.8.tgz
+    dest=/opt
+    owner=mongod
+    group=mongod
+  become: yes
+
+- name: Create symlink /opt/mongodb
+  file:
+    src=/opt/mongodb-linux-x86_64-3.0.8
+    dest=/opt/mongodb
+    owner=mongod
+    group=mongod
+    state=link
+  become: yes
