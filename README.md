@@ -35,3 +35,8 @@ docker-compose -p ansible stop
 
 ansible -m debug -a var=hostvars -i ansible/hosts env -u deploy
 ```
+
+
+TODO :
+- ajouter dans le mongo dans le PATH
+- exporter les ports mongod dans docker
