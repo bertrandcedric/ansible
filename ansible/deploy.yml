@@ -3,3 +3,4 @@
   remote_user: deploy
   roles:
     - { role: test }
+    - { role: mongodb }

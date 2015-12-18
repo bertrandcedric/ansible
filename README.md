@@ -32,4 +32,6 @@ ansible -m ping -i ansible/hosts all -u deploy
 ansible-playbook ansible/deploy.yml -i ansible/hosts
 
 docker-compose -p ansible stop
+
+ansible -m debug -a var=hostvars -i ansible/hosts env -u deploy
 ```
