@@ -26,3 +26,6 @@
     group=mongod
     state=link
   become: yes
+
+- name: Adding the path in the bashrc files
+  lineinfile: dest=/home/deploy/.bashrc line='export PATH=$PATH:/opt/mongodb/bin' insertafter='EOF' regexp='export PATH=\$PATH:/opt/mongodb/bin' state=present

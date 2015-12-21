@@ -1,18 +1,21 @@
+---
+# Gather facts to be able to use them in next plays
 - hosts: all
   gather_facts: yes
   remote_user: deploy
-  roles:
-    - { role: test }
-
-- hosts: client
-  gather_facts: yes
-  remote_user: deploy
-  roles:
-    - { role: mongodb/commons }
+#  roles:
+#    - { role: test }
 
 - hosts: server
-  gather_facts: yes
+  gather_facts: no
   remote_user: deploy
   roles:
     - { role: mongodb/commons }
     - { role: mongodb/server }
+
+- hosts: client
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: mongodb/commons }
+    - { role: mongodb/client }

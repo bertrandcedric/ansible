@@ -34,9 +34,8 @@ ansible-playbook ansible/deploy.yml -i ansible/hosts
 docker-compose -p ansible stop
 
 ansible -m debug -a var=hostvars -i ansible/hosts env -u deploy
+
+docker network inspect bridge
+
+mongo --host 172.17.0.3
 ```
-
-
-TODO :
-- ajouter dans le mongo dans le PATH
-- exporter les ports mongod dans docker

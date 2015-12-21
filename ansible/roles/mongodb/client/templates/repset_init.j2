@@ -1,0 +1,7 @@
+rs.initiate()
+sleep(5000)
+{% for host in groups['server'] %}
+rs.add("{{ hostvars[host]['ansible_default_ipv4']['address'] }}:27017")
+sleep(5000)
+{% endfor %}
+printjson(rs.status())

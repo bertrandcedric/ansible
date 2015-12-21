@@ -20,7 +20,7 @@
   become: yes
 
 - name: Run MongoDB
-  shell: ./mongod --fork --logpath /var/log/mongodb.log --dbpath /data/db/
+  shell: ./mongod --fork --logpath /var/log/mongodb.log --dbpath /data/db/ --replSet "test"
   args:
     chdir: /opt/mongodb/bin
   register: st
