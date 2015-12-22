@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NUMBER_OF_MACHINE=4
+NUMBER_OF_MACHINE=3
 COMPOSE_PROJECT=sample
 
 BASE_DIR=$(cd $(dirname $0) && pwd)
@@ -31,12 +31,12 @@ cat << EOF
   "server": {
     "hosts": [ $machine_name ]
   },
-  "commons": {
-    "children": ["client", "server"]
-  },
-  "env": {
-    "children": ["commons"]
-  },
+#  "commons": {
+#    "children": ["client", "server"]
+#  },
+#  "env": {
+#    "children": ["commons"]
+#  },
   "_meta": {
     "hostvars": {
       $machine_host

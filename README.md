@@ -45,6 +45,11 @@ docker-compose -p sample -f docker-compose_multi.yml start machine_1
 
 
 TODO :
+- passage a ansible v2
+- mettre à jour le README
 - rendre generic les fichiers hosts et hosts_multi
 - rendre generic les fichiers docker_compose et docker_compose_multi
 - faire un skip de Initialize the replication set quand le replica est déjà créé
+- tester la mise en pause d'un container
+- tester l'arrêt d'un container et le redémarrage
+- tester la suppression et la recreation d'un container
