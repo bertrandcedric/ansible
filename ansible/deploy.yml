@@ -9,6 +9,7 @@
 - hosts: server
   gather_facts: no
   remote_user: deploy
+  tags: [server]
   roles:
     - { role: mongodb/commons }
     - { role: mongodb/server }
@@ -16,6 +17,7 @@
 - hosts: client
   gather_facts: no
   remote_user: deploy
+  tags: [client]
   roles:
     - { role: mongodb/commons }
     - { role: mongodb/client }

@@ -38,4 +38,13 @@ ansible -m debug -a var=hostvars -i ansible/hosts env -u deploy
 docker network inspect bridge
 
 mongo --host 172.17.0.3
+
+docker-compose -p sample -f docker-compose_multi.yml stop machine_1
+docker-compose -p sample -f docker-compose_multi.yml start machine_1
 ```
+
+
+TODO :
+- rendre generic les fichiers hosts et hosts_multi
+- rendre generic les fichiers docker_compose et docker_compose_multi
+- faire un skip de Initialize the replication set quand le replica est déjà créé

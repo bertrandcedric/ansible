@@ -2,9 +2,9 @@
 - name: Create the file to initialize the mongod replica set
   template: src=repset_init.j2 dest=/tmp/repset_init.js
 
-#- name: Initialize the replication set
-#  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['server'][0]]['ansible_default_ipv4']['address']}} /tmp/repset_init.js"
-#  register: st
-#
-#- debug:
-#    var: st
+- name: Initialize the replication set
+  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['server'][0]]['ansible_default_ipv4']['address']}} /tmp/repset_init.js"
+  register: st
+
+- debug:
+    var: st

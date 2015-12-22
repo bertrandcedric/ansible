@@ -1,21 +1,24 @@
 client:
-  build: centos_ssh/.
+  image: centos_ssh
   ports:
     - "22"
 
 machine_1:
-  build: centos_ssh/.
+  image: centos_ssh
   ports:
     - "22"
+
 machine_2:
-  build: centos_ssh/.
+  image: centos_ssh
   ports:
     - "22"
+
 machine_3:
-  build: centos_ssh/.
+  image: centos_ssh
   ports:
     - "22"
+
 machine_4:
-  build: centos_ssh/.
+  image: centos_ssh
   ports:
     - "22"

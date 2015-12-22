@@ -1,4 +1,9 @@
 ---
+- name: Change /etc/hosts
+  shell: if grep "{{ hostvars[item]['ansible_default_ipv4']['address'] }} {{ hostvars[item]['ansible_nodename'] }}" /etc/hosts; then echo 0; else echo "{{ hostvars[item]['ansible_default_ipv4']['address'] }} {{ hostvars[item]['ansible_nodename'] }}" >> /etc/hosts; fi
+  with_items: groups['server']
+  become: yes
+
 - name: Create the mongod group
   group:
     name=mongod
@@ -28,4 +33,9 @@
   become: yes
 
 - name: Adding the path in the bashrc files
-  lineinfile: dest=/home/deploy/.bashrc line='export PATH=$PATH:/opt/mongodb/bin' insertafter='EOF' regexp='export PATH=\$PATH:/opt/mongodb/bin' state=present
+  lineinfile:
+    dest: /home/deploy/.bashrc
+    line: 'export PATH=$PATH:/opt/mongodb/bin'
+    insertafter: 'EOF'
+    regexp: 'export PATH=\$PATH:/opt/mongodb/bin'
+    state: present
