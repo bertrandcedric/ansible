@@ -3,15 +3,19 @@
 - hosts: all
   gather_facts: yes
   remote_user: deploy
-#  roles:
+
+- hosts: all
+  gather_facts: no
+  remote_user: deploy
+  roles:
 #    - { role: test }
+    - { role: mongodb/commons }
 
 - hosts: server
   gather_facts: no
   remote_user: deploy
   tags: [server]
   roles:
-    - { role: mongodb/commons }
     - { role: mongodb/server }
 
 - hosts: client
@@ -19,5 +23,4 @@
   remote_user: deploy
   tags: [client]
   roles:
-    - { role: mongodb/commons }
     - { role: mongodb/client }

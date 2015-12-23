@@ -1,26 +1,26 @@
 #!/bin/bash
 
-NUMBER_OF_MACHINE=1
+NUMBER_OF_MACHINE=$NB_MACHINE
 COMPOSE_PROJECT=sample
 
 BASE_DIR=$(cd $(dirname $0) && pwd)
 
 docker_ip=$(docker-machine ip dev)
 
-port=$(cd $BASE_DIR && docker-compose -p $COMPOSE_PROJECT port client 22 | sed 's/.*://')
+port=$(cd $BASE_DIR && docker-compose -p $COMPOSE_PROJECT -f ../docker-compose.yml port client 22 | sed 's/.*://')
 machine_host="${machine_host} \"client\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
 
 i=1
 while [ $i -lt $NUMBER_OF_MACHINE ]
 do
     machine_name="${machine_name} \"machine_$i\", "
-    port=$(cd $BASE_DIR && docker-compose -p $COMPOSE_PROJECT port machine_$i 22 | sed 's/.*://')
+    port=$(cd $BASE_DIR && docker-compose -p $COMPOSE_PROJECT -f ../docker-compose.yml port machine_$i 22 | sed 's/.*://')
     machine_host="${machine_host} \"machine_$i\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
     i=$[$i+1]
 done
 
 machine_name="${machine_name} \"machine_$NUMBER_OF_MACHINE\""
-port=$(cd $BASE_DIR && docker-compose -p $COMPOSE_PROJECT port machine_$NUMBER_OF_MACHINE 22 | sed 's/.*://')
+port=$(cd $BASE_DIR && docker-compose -p $COMPOSE_PROJECT -f ../docker-compose.yml port machine_$NUMBER_OF_MACHINE 22 | sed 's/.*://')
 machine_host="${machine_host} \"machine_$NUMBER_OF_MACHINE\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}"
 
 cat << EOF

@@ -1,10 +1,23 @@
 ---
 - name: Create the file to initialize the mongod replica set
-  template: src=repset_init.j2 dest=/tmp/repset_init.js
+  template:
+    src: "{{item}}.j2"
+    dest: "/tmp/{{item}}.js"
+  with_items:
+    - repset_init
+    - repset_status
+
+- name: Check the replication set status
+  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['server'][0]]['ansible_default_ipv4']['address']}} /tmp/repset_status.js"
+  register: st
+  changed_when: st.stdout.find("already initialized") == -1
 
 - name: Initialize the replication set
   shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['server'][0]]['ansible_default_ipv4']['address']}} /tmp/repset_init.js"
-  register: st
+  when: st.stdout.find("already initialized") == -1
+  register: log_mongo
 
-- debug:
-    var: st
+- name: Show mongod log
+  debug:
+    var: log_mongo.stdout_lines
+  when: st.stdout.find("already initialized") == -1

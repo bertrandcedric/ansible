@@ -26,14 +26,13 @@
 - name: Check process mongod
   shell: ps -auxww | grep mongod
   register: ps
-  changed_when: false
+  changed_when: ps.stdout_lines|length <= 2
 
 - name: Run MongoDB
   shell: ./mongod --config /etc/mongodb.conf
   args:
     chdir: /opt/mongodb/bin
   register: st
-  changed_when: st.stdout.find("child process started successfully") == -1
   when: ps.stdout_lines|length <= 2
   become: yes
   become_user: mongod
