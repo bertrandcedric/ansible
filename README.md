@@ -50,4 +50,5 @@ TODO :
 - tester la mise en pause d'un container
 - tester l'arrêt d'un container et le redémarrage
 - tester la suppression et la recreation d'un container
+- configuration des configs
 - configuration des shards

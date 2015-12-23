@@ -22,6 +22,18 @@
     group: mongod
   become: yes
 
+- name: Change mode /var
+  file:
+    path=/var
+    mode=777
+  become: yes
+
+- name: Change mode /var/log
+  file:
+    path=/var/log
+    mode=777
+  become: yes
+
 - name: Install mongodb
   unarchive:
     src: mongodb-linux-x86_64-3.0.8.tgz

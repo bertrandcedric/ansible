@@ -1,16 +1,4 @@
 ---
-- name: Change mode /var
-  file:
-    path=/var
-    mode=777
-  become: yes
-
-- name: Change mode /var/log
-  file:
-    path=/var/log
-    mode=777
-  become: yes
-
 - name: Create the data directory for the namenode metadata
   file:
     path=/data/db
