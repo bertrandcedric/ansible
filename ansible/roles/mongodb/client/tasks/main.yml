@@ -8,12 +8,12 @@
     - repset_status
 
 - name: Check the replication set status
-  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['server'][0]]['ansible_default_ipv4']['address']}} /tmp/repset_status.js"
+  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['replica'][0]]['ansible_default_ipv4']['address']}} /tmp/repset_status.js"
   register: st
   changed_when: st.stdout.find("already initialized") == -1
 
 - name: Initialize the replication set
-  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['server'][0]]['ansible_default_ipv4']['address']}} /tmp/repset_init.js"
+  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['replica'][0]]['ansible_default_ipv4']['address']}} /tmp/repset_init.js"
   when: st.stdout.find("already initialized") == -1
   register: log_mongo
 

@@ -5,6 +5,7 @@
 ```
 docker rm $(docker ps -a -q)
 docker build --no-cache -t centos_ssh centos_ssh/.
+docker build --build-arg pwd=XXXX --no-cache -t centos_ssh centos_ssh/.
 ```
 
 ## Provisionning avec ansible sur les containers centos
@@ -21,16 +22,22 @@ ansible -m ping -i ansible/hosts all -u deploy
 ansible-playbook ansible/deploy.yml -i ansible/hosts
 
 ansible -m debug -a var=hostvars -i ansible/hosts env -u deploy
-
-ssh 192.168.99.100 -p {{port_machine client}} -l deploy
-
-mongo --host {{machine server}}
+ansible -m setup -i ansible/hosts env -u deploy
 
 docker-compose -p sample pause machine_1
 docker-compose -p sample unpause machine_1
 docker-compose -p sample stop machine_1
 docker-compose -p sample start machine_1
 docker-compose -p sample stop
+docker-compose -p sample rm
+```
+
+## Test config mongodb
+
+```
+ssh 192.168.99.100 -p `docker-compose -p sample port client 22 | sed 's/.*://'` -l deploy
+
+mongo --host {{machine server}}
 ```
 
 ## Autres commandes

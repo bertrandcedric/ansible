@@ -34,11 +34,14 @@ cat << EOF
   "config": {
     "hosts": [ "config" ]
   },
-  "server": {
+  "replica": {
+    "hosts": [ $machine_name ]
+  },
+  "shard": {
     "hosts": [ $machine_name ]
   },
   "commons": {
-    "children": ["client", "server"]
+    "children": ["client", "shard", "replica"]
   },
   "env": {
     "children": ["commons"]

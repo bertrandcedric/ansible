@@ -1,2 +1,40 @@
 ---
-- debug: msg="test config"
+- name: Create the data directory for the namenode metadata
+  file:
+    path=/data/configdb
+    owner=mongod
+    group=mongod
+    state=directory
+  become: yes
+
+- name: Create the file to initialize the mongo config
+  template:
+    src: "{{item}}.j2"
+    dest: "/tmp/{{item}}.js"
+  with_items:
+    - repset_status
+
+- name: Create the mongo configuration file
+  template: src=mongoc.conf.j2 dest=/etc/mongoc.conf
+  become: yes
+
+- name: Check process mongod
+  shell: ps -auxww | grep mongod
+  register: ps
+  changed_when: ps.stdout_lines|length <= 2
+
+- name: Run Mongod config
+  shell: ./mongod --config /etc/mongoc.conf
+  args:
+    chdir: /opt/mongodb/bin
+  when: ps.stdout_lines|length <= 2
+  become: yes
+  become_user: mongod
+
+- name: Check the config status
+  shell: /opt/mongodb/bin/mongo --port 27019 /tmp/repset_status.js
+  register: log_mongo
+
+- name: Show mongod log
+  debug:
+    var: log_mongo.stdout_lines

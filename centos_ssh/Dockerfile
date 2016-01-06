@@ -1,4 +1,5 @@
 FROM centos
+ARG pwd
 
 ENV http_proxy=http://CB1791DN@noevipncp2n.edf.fr:3128/
 ENV https_proxy=https://CB1791DN@noevipncp2n.edf.fr:3128/
@@ -11,7 +12,7 @@ ADD sshd_config /etc/ssh/sshd_config
 
 RUN /usr/sbin/sshd-keygen
 
-RUN echo "root:password1" | chpasswd
+RUN echo "root:${pwd}" | chpasswd
 
 EXPOSE 22
 CMD    ["/usr/sbin/sshd", "-D"]

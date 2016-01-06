@@ -8,7 +8,7 @@
     "
   register: st
   changed_when: st.stdout == ""
-  with_items: groups['server'] | difference(inventory_hostname)
+  with_items: groups['all'] | difference(inventory_hostname)
   become: yes
 
 - name: Create the mongod group
@@ -36,7 +36,7 @@
 
 - name: Install mongodb
   unarchive:
-    src: mongodb-linux-x86_64-3.0.8.tgz
+    src: mongodb-linux-x86_64-3.2.0.tgz
     dest: "/opt"
     owner: mongod
     group: mongod
@@ -44,7 +44,7 @@
 
 - name: Create symlink /opt/mongodb
   file:
-    src: "/opt/mongodb-linux-x86_64-3.0.8"
+    src: "/opt/mongodb-linux-x86_64-3.2.0"
     dest: "/opt/mongodb"
     owner: mongod
     group: mongod
@@ -58,3 +58,13 @@
     insertafter: 'EOF'
     regexp: 'export PATH=\$PATH:/opt/mongodb/bin'
     state: present
+
+- name: Adding the path in the bashrc files
+  lineinfile:
+    dest: "/home/mongod/.bashrc"
+    line: 'export PATH=$PATH:/opt/mongodb/bin'
+    insertafter: 'EOF'
+    regexp: 'export PATH=\$PATH:/opt/mongodb/bin'
+    state: present
+  become: yes
+  become_user: mongod

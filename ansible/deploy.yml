@@ -11,12 +11,12 @@
 #    - { role: test }
     - { role: mongodb/commons }
 
-- hosts: server
+- hosts: replica
   gather_facts: no
   remote_user: deploy
   tags: [server]
   roles:
-    - { role: mongodb/server }
+    - { role: mongodb/replica }
 
 - hosts: client
   gather_facts: no
@@ -24,3 +24,19 @@
   tags: [client]
   roles:
     - { role: mongodb/client }
+
+# Creation de la config apres avoir creer le replica #
+- hosts: config
+  gather_facts: no
+  remote_user: deploy
+  tags: [server]
+  roles:
+    - { role: mongodb/config }
+
+- hosts: shard
+  gather_facts: no
+  remote_user: deploy
+  tags: [server]
+  roles:
+    - { role: mongodb/shard }
+
