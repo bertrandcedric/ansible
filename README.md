@@ -1,11 +1,21 @@
 # Utilisation du container CENTOS
 
+## Configuration vm virtualbox et partage d'un repertoire de travail
+
+```
+/cygdrive/c/Program\ Files/Oracle/VirtualBox/VBoxManage sharedfolder add dev --name /apps --hostpath c:\\apps --automount
+sudo mkdir /data
+sudo mount -t vboxsf /apps /data
+```
+
 ## Build et lancement d'un container centos
 
 ```
 docker rm $(docker ps -a -q)
 docker build --no-cache -t centos_ssh centos_ssh/.
 docker build --build-arg pwd=XXXX --no-cache -t centos_ssh centos_ssh/.
+
+docker run -ti --volume /data:/titi centos
 ```
 
 ## Provisionning avec ansible sur les containers centos
