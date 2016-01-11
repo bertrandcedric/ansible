@@ -1,0 +1,7 @@
+rs.initiate()
+sleep(2000)
+{% for host in groups['config'] %}
+rs.add("{{ hostvars[host]['ansible_nodename'] }}:27019")
+sleep(2000)
+{% endfor %}
+printjson(rs.status())

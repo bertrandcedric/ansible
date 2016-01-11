@@ -1,2 +1,18 @@
 ---
-- debug: msg="test shard"
+- name: Create the mongos configuration file
+  template: src=mongos.conf.j2 dest=/etc/mongos.conf
+  become: yes
+
+- name: Check process mongos
+  shell: ps -auxww | grep mongos
+  register: ps
+  changed_when: ps.stdout_lines|length <= 2
+
+- name: Run Mongos
+  shell: ./mongos --config /etc/mongos.conf
+  args:
+    chdir: /opt/mongodb/bin
+  register: st
+  when: ps.stdout_lines|length <= 2
+  become: yes
+  become_user: mongod

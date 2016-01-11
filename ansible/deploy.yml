@@ -9,34 +9,58 @@
   remote_user: deploy
   roles:
 #    - { role: test }
-    - { role: mongodb/commons }
+    - { role: mongodb/commons, tags: [commons, replica, config, sharding] }
 
+#################################
+# Creation de la config replica #
+#################################
 - hosts: replica
   gather_facts: no
   remote_user: deploy
-  tags: [server]
   roles:
-    - { role: mongodb/replica }
+    - { role: mongodb/replica, tags: [replica] }
 
 - hosts: client
   gather_facts: no
   remote_user: deploy
-  tags: [client]
   roles:
-    - { role: mongodb/client }
+    - { role: mongodb/client/replica, tags: [replica]  }
 
-# Creation de la config apres avoir creer le replica #
+#########################
+# Creation de la config #
+#########################
 - hosts: config
   gather_facts: no
   remote_user: deploy
-  tags: [server]
   roles:
-    - { role: mongodb/config }
+    - { role: mongodb/config, tags: [config] }
 
-- hosts: shard
+- hosts: client
   gather_facts: no
   remote_user: deploy
-  tags: [server]
   roles:
-    - { role: mongodb/shard }
+    - { role: mongodb/client/config, tags: [config] }
 
+########################
+# Creation du sharding #
+########################
+- hosts: sharding
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: mongodb/shard, tags: [sharding] }
+
+- hosts: client
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: mongodb/client/sharding, tags: [sharding] }
+
+#############
+# Test data #
+#############
+- hosts: client
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: mongodb/client/test, tags: [test] }

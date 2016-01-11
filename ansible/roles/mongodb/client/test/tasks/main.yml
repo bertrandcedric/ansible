@@ -1,0 +1,15 @@
+---
+- name: Copy files
+  copy:
+    src: "{{item}}"
+    dest: "/tmp/{{item}}"
+  with_items:
+    - data.js
+
+- name: Test data
+  shell: /opt/mongodb/bin/mongo {{hostvars['sharding']['ansible_nodename']}}:27017 /tmp/data.js
+  register: log_mongo
+
+- name: Show log
+  debug:
+    var: log_mongo.stdout_lines

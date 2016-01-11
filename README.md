@@ -6,6 +6,9 @@
 /cygdrive/c/Program\ Files/Oracle/VirtualBox/VBoxManage sharedfolder add dev --name /apps --hostpath c:\\apps --automount
 sudo mkdir /data
 sudo mount -t vboxsf /apps /data
+
+docker-machine create --driver virtualbox --engine-insecure-registry zed33xg1.distribution.edf.fr:444 dev
+/var/lib/boot2docker/profile
 ```
 
 ## Build et lancement d'un container centos

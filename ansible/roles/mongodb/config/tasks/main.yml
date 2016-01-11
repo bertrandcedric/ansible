@@ -7,13 +7,6 @@
     state=directory
   become: yes
 
-- name: Create the file to initialize the mongo config
-  template:
-    src: "{{item}}.j2"
-    dest: "/tmp/{{item}}.js"
-  with_items:
-    - repset_status
-
 - name: Create the mongo configuration file
   template: src=mongoc.conf.j2 dest=/etc/mongoc.conf
   become: yes
@@ -30,11 +23,3 @@
   when: ps.stdout_lines|length <= 2
   become: yes
   become_user: mongod
-
-- name: Check the config status
-  shell: /opt/mongodb/bin/mongo --port 27019 /tmp/repset_status.js
-  register: log_mongo
-
-- name: Show mongod log
-  debug:
-    var: log_mongo.stdout_lines

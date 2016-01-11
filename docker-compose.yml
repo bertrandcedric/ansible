@@ -3,7 +3,22 @@ client:
   ports:
     - "22"
 
-config:
+config_1:
+  image: centos_ssh
+  ports:
+    - "22"
+
+config_2:
+  image: centos_ssh
+  ports:
+    - "22"
+
+config_3:
+  image: centos_ssh
+  ports:
+    - "22"
+
+sharding:
   image: centos_ssh
   ports:
     - "22"

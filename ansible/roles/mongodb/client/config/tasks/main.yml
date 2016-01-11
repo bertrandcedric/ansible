@@ -1,0 +1,23 @@
+---
+- name: Create the file to initialize the mongod config
+  template:
+    src: "{{item}}.j2"
+    dest: "/tmp/{{item}}.js"
+  with_items:
+    - config_init
+    - config_status
+
+- name: Check the config status
+  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['config'][0]]['ansible_nodename']}} --port 27019 /tmp/config_status.js"
+  register: st
+  changed_when: st.stdout.find("already initialized") == -1
+
+- name: Initialize the config
+  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['config'][0]]['ansible_nodename']}} --port 27019 /tmp/config_init.js"
+  when: st.stdout.find("already initialized") == -1
+  register: log_mongo
+
+- name: Show mongod log
+  debug:
+    var: log_mongo.stdout_lines
+  when: st.stdout.find("already initialized") == -1

@@ -1,0 +1,5 @@
+{% for host in groups['replica'] %}
+sh.addShard( "apps/{{ hostvars[host]['ansible_nodename'] }}:27017" )
+sleep(2000)
+{% endfor %}
+printjson(sh.status())
