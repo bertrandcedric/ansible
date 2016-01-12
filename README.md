@@ -65,7 +65,7 @@ sh.enableSharding( "test" )
 db.test_collection.createIndex( { number : 1 } )
 sh.shardCollection( "test.test_collection", { "number" : 1 } )
 db.stats()
-db.printShardingStatus()
+db.printShardingStatus(true)
 ```
 
 ## Autres commandes

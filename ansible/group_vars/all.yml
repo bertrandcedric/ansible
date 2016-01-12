@@ -1,4 +1,5 @@
 ---
+mongo_version: mongodb-linux-x86_64-3.2.0
 config:
   name: configReplSet
   port: 27019

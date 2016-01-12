@@ -34,17 +34,23 @@
     mode=777
   become: yes
 
+- name: Check install mongodb
+  stat: path="/opt/{{mongo_version}}"
+  register: st
+  become: yes
+
 - name: Install mongodb
   unarchive:
-    src: mongodb-linux-x86_64-3.2.0.tgz
+    src: "{{mongo_version}}.tgz"
     dest: "/opt"
     owner: mongod
     group: mongod
   become: yes
+  when: not st.stat.exists
 
 - name: Create symlink /opt/mongodb
   file:
-    src: "/opt/mongodb-linux-x86_64-3.2.0"
+    src: "/opt/{{mongo_version}}"
     dest: "/opt/mongodb"
     owner: mongod
     group: mongod
