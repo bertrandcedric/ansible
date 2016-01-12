@@ -1,5 +1,5 @@
-logpath=/var/log/mongodb.log
-dbpath=/data/db/
+logpath=/var/log/mongodb-{{replica_name}}.log
+dbpath=/data/db-{{replica_name}}/
 fork=true
-replSet=apps
-port=27017
+replSet={{replica_name}}
+port={{replica_port}}

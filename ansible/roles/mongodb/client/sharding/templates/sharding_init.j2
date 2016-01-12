@@ -1,5 +1,5 @@
-{% for host in groups['replica'] %}
-sh.addShard( "apps/{{ hostvars[host]['ansible_nodename'] }}:27017" )
+{% for host in groups['replica-' + item.name] %}
+sh.addShard( "{{item.name}}/{{ hostvars[host]['ansible_nodename'] }}:{{item.port}}" )
 sleep(2000)
 {% endfor %}
 printjson(sh.status())

@@ -1,23 +1,23 @@
 ---
 - name: Create the data directory for the namenode metadata
   file:
-    path=/data/db
+    path=/data/db-{{replica_name}}
     owner=mongod
     group=mongod
     state=directory
   become: yes
 
 - name: Create the mongodb configuration file
-  template: src=mongod.conf.j2 dest=/etc/mongodb.conf
+  template: src=mongod.conf.j2 dest=/etc/mongodb-{{replica_name}}.conf
   become: yes
 
 - name: Check process mongod
-  shell: ps -auxww | grep mongod
+  shell: ps -auxww | grep /etc/mongodb-{{replica_name}}.conf
   register: ps
   changed_when: ps.stdout_lines|length <= 2
 
 - name: Run MongoDB
-  shell: ./mongod --config /etc/mongodb.conf
+  shell: ./mongod --config /etc/mongodb-{{replica_name}}.conf
   args:
     chdir: /opt/mongodb/bin
   register: st

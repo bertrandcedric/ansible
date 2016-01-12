@@ -12,7 +12,7 @@
   become: yes
 
 - name: Check process mongod
-  shell: ps -auxww | grep mongod
+  shell: ps -auxww | grep /etc/mongoc.conf
   register: ps
   changed_when: ps.stdout_lines|length <= 2
 

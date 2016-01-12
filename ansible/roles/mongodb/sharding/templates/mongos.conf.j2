@@ -1,0 +1,4 @@
+logpath=/var/log/mongos.log
+fork=true
+configdb={{config.name}}/{{ hostvars[groups['config'][0]]['ansible_nodename'] }}:{{config.port}},{{ hostvars[groups['config'][1]]['ansible_nodename'] }}:{{config.port}},{{ hostvars[groups['config'][2]]['ansible_nodename'] }}:{{config.port}}
+chunkSize={{sharding.chunkSize}}

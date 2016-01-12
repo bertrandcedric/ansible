@@ -40,7 +40,10 @@ cat << EOF
   "client": {
     "hosts": [ "client" ]
   },
-  "replica": {
+  "replica-rs0": {
+    "hosts": [ $machine_name ]
+  },
+  "replica-rs1": {
     "hosts": [ $machine_name ]
   },
   "config": {
@@ -50,7 +53,7 @@ cat << EOF
     "hosts": [ "sharding" ]
   },
   "commons": {
-    "children": ["client", "config", "replica", "sharding"]
+    "children": ["client", "config", "replica-rs0", "replica-rs1", "sharding"]
   },
   "env": {
     "children": ["commons"]

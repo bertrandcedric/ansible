@@ -53,6 +53,21 @@ ssh 192.168.99.100 -p `docker-compose -p sample port client 22 | sed 's/.*://'` 
 mongo --host {{machine server}}
 ```
 
+## Test avec données
+
+```
+mongo {{sharding_nodename}}:27017
+load("/script/data.js")
+
+db.test_collection.count()
+db.test_collection.find()
+sh.enableSharding( "test" )
+db.test_collection.createIndex( { number : 1 } )
+sh.shardCollection( "test.test_collection", { "number" : 1 } )
+db.stats()
+db.printShardingStatus()
+```
+
 ## Autres commandes
 
 docker run --name=env -d test /bin/sh -c "while true; do echo hello world; sleep 1; done"

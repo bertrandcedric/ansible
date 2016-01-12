@@ -1,23 +1,29 @@
 ---
 - name: Create the file to initialize the mongod replica set
   template:
-    src: "{{item}}.j2"
-    dest: "/tmp/{{item}}.js"
-  with_items:
-    - repset_init
-    - repset_status
+    src: "repset_status.j2"
+    dest: "/script/repset_status.js"
+
+- name: Create the file to initialize the mongod replica set
+  template:
+    src: "repset_init.j2"
+    dest: "/script/repset_init_{{item.name}}.js"
+  with_items: "{{replica}}"
 
 - name: Check the replication set status
-  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['replica'][0]]['ansible_nodename']}} /tmp/repset_status.js"
+  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['replica-' + item.name][0]]['ansible_nodename']}} --port {{item.port}} /script/repset_status.js"
   register: st
   changed_when: st.stdout.find("already initialized") == -1
+  with_items: "{{replica}}"
 
 - name: Initialize the replication set
-  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['replica'][0]]['ansible_nodename']}} /tmp/repset_init.js"
-  when: st.stdout.find("already initialized") == -1
+  shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['replica-' + item.1.name][0]]['ansible_nodename']}} --port {{item.1.port}} /script/repset_init_{{item.1.name}}.js"
+  when: st.results[item.0].stdout.find("already initialized") == -1
   register: log_mongo
+  with_indexed_items: "{{replica}}"
 
 - name: Show mongod log
   debug:
-    var: log_mongo.stdout_lines
-  when: st.stdout.find("already initialized") == -1
+    var: log_mongo.results[item.0].stdout_lines
+  when: st.results[item.0].stdout.find("already initialized") == -1
+  with_indexed_items: "{{replica}}"

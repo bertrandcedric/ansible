@@ -68,3 +68,10 @@
     state: present
   become: yes
   become_user: mongod
+
+- name: Create the script directory
+  file:
+    path=/script
+    state=directory
+    mode=777
+  become: yes

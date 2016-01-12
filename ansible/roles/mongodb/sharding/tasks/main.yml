@@ -4,7 +4,7 @@
   become: yes
 
 - name: Check process mongos
-  shell: ps -auxww | grep mongos
+  shell: ps -auxww | grep /etc/mongos.conf
   register: ps
   changed_when: ps.stdout_lines|length <= 2
 

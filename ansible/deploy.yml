@@ -14,17 +14,37 @@
 #################################
 # Creation de la config replica #
 #################################
-- hosts: replica
+- hosts: replica-rs0
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: mongodb/replica, tags: [replica] }
+    - {
+        role: mongodb/replica, tags: [replica],
+        replica_name: rs0,
+        replica_port: 27017
+      }
+
+- hosts: replica-rs1
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - {
+        role: mongodb/replica, tags: [replica],
+        replica_name: rs1,
+        replica_port: 27018
+      }
 
 - hosts: client
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: mongodb/client/replica, tags: [replica]  }
+    - {
+        role: mongodb/client/replica, tags: [replica],
+        replica: [
+          { name: rs0, port: 27017 },
+          { name: rs1, port: 27018 }
+        ]
+      }
 
 #########################
 # Creation de la config #
@@ -48,13 +68,19 @@
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: mongodb/shard, tags: [sharding] }
+    - { role: mongodb/sharding, tags: [sharding] }
 
 - hosts: client
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: mongodb/client/sharding, tags: [sharding] }
+    - {
+        role: mongodb/client/sharding, tags: [sharding],
+        replica: [
+          { name: rs0, port: 27017 },
+          { name: rs1, port: 27018 }
+        ]
+      }
 
 #############
 # Test data #

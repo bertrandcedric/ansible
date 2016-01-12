@@ -1,23 +1,21 @@
 ---
 - name: Create the file to initialize the mongod replica set
   template:
-    src: "{{item}}.j2"
-    dest: "/tmp/{{item}}.js"
-  with_items:
-    - sharding_init
-    - sharding_status
+    src: "sharding_status.j2"
+    dest: "/script/sharding_status.js"
 
-#- name: Check the sharding status
-#  shell: "/opt/mongodb/bin/mongo --host {{hostvars['sharding']['ansible_nodename']}} /tmp/repset_status.js"
-#  register: st
-#  changed_when: st.stdout.find("already initialized") == -1
+- name: Create the file to initialize the mongod replica set
+  template:
+    src: "sharding_init.j2"
+    dest: "/script/sharding_init_{{item.name}}.js"
+  with_items: "{{replica}}"
 
 - name: Initialize the sharding
-  shell: "/opt/mongodb/bin/mongo {{hostvars['sharding']['ansible_nodename']}}:27017/admin /tmp/sharding_init.js"
-  when: st.stdout.find("already initialized") == -1
+  shell: "/opt/mongodb/bin/mongo {{hostvars['sharding']['ansible_nodename']}}/admin /script/sharding_init_{{item.name}}.js"
   register: log_mongo
+  with_items: "{{replica}}"
 
 - name: Show sharding log
   debug:
-    var: log_mongo.stdout_lines
-  when: st.stdout.find("already initialized") == -1
+    var: log_mongo.results[item.0].stdout_lines
+  with_indexed_items: "{{replica}}"

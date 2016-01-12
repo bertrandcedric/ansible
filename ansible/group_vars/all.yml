@@ -1,0 +1,6 @@
+---
+config:
+  name: configReplSet
+  port: 27019
+sharding:
+  chunkSize: 1
