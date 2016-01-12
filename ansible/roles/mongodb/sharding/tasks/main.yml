@@ -1,18 +1,17 @@
 ---
-- name: Create the mongos configuration file
+- name: Create the sharding file
   template: src=mongos.conf.j2 dest=/etc/mongos.conf
   become: yes
 
-- name: Check process mongos
+- name: Check process sharding
   shell: ps -auxww | grep /etc/mongos.conf
   register: ps
   changed_when: ps.stdout_lines|length <= 2
 
-- name: Run Mongos
+- name: Run sharding
   shell: ./mongos --config /etc/mongos.conf
   args:
     chdir: /opt/mongodb/bin
-  register: st
   when: ps.stdout_lines|length <= 2
   become: yes
   become_user: mongod

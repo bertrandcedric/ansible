@@ -1,5 +1,5 @@
 ---
-- name: Create the data directory for the namenode metadata
+- name: Create the data directory for config
   file:
     path=/data/configdb
     owner=mongod
@@ -7,16 +7,16 @@
     state=directory
   become: yes
 
-- name: Create the mongo configuration file
+- name: Create the config file
   template: src=mongoc.conf.j2 dest=/etc/mongoc.conf
   become: yes
 
-- name: Check process mongod
+- name: Check process config
   shell: ps -auxww | grep /etc/mongoc.conf
   register: ps
   changed_when: ps.stdout_lines|length <= 2
 
-- name: Run Mongod config
+- name: Run config
   shell: ./mongod --config /etc/mongoc.conf
   args:
     chdir: /opt/mongodb/bin

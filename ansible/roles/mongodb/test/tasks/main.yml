@@ -1,5 +1,5 @@
 ---
-- name: Copy files
+- name: Copy the file data.js
   copy:
     src: "{{item}}"
     dest: "/script/{{item}}"

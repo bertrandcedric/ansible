@@ -1,5 +1,5 @@
 ---
-- name: Create the data directory for the namenode metadata
+- name: Create the data directory for replicaset
   file:
     path=/data/db-{{replica_name}}
     owner=mongod
@@ -7,20 +7,19 @@
     state=directory
   become: yes
 
-- name: Create the mongodb configuration file
+- name: Create the replicaset file
   template: src=mongod.conf.j2 dest=/etc/mongodb-{{replica_name}}.conf
   become: yes
 
-- name: Check process mongod
+- name: Check process replicaset
   shell: ps -auxww | grep /etc/mongodb-{{replica_name}}.conf
   register: ps
   changed_when: ps.stdout_lines|length <= 2
 
-- name: Run MongoDB
+- name: Run replicaset
   shell: ./mongod --config /etc/mongodb-{{replica_name}}.conf
   args:
     chdir: /opt/mongodb/bin
-  register: st
   when: ps.stdout_lines|length <= 2
   become: yes
   become_user: mongod

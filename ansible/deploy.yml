@@ -89,4 +89,4 @@
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: mongodb/client/test, tags: [test] }
+    - { role: mongodb/test, tags: [test] }

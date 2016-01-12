@@ -1,10 +1,10 @@
 ---
-- name: Create the file to initialize the mongod replica set
+- name: Copy the file /script/sharding_status.js
   template:
     src: "sharding_status.j2"
     dest: "/script/sharding_status.js"
 
-- name: Create the file to initialize the mongod replica set
+- name: Copy the file /script/sharding_init_{{item.name}}.js
   template:
     src: "sharding_init.j2"
     dest: "/script/sharding_init_{{item.name}}.js"
@@ -12,10 +12,11 @@
 
 - name: Initialize the sharding
   shell: "/opt/mongodb/bin/mongo {{hostvars['sharding']['ansible_nodename']}}/admin /script/sharding_init_{{item.name}}.js"
-  register: log_mongo
+  register: log
   with_items: "{{replica}}"
+  changed_when: false
 
 - name: Show sharding log
   debug:
-    var: log_mongo.results[item.0].stdout_lines
+    var: log.results[item.0].stdout_lines
   with_indexed_items: "{{replica}}"
