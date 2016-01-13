@@ -1,4 +1,6 @@
 ---
+jdk_version: jdk-8u66-linux-x64
+zookeeper_version: zookeeper-3.4.6
 mongo_version: mongodb-linux-x86_64-3.2.0
 config:
   name: configReplSet

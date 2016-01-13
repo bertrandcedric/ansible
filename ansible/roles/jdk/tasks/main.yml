@@ -1,0 +1,16 @@
+---
+- name: Check file
+  stat: path="/tmp/{{jdk_version}}.rpm"
+  register: st
+  become: yes
+
+- name: Copie file
+  copy:
+    src: "{{jdk_version}}.rpm"
+    dest: "/tmp/{{jdk_version}}.rpm"
+    mode: 750
+  when: not st.stat.exists
+
+#- name: install jdk rpm from a local file
+#  shell: sudo yum install /tmp/{{jdk_version}}.rpm
+#  become: yes

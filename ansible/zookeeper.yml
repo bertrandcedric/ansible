@@ -1,0 +1,13 @@
+---
+# Gather facts to be able to use them in next plays
+- hosts: all
+  gather_facts: yes
+  remote_user: deploy
+
+- hosts: test
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: test }
+    - { role: jdk, tags: [jdk] }
+    - { role: zookeeper, tags: [zookeeper] }

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+docker_ip=$(docker-machine ip dev)
+
+port=$(docker port test | sed 's/.*://')
+
+machine_host="\"test\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}"
+
+cat << EOF
+{
+  "test": {
+    "hosts": [ "test" ]
+  },
+  "commons": {
+    "children": [ "test" ]
+  },
+  "env": {
+    "children": [ "commons" ]
+  },
+  "_meta": {
+    "hostvars": {
+      $machine_host
+    }
+  }
+}
+EOF

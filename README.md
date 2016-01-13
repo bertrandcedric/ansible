@@ -29,13 +29,13 @@ docker network inspect bridge
 
 export ANSIBLE_HOST_KEY_CHECKING=False
 export NB_MACHINE=3;
-ansible -m ping -i ansible/hosts all -u root -k -c paramiko
-ansible-playbook ansible/prerequis.yml -i ansible/hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
-ansible -m ping -i ansible/hosts all -u deploy
-ansible-playbook ansible/deploy.yml -i ansible/hosts
+ansible -m ping -i ansible/mongo_hosts all -u root -k -c paramiko
+ansible-playbook ansible/prerequis.yml -i ansible/mongo_hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
+ansible -m ping -i ansible/mongo_hosts all -u deploy
+ansible-playbook ansible/mongo.yml -i ansible/mongo_hosts
 
-ansible -m debug -a var=hostvars -i ansible/hosts env -u deploy
-ansible -m setup -i ansible/hosts env -u deploy
+ansible -m debug -a var=hostvars -i ansible/mongo_hosts env -u deploy
+ansible -m setup -i ansible/mongo_hosts env -u deploy
 
 docker-compose -p sample pause machine_1
 docker-compose -p sample unpause machine_1
