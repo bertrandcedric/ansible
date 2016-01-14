@@ -7,20 +7,20 @@
   become: yes
 
 - name: Check install zookeeper
-  stat: path="/opt/{{zookeeper_version}}/{{zookeeper_version}}"
+  stat: path="/opt/{{zookeeper_version}}"
   register: st
   become: yes
 
 - name: Install zookeeper
   unarchive:
     src: "{{zookeeper_version}}.tar.gz"
-    dest: "/opt/{{zookeeper_version}}"
+    dest: "/opt"
   become: yes
   when: not st.stat.exists
 
 - name: Create symlink /opt/zookeeper
   file:
-    src: "/opt/{{zookeeper_version}}/{{zookeeper_version}}"
+    src: "/opt/{{zookeeper_version}}"
     dest: "/opt/zookeeper"
     state: link
   become: yes
