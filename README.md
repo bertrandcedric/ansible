@@ -15,7 +15,6 @@ docker-machine create --driver virtualbox --engine-insecure-registry zed33xg1.di
 
 ```
 docker rm $(docker ps -a -q)
-docker build --no-cache -t centos_ssh centos_ssh/.
 docker build --build-arg pwd=XXXX --no-cache -t centos_ssh centos_ssh/.
 
 docker run -ti --volume /data:/titi centos
@@ -79,6 +78,7 @@ docker run --volumes-from fs -ti test
 
 cat ~/.ssh/id_rsa.pub | docker exec --interactive centos sh -c 'umask 077; mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
 
+zkCli.sh -server 127.0.0.1:2181
 
 TODO :
 - passage a ansible v2
@@ -86,5 +86,3 @@ TODO :
 - tester la mise en pause d'un container
 - tester l'arrêt d'un container et le redémarrage
 - tester la suppression et la recreation d'un container
-- configuration des configs
-- configuration des shards

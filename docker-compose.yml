@@ -2,8 +2,6 @@ client:
   image: centos_ssh
   ports:
     - "22"
-  links:
-    - server
 
 server:
   image: centos_ssh
