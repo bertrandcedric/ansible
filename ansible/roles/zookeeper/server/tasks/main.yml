@@ -1,0 +1,25 @@
+---
+- name: Create the data directory
+  file:
+    path=/data
+    state=directory
+    mode=777
+  become: yes
+
+- name: Create the zookeeper conf directory
+  file:
+    path=/opt/{{zookeeper_version}}/conf
+    state=directory
+  become: yes
+
+- name: Create the zoo.cfg file
+  template: src=zoo.cfg.j2 dest=/opt/{{zookeeper_version}}/conf/zoo.cfg
+  become: yes
+
+- name: Launch zookeeper
+  shell: zkServer.sh restart
+  register: log
+
+- name: Show log
+  debug:
+    var: log

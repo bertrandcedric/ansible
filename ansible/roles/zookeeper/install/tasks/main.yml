@@ -1,30 +1,26 @@
 ---
-- name: Create the data directory
+- name: Create the zookeeper directory
   file:
-    path=/data
+    path=/opt/{{zookeeper_version}}
     state=directory
     mode=777
   become: yes
 
-- name: Create the zoo.cfg file
-  template: src=zoo.cfg.j2 dest=/opt/{{zookeeper_version}}/conf/zoo.cfg
-  become: yes
-
-- name: Check install mongodb
-  stat: path="/opt/{{zookeeper_version}}"
+- name: Check install zookeeper
+  stat: path="/opt/{{zookeeper_version}}/{{zookeeper_version}}"
   register: st
   become: yes
 
 - name: Install zookeeper
   unarchive:
     src: "{{zookeeper_version}}.tar.gz"
-    dest: "/opt"
+    dest: "/opt/{{zookeeper_version}}"
   become: yes
   when: not st.stat.exists
 
 - name: Create symlink /opt/zookeeper
   file:
-    src: "/opt/{{zookeeper_version}}"
+    src: "/opt/{{zookeeper_version}}/{{zookeeper_version}}"
     dest: "/opt/zookeeper"
     state: link
   become: yes
@@ -36,11 +32,3 @@
     insertafter: 'EOF'
     regexp: 'export PATH=\$PATH:/opt/zookeeper/bin'
     state: present
-
-- name: Launch zookeeper
-  shell: zkServer.sh restart
-  register: log
-
-- name: Show log
-  debug:
-    var: log

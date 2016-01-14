@@ -25,6 +25,7 @@ docker run -ti --volume /data:/titi centos
 
 ```
 docker-compose -p sample up -d
+docker-compose -p sample scale config=3 replica=3
 docker network inspect bridge
 
 export ANSIBLE_HOST_KEY_CHECKING=False
@@ -48,7 +49,7 @@ docker-compose -p sample rm
 ## Test config mongodb
 
 ```
-ssh 192.168.99.100 -p `docker-compose -p sample port client 22 | sed 's/.*://'` -l deploy
+ssh 192.168.99.100 -p `docker port sample_client_1 | sed 's/.*://'` -l deploy
 
 mongo --host {{machine server}}
 ```

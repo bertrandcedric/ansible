@@ -8,7 +8,7 @@
   gather_facts: no
   remote_user: deploy
   roles:
-#    - { role: test }
+    - { role: etc_hosts, tags: [commons, replica, config, sharding]  }
     - { role: mongodb/commons, tags: [commons, replica, config, sharding] }
 
 #################################

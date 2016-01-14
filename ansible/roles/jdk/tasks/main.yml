@@ -5,12 +5,9 @@
   become: yes
 
 - name: Copie file
-  copy:
-    src: "{{jdk_version}}.rpm"
-    dest: "/tmp/{{jdk_version}}.rpm"
-    mode: 750
+  copy: src="{{jdk_version}}.rpm" dest="/tmp/{{jdk_version}}.rpm" mode=777
   when: not st.stat.exists
 
-#- name: install jdk rpm from a local file
-#  shell: sudo yum install /tmp/{{jdk_version}}.rpm
-#  become: yes
+- name: install jdk rpm from a local file
+  shell: sudo rpm -i --replacepkgs /tmp/{{jdk_version}}.rpm
+  become: yes

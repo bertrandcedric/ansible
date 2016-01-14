@@ -4,10 +4,23 @@
   gather_facts: yes
   remote_user: deploy
 
-- hosts: test
+- hosts: all
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: test }
+    - { role: etc_hosts }
+
+- hosts: client
+  gather_facts: no
+  remote_user: deploy
+  roles:
     - { role: jdk, tags: [jdk] }
-    - { role: zookeeper, tags: [zookeeper] }
+    - { role: zookeeper/install, tags: [zookeeper] }
+
+- hosts: server
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: jdk, tags: [jdk] }
+    - { role: zookeeper/install, tags: [zookeeper] }
+    - { role: zookeeper/server, tags: [zookeeper] }

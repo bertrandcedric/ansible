@@ -2,38 +2,10 @@ client:
   image: centos_ssh
   ports:
     - "22"
+  links:
+    - server
 
-config_1:
-  image: centos_ssh
-  ports:
-    - "22"
-
-config_2:
-  image: centos_ssh
-  ports:
-    - "22"
-
-config_3:
-  image: centos_ssh
-  ports:
-    - "22"
-
-sharding:
-  image: centos_ssh
-  ports:
-    - "22"
-
-machine_1:
-  image: centos_ssh
-  ports:
-    - "22"
-
-machine_2:
-  image: centos_ssh
-  ports:
-    - "22"
-
-machine_3:
+server:
   image: centos_ssh
   ports:
     - "22"
