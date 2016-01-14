@@ -1,11 +1,4 @@
 ---
-- name: Create the zookeeper directory
-  file:
-    path=/opt/{{zookeeper_version}}
-    state=directory
-    mode=777
-  become: yes
-
 - name: Check install zookeeper
   stat: path="/opt/{{zookeeper_version}}"
   register: st
