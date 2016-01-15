@@ -7,3 +7,18 @@ server:
   image: centos_ssh
   ports:
     - "22"
+
+config:
+  image: centos_ssh
+  ports:
+    - "22"
+
+sharding:
+  image: centos_ssh
+  ports:
+    - "22"
+
+replica:
+  image: centos_ssh
+  ports:
+    - "22"

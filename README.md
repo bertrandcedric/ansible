@@ -23,8 +23,8 @@ docker run -ti --volume /data:/titi centos
 ## Provisionning avec ansible sur les containers centos
 
 ```
-docker-compose -p sample up -d
-docker-compose -p sample scale config=3 replica=3
+docker-compose -p sample scale client=1 config=3 replica=3 sharding=1
+docker-compose -p sample scale client=1 server=3
 docker network inspect bridge
 
 export ANSIBLE_HOST_KEY_CHECKING=False
@@ -78,6 +78,7 @@ docker run --volumes-from fs -ti test
 
 cat ~/.ssh/id_rsa.pub | docker exec --interactive centos sh -c 'umask 077; mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
 
+echo stat | nc 127.0.0.1 2181
 zkCli.sh -server 127.0.0.1:2181
 
 TODO :

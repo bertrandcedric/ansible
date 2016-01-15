@@ -16,6 +16,10 @@
   template: src=zoo.cfg.j2 dest=/opt/{{zookeeper_version}}/conf/zoo.cfg
   become: yes
 
+- name: Create the myid file
+  template: src=myid.j2 dest=/data/myid
+  become: yes
+
 - name: Launch zookeeper
   shell: zkServer.sh restart
   register: log

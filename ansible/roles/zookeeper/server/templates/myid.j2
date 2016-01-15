@@ -1,0 +1,5 @@
+{% for host in groups['server'] %}
+{% if ansible_hostname == hostvars[host]['ansible_hostname'] %}
+{{loop.index}}
+{% endif %}
+{% endfor %}
