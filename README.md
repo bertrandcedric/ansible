@@ -30,9 +30,9 @@ docker network inspect bridge
 export ANSIBLE_HOST_KEY_CHECKING=False
 export NB_MACHINE=3;
 ansible -m ping -i ansible/mongo_hosts all -u root -k -c paramiko
-ansible-playbook ansible/prerequis.yml -i ansible/mongo_hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
-ansible -m ping -i ansible/mongo_hosts all -u deploy
-ansible-playbook ansible/mongo.yml -i ansible/mongo_hosts
+ansible-playbook ansible/prerequis.yml -i ansible/hosts/mongo --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
+ansible -m ping -i ansible/hosts/mongo all -u deploy
+ansible-playbook ansible/mongo.yml -i ansible/hosts/mongo
 
 ansible -m debug -a var=hostvars -i ansible/mongo_hosts env -u deploy
 ansible -m setup -i ansible/mongo_hosts env -u deploy
@@ -78,8 +78,8 @@ docker run --volumes-from fs -ti test
 
 cat ~/.ssh/id_rsa.pub | docker exec --interactive centos sh -c 'umask 077; mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
 
-echo stat | nc 127.0.0.1 2181
-zkCli.sh -server 127.0.0.1:2181
+echo stat | nc 172.17.0.3 2181 | grep Mode && echo stat | nc 172.17.0.4 2181 | grep Mode  && echo stat | nc 172.17.0.5 2181 | grep Mode
+zkCli.sh -server 172.17.0.3:2181
 
 TODO :
 - passage a ansible v2

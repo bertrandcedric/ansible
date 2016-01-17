@@ -3,7 +3,7 @@ tickTime=2000
 dataDir=/data
 clientPort=2181
 {% for host in groups['server'] %}
-server.{{loop.index}}={{ hostvars[host]['ansible_default_ipv4']['address'] }}:2888:3888:participant;0.0.0.0:2181
+server.{{loop.index}}={{ hostvars[host]['ansible_default_ipv4']['address'] }}:2888:3888
 {% endfor %}
 initLimit=5
 syncLimit=2
