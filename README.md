@@ -3,57 +3,93 @@
 ## Configuration vm virtualbox et partage d'un repertoire de travail
 
 ```
-/cygdrive/c/Program\ Files/Oracle/VirtualBox/VBoxManage sharedfolder add dev --name /apps --hostpath c:\\apps --automount
+docker-machine create --driver virtualbox --engine-insecure-registry zed33xg1.distribution.edf.fr:1025 dev
+
+VBoxManage sharedfolder add dev --name /apps --hostpath c:\\apps --automount
 sudo mkdir /data
 sudo mount -t vboxsf /apps /data
 
-docker-machine create --driver virtualbox --engine-insecure-registry zed33xg1.distribution.edf.fr:444 dev
-/var/lib/boot2docker/profile
+docker-machine create --driver virtualbox dev
+
+fichier de configuration du daemon docker => /var/lib/boot2docker/profile
 ```
 
 ## Build et lancement d'un container centos
 
+### Build d'une image
 ```
-docker rm $(docker ps -a -q)
 docker build --build-arg pwd=XXXX --no-cache -t centos_ssh centos_ssh/.
-
-docker run -ti --volume /data:/titi centos
 ```
 
-## Provisionning avec ansible sur les containers centos
-
+### Suppression des containers
 ```
-docker-compose -p sample scale client=1 config=3 replica=3 sharding=1
+docker rm -f $(docker ps -a -q)
+```
+
+### Lancement d'une image
+```
+docker run -ti centos_ssh /bin/sh
+docker run -ti --volume /data:/titi centos_ssh /bin/sh
+docker run -dP centos_ssh
+```
+
+
+## Provisionning avec ansible d'un cluster Zookeeper
+
+### Initialisation du client et des serveurs pour Zookeeper
+```
+export ANSIBLE_HOST_KEY_CHECKING=False
+export NB_MACHINE=3;
+
 docker-compose -p sample scale client=1 server=3
 docker network inspect bridge
 
-export ANSIBLE_HOST_KEY_CHECKING=False
-export NB_MACHINE=3;
-ansible -m ping -i ansible/mongo_hosts all -u root -k -c paramiko
-ansible-playbook ansible/prerequis.yml -i ansible/hosts/mongo --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
-ansible -m ping -i ansible/hosts/mongo all -u deploy
-ansible-playbook ansible/mongo.yml -i ansible/hosts/mongo
-
-ansible -m debug -a var=hostvars -i ansible/mongo_hosts env -u deploy
-ansible -m setup -i ansible/mongo_hosts env -u deploy
-
-docker-compose -p sample pause machine_1
-docker-compose -p sample unpause machine_1
-docker-compose -p sample stop machine_1
-docker-compose -p sample start machine_1
-docker-compose -p sample stop
-docker-compose -p sample rm
+ansible -m ping -i ansible/hosts/test all -u root -k -c paramiko
+ansible-playbook ansible/prerequis.yml -i ansible/hosts/test --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
+ansible -m ping -i ansible/hosts/test all -u deploy
+ansible-playbook ansible/zookeeper.yml -i ansible/hosts/test
 ```
 
-## Test config mongodb
-
+### Test à réaliser
 ```
 ssh 192.168.99.100 -p `docker port sample_client_1 | sed 's/.*://'` -l deploy
 
+echo stat | nc 172.17.0.3 2181 | grep Mode && echo stat | nc 172.17.0.4 2181 | grep Mode  && echo stat | nc 172.17.0.5 2181 | grep Mode
+zkCli.sh -server 172.17.0.3:2181
+
+docker pause sample_server_2
+docker unpause sample_server_2
+
+docker stop sample_server_2
+docker stop sample_server_2
+
+docker rm -f sample_server_2
+docker-compose -p sample scale client=1 server=3
+```
+
+## Provisionning avec ansible d'un cluster Mongodb
+
+### Initialisation du client et des serveurs pour Mongodb
+```
+export ANSIBLE_HOST_KEY_CHECKING=False
+export NB_MACHINE=3;
+
+docker-compose -p sample scale client=1 config=3 replica=3 sharding=1
+docker network inspect bridge
+
+ansible -m ping -i ansible/hosts/mongo all -u root -k -c paramiko
+ansible-playbook ansible/prerequis.yml -i ansible/hosts/mongo --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
+ansible -m ping -i ansible/hosts/mongo all -u deploy
+ansible-playbook ansible/mongo.yml -i ansible/hosts/mongo
+```
+
+### Test config mongodb
+
+```
 mongo --host {{machine server}}
 ```
 
-## Test avec données
+### Test avec données
 
 ```
 mongo {{sharding_nodename}}:27017
@@ -70,20 +106,12 @@ db.printShardingStatus(true)
 
 ## Autres commandes
 
+```
+ansible -m debug -a var=hostvars -i {{host}} env -u deploy
+ansible -m setup -i {{host}} env -u deploy
+
 docker run --name=env -d test /bin/sh -c "while true; do echo hello world; sleep 1; done"
 docker run --link env -ti test
-ping dev
 docker create --volume /c/Users/cb1791dn:/cb1791dn --name fs test /bin/true
 docker run --volumes-from fs -ti test
-
-cat ~/.ssh/id_rsa.pub | docker exec --interactive centos sh -c 'umask 077; mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
-
-echo stat | nc 172.17.0.3 2181 | grep Mode && echo stat | nc 172.17.0.4 2181 | grep Mode  && echo stat | nc 172.17.0.5 2181 | grep Mode
-zkCli.sh -server 172.17.0.3:2181
-
-TODO :
-- passage a ansible v2
-- mettre à jour le README
-- tester la mise en pause d'un container
-- tester l'arrêt d'un container et le redémarrage
-- tester la suppression et la recreation d'un container
+```
