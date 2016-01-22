@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Ansible</title>
+
+		<meta name="description" content="Documentation">
+		<meta name="author" content="CBE">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/solarized.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Ansibox</h1>
+					<h3>Refonte des déploiements avec Jenkins/Ansible</h3>
+				</section>
+                <section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Objectifs
+
+                            * __Présentation d'Ansible__
+                            * Ansibox pour les projets
+                            * Liens utiles
+                            * Reflexion
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Ansible
+
+                            * Outil de la mouvance DevOps
+                            * D'après la documenation Ansible officielle :
+
+                            *Ansible is an IT automation tool. It can configure systems, deploy software, and orchestrate more advanced IT tasks such as continuous deployments or zero downtime rolling updates.*
+                            * Sans agent
+                            * S'appuie sur SSH comme protocole de communication
+                            * S'appuie sur le sytème de templating Jinja2
+                        </script>
+                    </section>
+                    <section data-background="images/ansible_principe.png" data-background-size="1000px">
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Fichier d'inventaire
+
+                            * Contient la liste des hosts managés
+                            * Organisé en hosts et groups
+                            * Un host peut appartentir à plusieurs groups
+
+                            ```
+                            ansible all -i hosts/DEV/hosts -m ping -u deploy
+
+                            ansible all -i hosts/DEV/hosts -m setup -u deploy
+
+                            ansible-playbook target/dependency/ansibox/linky-test.yml
+                            -i target/dependency/ansibox/hosts
+                            --extra-vars '{"env" : "DEV"}'
+                            -u deploy -vvvv
+                            ```
+
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Fichier d'inventaire
+
+                            ```
+                            [localhost]
+                            127.0.0.1 ansible_connection=local
+
+                            [requirement]
+                            10.121.211.109 ansible_ssh_pass={{user_password}} //
+                            ansible_sudo_pass={{user_password}}
+
+                            [admin]
+                            10.121.211.109
+                            10.121.211.103
+
+                            [commons:children]
+                            admin
+
+                            [weblogic_admin:children]
+                            admin
+                            ```
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Playbooks
+
+                            * Elle représente un enchaînement d'actions à réaliser sur un ensemble de machine
+                            * Elle est écrite au format YAML
+                            * Elle s'éxecute de manière séquentielle
+                            * Elle est constituée d'un ou plusieurs *plays*
+                            * Chaque *play* est constitué d'une liste de tâches
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Modules
+
+                            * Une tâche de la playbook a pour objectif l'éxecution d'un module
+
+                            ```
+                            - name: restart webserver
+                            service:
+                            name: httpd
+                            state: restarted
+                            ```
+
+                            * Un module est idempotent
+                            * Un module peut être éxecuter directement par la commande ansible :
+
+                            ```
+                            ansible webservers -m ping
+                            ```
+
+                            * Exemple de module : shell, user, group, authorized_key ...
+
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Roles 1/2
+
+                            * Permet d'organiser les playbooks et d'automatiser le chargement de certains fichiers (vars_files, tasks, handlers ...)
+
+                            ```
+                            site.yml
+                            roles/
+                            common/
+                            files/
+                            templates/
+                            tasks/
+                            handlers/
+                            vars/
+                            defaults/
+                            meta/
+                            webservers/
+                            files/
+                            templates/
+                            tasks/
+                            handlers/
+                            ```
+
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Roles 2/2
+
+                            * L'ensemble de l'arborescence n'est pas obligatoire (fichier non présent => fichier ignoré)
+                            * Appel d'un role dans une playbook
+
+                            ```
+                            ---
+                            - hosts: webservers
+                            roles:
+                            - common
+                            - webservers
+                            ```
+
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Variables 1/2
+
+                            * Une variable permet de gérer les différences entre les systèmes
+                            * Elles peuvent être définies à différents niveaux :
+                            - au niveau de l'inventaire
+                            - au niveau de la playbook
+                            - au niveau de fichiers importés dans les playbooks
+                            - au niveau d'un role
+                            * Utilisation d'une variable dans Ansible :
+
+                            ```
+                            My amp goes to {{ max_amp_value }}
+                            ```
+
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Variables 2/2
+
+                            * Priorisation des variables (d'après la documentation Ansible officielle)
+
+                            ```
+                            * extra vars (-e in the command line) always win
+                            * then comes connection variables defined in inventory
+                            (ansible_ssh_user, etc)
+                            * then comes "most everything else"
+                            (command line switches, vars in play, included vars, role vars, etc)
+                            * then comes the rest of the variables defined in inventory
+                            * then comes facts discovered about a system
+                            * then "role defaults",
+                            which are the most "defaulty" and lose in priority to everything.
+                            ```
+
+                        </script>
+                    </section>
+                </section>
+                <section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Objectifs
+
+                            * Présentation d'Ansible
+                            * __Ansibox pour les projets__
+                            * Liens utiles
+                            * Reflexion
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Principes
+
+                            * Une ansibox par projet
+                            * Une ansibox commune avec des roles Ansible réutilisables
+                            * Dépendances possible sur une ou plusieurs ansibox
+                            * Séparation de l'ansibox projet dans 2 dépôts de sources différents :
+                                - **un dépôt play** qui contient les playbooks et configuration commune au projet
+                                - **un dépôt conf** qui contient les inventaires et configurations spécifiques aux environnements
+                        </script>
+                    </section>
+                    <section data-background="images/worflow_ansibox-1.png" data-background-size="1000px">
+                    </section>
+                    <section data-background="images/worflow_ansibox-2.png" data-background-size="1000px">
+                    </section>
+                    <section data-background="images/worflow_ansibox-3.png" data-background-size="1000px">
+                    </section>
+                    <section data-background="images/worflow_ansibox-4.png" data-background-size="1000px">
+                    </section>
+                    <section data-background="images/worflow_ansibox-5.png" data-background-size="1000px">
+                    </section>
+                    <section data-background="images/worflow_ansibox-6.png" data-background-size="1000px">
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Livrables d'un projet
+
+                            * un targz des playbooks de l'ansibox projet
+                            * un targz par environnement pour les inventaires et la configuration spécifique
+
+                            => 1 projet avec 5 environnements génére 6 livrables projets
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Gestion des dépendances
+
+                            * un projet peut définir des dépendances sur des roles d'autres projets
+                            * mécanismes s'appuyant sur l'utilisation des dépendances Maven
+                            * pas d'utilisation du mécanisme de dépendances transitives pour éviter de complexifier les dépendances
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Arborescence cible pour env = DEV
+
+                            <pre class="stretch"><code data-trim>
+                                .
+                                +-- files/NNA/...
+                                +-- group_vars
+                                |   +-- all/vars.yml
+                                |   +-- weblogic.yml
+                                +-- host_vars
+                                |   +-- ma_machine.yml
+                                +-- roles
+                                |   +-- generics/...
+                                |   +-- NNA/...
+                                +-- vars
+                                |   +-- NNA
+                                |       +-- commons.yml
+                                |       +-- DEV.yml
+                                +-- ansible.cfg
+                                +-- hosts
+                                +-- hosts_prerequis
+                                +-- linky-NNA.yml
+                                +-- linky-prerequis.yml
+                            </code></pre>
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Arborescence cible pour env = DEV
+
+                            <pre class="stretch"><code data-trim>
+                            .
+                            <span style="color:red">+-- files/NNA/...</span>
+                            <span style="color:gray">+-- group_vars</span>
+                            <span style="color:green">|   +-- all/vars.yml</span>
+                            <span style="color:red">|   +-- weblogic.yml</span>
+                            <span style="color:red">+-- host_vars
+                            |   +-- ma_machine.yml</span>
+                            <span style="color:gray">+-- roles</span>
+                            <span style="color:green">|   +-- generics/...</span>
+                            <span style="color:red">|   +-- NNA/...</span>
+                            <span style="color:gray">+-- vars</span>
+                            <span style="color:red">|   +-- NNA
+                            |       +-- commons.yml</span>
+                            <span style="color:yellow">|       +-- DEV.yml</span>
+                            <span style="color:green">+-- ansible.cfg</span>
+                            <span style="color:yellow">+-- hosts
+                            +-- hosts_prerequis</span>
+                            <span style="color:red">+-- linky-NNA.yml</span>
+                            <span style="color:green">+-- linky-prerequis.yml</span>
+                            </code>
+                            <span style="color:green">vert</span> : ansibox-commons || <span style="color:red">rouge</span> : ansibox-play NNA || <span style="color:yellow">jaune</span> : ansibox-conf NNA
+                            </pre>
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Arborescence de l'artefact ansibox-commons
+
+                            ```
+                                .
+                                +-- group_vars
+                                |   +-- all/vars.yml
+                                +-- roles
+                                |   +-- generics/...
+                                +-- ansible.cfg
+                                +-- linky-prerequis.yml
+                            ```
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Arborescence de l'artefact ansibox-play
+
+                            ```
+                                .
+                                +-- files/NNA/...
+                                +-- group_vars
+                                |   +-- weblogic.yml
+                                +-- host_vars
+                                |   +-- ma_machine.yml
+                                +-- roles
+                                |   +-- NNA/...
+                                +-- vars
+                                |   +-- NNA
+                                |       +-- commons.yml
+                                +-- linky-NNA.yml
+                            ```
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Arborescence de l'artefact ansibox-conf pour DEV
+
+                            ```
+                                .
+                                +-- vars
+                                |   +-- NNA
+                                |       +-- DEV.yml
+                                +-- hosts
+                                +-- hosts_prerequis
+                            ```
+                        </script>
+                    </section>
+                </section>
+                <section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Objectifs
+
+                            * Présentation d'Ansible
+                            * Ansibox pour les projets
+                            * __Liens utiles__
+                            * Reflexion
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Liens Linky
+
+                            Stash : http://git.sid.distribution.edf.fr/projects/PLPINT/repos/ansibox/browse
+
+                            Jenkins : http://zed332t6:8089/
+                        </script>
+                    </section>
+                </section>
+                <section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Objectifs
+
+                            * Présentation d'Ansible
+                            * Ansibox pour les projets
+                            * Liens utiles
+                            * __Reflexion__
+                        </script>
+                    </section>
+                    <section data-markdown>
+                        <script type="text/template">
+                            ## Reflexion en cours
+
+                            * Un dépot GIT qui contient toutes les configurations environnementales pour une appli ou alors un dépôt GIT par environnement.
+                            * Gestion des variables Ansible à optimiser
+                            * Comment avec Ansible mettre en évidence les différences d'environnement ?
+                            * Processus pour valider l'éxecution unitaire des playbooks et leur non regression dans le temps.
+                            * Supervision des environnements
+                            * Utilisation Ansible Galaxy ERDF
+                        </script>
+                    </section>
+                </section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+			Reveal.configure({ slideNumber: 'h.v - c/t' })
+
+		</script>
+
+	</body>
+</html>
