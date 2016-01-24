@@ -15,5 +15,4 @@ RUN /usr/sbin/sshd-keygen
 RUN echo "root:${pwd}" | chpasswd
 
 EXPOSE 22
-EXPOSE 8080
 CMD    ["/usr/sbin/sshd", "-D"]

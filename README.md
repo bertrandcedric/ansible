@@ -94,23 +94,35 @@ docker network inspect bridge
 ansible -m ping -i hosts/mongo all -u root -k
 ansible-playbook prerequis.yml -i hosts/mongo --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k
 ansible -m ping -i hosts/mongo all -u deploy
-ansible-playbook mongo.yml -i hosts/mongo
+```
+
+### Configuration des replicas
+```
+ansible-playbook mongo.yml -i hosts/mongo -t replica
 ```
 
 ### Test config mongodb
-
 ```
 mongo --host {{machine server}}
 ```
 
-### Test avec données
-
+### Insertion des données avec données
 ```
-mongo {{sharding_nodename}}:27017
+mongostat --host e828b444f458 --port 27017
+
+mongo --host e828b444f458 --port 27017
+rs.slaveOk()
 load("/script/data.js")
 
 db.test_collection.count()
 db.test_collection.find()
+```
+
+### Configuration du sharding
+```
+ansible-playbook mongo.yml -i hosts/mongo
+
+db.stats() => resultset rs1 vide
 sh.enableSharding( "test" )
 db.test_collection.createIndex( { number : 1 } )
 sh.shardCollection( "test.test_collection", { "number" : 1 } )
