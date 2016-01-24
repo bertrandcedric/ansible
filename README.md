@@ -98,7 +98,7 @@ ansible -m ping -i hosts/mongo all -u deploy
 
 ### Configuration des replicas
 ```
-ansible-playbook mongo.yml -i hosts/mongo -t replica
+ansible-playbook mongo.yml -i hosts/mongo -t replica => traitement long (penser à présenter autre choses en attendant)
 ```
 
 ### Test config mongodb
@@ -118,14 +118,29 @@ db.test_collection.count()
 db.test_collection.find()
 ```
 
+### Test de la perte d'un replica
+```
+docker pause sample_replica_2
+docker unpause sample_replica_2
+
+docker stop sample_replica_2
+docker stop sample_replica_2
+
+docker rm -f sample_replica_2
+docker-compose -p sample scale client=1 config=3 replica=3 sharding=1
+```
+
 ### Configuration du sharding
 ```
-ansible-playbook mongo.yml -i hosts/mongo
+ansible-playbook mongo.yml -i hosts/mongo => traitement long (penser à présenter autre choses en attendant)
+
+mongo --host 5cec4e9ea910 --port 27017 => connection sur la machine sharding
 
 db.stats() => resultset rs1 vide
+
 sh.enableSharding( "test" )
 db.test_collection.createIndex( { number : 1 } )
-sh.shardCollection( "test.test_collection", { "number" : 1 } )
+sh.shardCollection( "test.test_collection", { "number" : 1 } ) => traitement long (penser à présenter autre choses en attendant)
 db.stats()
 db.printShardingStatus(true)
 ```
