@@ -17,8 +17,11 @@ sharding:
   image: centos_ssh
   ports:
     - "22"
+    - "27017"
 
 replica:
   image: centos_ssh
   ports:
     - "22"
+    - "27017"
+    - "27018"

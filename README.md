@@ -33,6 +33,20 @@ docker run -ti --volume /data:/titi centos_ssh /bin/sh
 docker run -dP centos_ssh
 ```
 
+## Provisionning avec ansible pour l'exemple
+
+### Mise à jour ansible
+```
+git submodule update --init --recursive
+```
+
+### Test ansible sur une vm docker
+```
+docker-compose -p sample scale client=1
+
+ansible -m ping -i hosts/hosts all -u root -k
+ansible-playbook sample.yml -i hosts/hosts -u root -k
+```
 
 ## Provisionning avec ansible d'un cluster Zookeeper
 
@@ -44,10 +58,10 @@ export NB_MACHINE=3;
 docker-compose -p sample scale client=1 server=3
 docker network inspect bridge
 
-ansible -m ping -i ansible/hosts/test all -u root -k -c paramiko
-ansible-playbook ansible/prerequis.yml -i ansible/hosts/test --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
-ansible -m ping -i ansible/hosts/test all -u deploy
-ansible-playbook ansible/zookeeper.yml -i ansible/hosts/test
+ansible -m ping -i hosts/sample all -u root -k
+ansible-playbook prerequis.yml -i hosts/sample --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k
+ansible -m ping -i hosts/sample all -u deploy
+ansible-playbook zookeeper.yml -i hosts/sample
 ```
 
 ### Test à réaliser
@@ -77,10 +91,10 @@ export NB_MACHINE=3;
 docker-compose -p sample scale client=1 config=3 replica=3 sharding=1
 docker network inspect bridge
 
-ansible -m ping -i ansible/hosts/mongo all -u root -k -c paramiko
-ansible-playbook ansible/prerequis.yml -i ansible/hosts/mongo --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k -c paramiko
-ansible -m ping -i ansible/hosts/mongo all -u deploy
-ansible-playbook ansible/mongo.yml -i ansible/hosts/mongo
+ansible -m ping -i hosts/mongo all -u root -k
+ansible-playbook prerequis.yml -i hosts/mongo --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k
+ansible -m ping -i hosts/mongo all -u deploy
+ansible-playbook mongo.yml -i hosts/mongo
 ```
 
 ### Test config mongodb

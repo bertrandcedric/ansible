@@ -5,32 +5,32 @@ NUMBER_OF_MACHINE=$NB_MACHINE
 
 docker_ip=$(docker-machine ip dev)
 
-port=$(docker port ${NAME}_client_1 | sed 's/.*://')
+port=$(docker port ${NAME}_client_1 22| sed 's/.*://')
 machine_host="${machine_host} \"client\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
 
-port=$(docker port ${NAME}_config_1 | sed 's/.*://')
+port=$(docker port ${NAME}_config_1 22| sed 's/.*://')
 machine_host="${machine_host} \"config_1\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
 
-port=$(docker port ${NAME}_config_2 | sed 's/.*://')
+port=$(docker port ${NAME}_config_2 22| sed 's/.*://')
 machine_host="${machine_host} \"config_2\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
 
-port=$(docker port ${NAME}_config_3 | sed 's/.*://')
+port=$(docker port ${NAME}_config_3 22| sed 's/.*://')
 machine_host="${machine_host} \"config_3\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
 
-port=$(docker port ${NAME}_sharding_1 | sed 's/.*://')
+port=$(docker port ${NAME}_sharding_1 22| sed 's/.*://')
 machine_host="${machine_host} \"sharding\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
 
 i=1
 while [ $i -lt $NUMBER_OF_MACHINE ]
 do
     replica_name="${replica_name} \"replica_$i\", "
-    port=$(docker port ${NAME}_replica_$i | sed 's/.*://')
+    port=$(docker port ${NAME}_replica_$i 22| sed 's/.*://')
     machine_host="${machine_host} \"replica_$i\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
     i=$[$i+1]
 done
 
 replica_name="${replica_name} \"replica_$NUMBER_OF_MACHINE\""
-port=$(docker port ${NAME}_replica_$NUMBER_OF_MACHINE | sed 's/.*://')
+port=$(docker port ${NAME}_replica_$NUMBER_OF_MACHINE 22| sed 's/.*://')
 machine_host="${machine_host} \"replica_$NUMBER_OF_MACHINE\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}"
 
 cat << EOF

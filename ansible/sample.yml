@@ -1,0 +1,5 @@
+---
+- hosts: client
+  gather_facts: yes
+  roles:
+    - { role: sample }
