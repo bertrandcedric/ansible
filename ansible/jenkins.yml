@@ -1,0 +1,30 @@
+---
+# Gather facts to be able to use them in next plays
+- hosts: all
+  gather_facts: yes
+  remote_user: deploy
+
+- hosts: all
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: etc_hosts }
+
+- hosts: server
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: jdk }
+    - { role: jenkins }
+
+
+# TEST à faire
+# Sur le serveur
+#   - more /etc/hosts
+#   - ssh-keygen pour l'utilisateur jenkins
+#   - ssh {{IP client}} -l deploy
+#
+# Sur le client
+#   - Copie de la clef de l'utilisateur root dans le fichier .ssh/authorized_keys du user deploy
+#
+#

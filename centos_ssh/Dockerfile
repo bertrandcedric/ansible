@@ -6,7 +6,7 @@ ARG pwd
 #ENV no_proxy="localhost,192.168.99.100,127.0.0.1,.local,.edf.fr,.erdf.fr"
 
 RUN yum -y update
-RUN yum install -y initscripts openssh-server openssh-clients sudo nc
+RUN yum install -y initscripts openssh-clients openssh-server sudo nc
 
 ADD sshd_config /etc/ssh/sshd_config
 
