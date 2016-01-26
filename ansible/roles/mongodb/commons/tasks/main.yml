@@ -1,16 +1,4 @@
 ---
-- name: Change /etc/hosts
-  shell: "
-      if grep \"{{ hostvars[item]['ansible_default_ipv4']['address'] }} {{ hostvars[item]['ansible_nodename'] }}\" /etc/hosts;
-      then echo 0;
-      else echo \"{{ hostvars[item]['ansible_default_ipv4']['address'] }} {{ hostvars[item]['ansible_nodename'] }}\" >> /etc/hosts;
-      fi
-    "
-  register: st
-  changed_when: st.stdout == ""
-  with_items: groups['all'] | difference(inventory_hostname)
-  become: yes
-
 - name: Create the mongod group
   group:
     name: mongod

@@ -42,7 +42,7 @@ git submodule update --init --recursive
 
 ### Test ansible sur une vm docker
 ```
-docker-compose -p sample scale client=1
+docker-compose -p sample scale client=1 replica=3 config=3 sharding=1
 
 ansible -m ping -i hosts/hosts all -u root -k
 ansible-playbook sample.yml -i hosts/hosts -u root -k
@@ -127,7 +127,7 @@ docker stop sample_replica_2
 docker stop sample_replica_2
 
 docker rm -f sample_replica_2
-docker-compose -p sample scale client=1 config=3 replica=3 sharding=1
+docker-compose -p sample scale client=1 replica=3 config=3 sharding=1
 ```
 
 ### Configuration du sharding

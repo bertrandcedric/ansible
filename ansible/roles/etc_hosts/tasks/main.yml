@@ -8,5 +8,5 @@
     "
   register: st
   changed_when: st.stdout == ""
-  with_items: groups['all'] | difference(inventory_hostname)
+  with_items: groups['{{machines}}'] | difference(inventory_hostname)
   become: yes
