@@ -32,7 +32,6 @@ printjson(rs.status())
     - Stratégie (v2)
 
 ##Pourquoi et comment le developpeur doit utiliser Ansible
-
 - Aller plus rapidement et plus sereinement en production => tester les scripts de deploiement le plus tôt
 - Travailler main dans la main avec les OPS => mise en place d'une démarche DEVOPS
 - Ansible via cygwin sur un poste de développeur windows

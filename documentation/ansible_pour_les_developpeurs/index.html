@@ -1,25 +1,25 @@
 <!doctype html>
 <html lang="en">
-
 	<head>
 		<meta charset="utf-8">
-
 		<title>Ansible</title>
-
 		<meta name="description" content="Documentation">
 		<meta name="author" content="CBE">
-
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/solarized.css" id="theme">
-
-		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="css/theme/moon.css" id="theme">
 		<link rel="stylesheet" href="lib/css/zenburn.css">
-
+        <style>
+        html.ansible_logo div.slide-background.present {
+            background-position: right top;
+            background-size: 100px;
+        }
+        html.bottom div.slide-background.present {
+            background-position: bottom;
+        }
+        </style>
 		<!-- Printing and PDF exports -->
 		<script>
 			var link = document.createElement( 'link' );
@@ -28,32 +28,208 @@
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
-
 		<!--[if lt IE 9]>
 		<script src="lib/js/html5shiv.js"></script>
 		<![endif]-->
 	</head>
-
 	<body>
-
 		<div class="reveal">
-
-			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
-				<section>
-					<h1>Ansibox</h1>
-					<h3>Refonte des déploiements avec Jenkins/Ansible</h3>
-				</section>
-                <section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Objectifs
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ##Ansible
 
-                            * __Présentation d'Ansible__
-                            * Ansibox pour les projets
-                            * Liens utiles
-                            * Reflexion
-                        </script>
+                        Comment le développeur reprend le pouvoir sur la production
+                    </script>
+				</section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Presentation
+
+                        * En bref
+                        * En histoire
+                        * Présentation des concepts
+                        * Ansibox pour le développeur
+                        * Démo => Déploiement d'un cluster Mongodb avec Ansible
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## En bref
+
+                        * D'après la documenation Ansible officielle :
+
+                            *Ansible is an IT automation tool. It can configure systems, deploy software, and orchestrate more advanced IT tasks such as continuous deployments or zero downtime rolling updates.*
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## En bref
+
+                        * Outil de la mouvance DevOps
+                        * Sans agent
+                        * S'appuie sur SSH comme protocole de communication
+                        * S'appuie sur le sytème de templating Jinja2
+                        * Script / Ansible = Ant / Maven
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## En histoire
+
+                        Placer Ansible par rapport aux autres outils (Puppet/Chef/Salt ...)
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Concepts de base
+
+                        TODO : Présentation des échanges entre machine + problèmatiques de clef ssh
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Concepts de base
+
+                        - Host
+                        - Module
+                        - Playbooks et tâches
+                </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Le fichier host
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Les modules
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Les playbooks et les tâches
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Autres concepts
+
+                        - Role
+                        - Variable
+                        - Templating avec Jinja2
+                        - Condition
+                        - Boucle
+                        - Blocks (v2)
+                        - Stratégie (v2)
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Les roles
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Les variables
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Le templating avec Jinja2
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Les conditions
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Les boucles
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Les blocks
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Les stratégies
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Ansibox pour le développeur, pourquoi c'est une bonne idée
+
+                        - Un format YAML qui se rapproche d'une documentation
+                        - Aller plus rapidement et plus sereinement en production => tester les scripts de deploiement le plus tôt
+                        - Travailler main dans la main avec les OPS => mise en place d'une démarche DEVOPS
+                        - Ansible via cygwin sur un poste de développeur windows
+                        - Test unitaire avec RoleSpec
+                    </script>
+                </section>
+                <section data-markdown data-background="images/logo-ansible-docker.png" data-background-size="800px" data-state="bottom">
+                    <script type="text/template">
+                        ## Démo
+
+                        Déploiement d'un cluster Mongodb avec Ansible dans des containes Docker
+                    </script>
+                </section>
+                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                    <script type="text/template">
+                        ## Démo
+
+                        Déploiement d'un cluster Mongodb avec Ansible dans des containes Docker
+
+                        - Explication du container Docker avec sshd
+                        - Faire un schema de la cible mongo à atteindre
+                        - Mise en place d'un cluster MongoDB (replica + shard)
+                        - Installation des prérequis
+                        - Mise en place du replica rs0
+                        - Création d'un replica rs0
+                        - Alimentation en données du replica => manuel
+                        - Simulation coupure reseau => docker pause / docker unpause
+                        - Simulation perte machine => docker rm -f / docker-compose scale
+                        - Installation des prérequis
+                        - Mise en place du sharding
+                        - Création d'un replica rs1
+                        - Création des serveurs de configuration
+                        - Création du serveur de sharding
+                        - Activation du sharding + creation index + sharding de la collection => manuel
+                        - Supervision pendant les tests
+                    </script>
+                </section>
+
+
+
+
+                <section>
+                    <section data-markdown data-background="images/ansible.png" data-background-size="600px">
+
                     </section>
                     <section data-markdown>
                         <script type="text/template">
@@ -231,8 +407,6 @@
 
                         </script>
                     </section>
-                </section>
-                <section>
                     <section data-markdown>
                         <script type="text/template">
                             ## Objectifs
@@ -391,8 +565,6 @@
                             ```
                         </script>
                     </section>
-                </section>
-                <section>
                     <section data-markdown>
                         <script type="text/template">
                             ## Objectifs
@@ -412,8 +584,6 @@
                             Jenkins : http://zed332t6:8089/
                         </script>
                     </section>
-                </section>
-                <section>
                     <section data-markdown>
                         <script type="text/template">
                             ## Objectifs
@@ -438,14 +608,10 @@
                     </section>
                 </section>
 			</div>
-
 		</div>
-
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.js"></script>
-
 		<script>
-
 			// Full list of configuration options available at:
 			// https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
@@ -455,7 +621,7 @@
 				center: true,
 				slideNumber: true,
 
-				transition: 'slide', // none/fade/slide/convex/concave/zoom
+				transition: 'none', // none/fade/slide/convex/concave/zoom
 
 				// Optional reveal.js plugins
 				dependencies: [
@@ -469,8 +635,6 @@
 			});
 
 			Reveal.configure({ slideNumber: 'h.v - c/t' })
-
 		</script>
-
 	</body>
 </html>
