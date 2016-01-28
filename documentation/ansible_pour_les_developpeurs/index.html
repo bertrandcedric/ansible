@@ -45,34 +45,42 @@
         <!--</div>-->
 		<div class="reveal">
 			<div class="slides">
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
                         ##Ansible
 
                         Comment le développeur reprend le pouvoir sur la production
                     </script>
 				</section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
                         ## Presentation
 
                         * En bref
-                        * En histoire
                         * Présentation des concepts
                         * Ansibox pour le développeur
                         * Démo => Déploiement d'un cluster Mongodb avec Ansible
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
                         ## En bref
 
-                        * D'après la documenation Ansible officielle :
+                        * D'après la documentation Ansible officielle :
 
-                            *Ansible is an IT automation tool. It can configure systems, deploy software, and orchestrate more advanced IT tasks such as continuous deployments or zero downtime rolling updates.*
+                        *Ansible is an IT automation tool. It can configure systems, deploy software, and orchestrate more advanced IT tasks such as continuous deployments or zero downtime rolling updates.*
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
+                    <script type="text/template">
+                        ## En bref
+
+                        Placer Ansible par rapport aux autres outils (Puppet/Chef/Salt ...)
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown>
                     <script type="text/template">
                         ## En bref
 
@@ -83,53 +91,120 @@
                         * Script / Ansible = Ant / Maven
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown data-background="images/comment_ca_marche.png" data-background-size="800px">
                     <script type="text/template">
-                        ## En histoire
-
-                        Placer Ansible par rapport aux autres outils (Puppet/Chef/Salt ...)
-
-                        TODO
+                        ## En bref
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown data-background="images/comment_ca_marche_1.png" data-background-size="800px">
+                    <script type="text/template">
+                        ## En bref
+                    </script>
+                </section>
+                <section data-markdown>
                     <script type="text/template">
                         ## Concepts de base
 
                         TODO : Présentation des échanges entre machine + problèmatiques de clef ssh
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
                         ## Concepts de base
 
-                        - Host
-                        - Module
+                        - L'inventaire
                         - Playbooks et tâches
+                        - Module
                 </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
-                        ## Le fichier host
+                        ## Fichier d'inventaire
 
-                        TODO
+                        * Contient la liste des hosts managés
+                        * Organisé en hosts et groups
+                        * Un host peut appartentir à plusieurs groups
+
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
-                        ## Les modules
+                        ## Fichier d'inventaire
 
-                        TODO
+                        ```
+                        [local]
+                        127.0.0.1 ansible_connection=local
+
+                        [requirement]
+                        10.121.211.2 ansible_ssh_pass={{user_password}} //
+                        ansible_sudo_pass={{user_password}}
+                        10.121.211.3 ansible_ssh_pass={{user_password}} //
+                        ansible_sudo_pass={{user_password}}
+
+                        [webserver]
+                        10.121.211.2
+                        10.121.211.3
+
+                        [bdd]
+                        10.121.211.3
+                        ```
+
+                        Test de la connexion à mon inventaire
+                        ```
+                        ansible -i hosts -m ping all
+                        ansible -i hosts -m ping admin
+                        ```
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
                         ## Les playbooks et les tâches
 
-                        TODO
+                        * Une playbook représente un enchaînement d'actions à réaliser sur un ensemble de machine
+                        * Elle est écrite au format YAML
+                        * Elle s'éxecute de manière séquentielle
+                        * Elle est constituée d'un ou plusieurs *plays*
+                        * Chaque *play* est constitué d'une liste de tâches
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Les playbooks et les tâches
+
+                        TODO exemple de playbook / play + commande de lancement
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Modules
+
+                        * Une tâche de la playbook a pour objectif l'éxecution d'un module
+
+                        ```
+                        - name: restart webserver
+                          service:
+                            name: httpd
+                            state: restarted
+                        ```
+                        * Un module est idempotent en général
+                        * Un module est écrit en python en général
+                        * Ansible fournit un grand nombre de module par défaut
+                        * Exemple de module : shell, user, group, authorized_key, template, copy ...
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Modules
+
+                        * Un module peut être éxecuté directement par la commande ansible :
+
+                        ```
+                        ansible -i hosts -m service -a "name=httpd state=started" webserver
+                        ansible -i hosts -m command -a "date" webserver
+                        ```
+                    </script>
+                </section>
+                <section data-markdown>
                     <script type="text/template">
                         ## Autres concepts
 
@@ -142,58 +217,166 @@
                         - Stratégie (v2)
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
                         ## Les roles
 
-                        TODO
+                        * Permet d'organiser les playbooks
+                        * Automatise le chargement de certains fichiers (vars_files, tasks, handlers ...)
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Les roles
+
+                        <pre class="stretch"><code data-trim>
+                        .
+                        +-- deploy.yml
+                        +-- roles
+                        +-- bdd_create
+                        |   +-- files/
+                        |   |   +-- **.*
+                        |   +-- templates/
+                        |   |   +-- **.j2
+                        |   +-- tasks
+                        |   |   +-- main.yml
+                        |   +-- handlers
+                        |   |   +-- main.yml
+                        |   +-- vars
+                        |   |   +-- main.yml
+                        |   +-- defaults
+                        |   |   +-- main.yml
+                        |   +-- meta
+                        |       +-- main.yml
+                        +-- jboss_config
+                        +-- **/*
+                        </code></pre>
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Les roles
+
+                        * L'ensemble de l'arborescence n'est pas obligatoire (fichier non présent => fichier ignoré)
+                        * Appel d'un role dans une playbook
+
+                        ```
+                        ---
+                        - hosts: webservers
+                        roles:
+                        - common
+                        - webservers
+                        ```
+                    </script>
+                </section>
+                <section data-markdown>
                     <script type="text/template">
                         ## Les variables
 
-                        TODO
+                        * Une variable permet de gérer les différences entre les systèmes
+                        * Elles peuvent être définies à différents niveaux :
+                        - au niveau de l'inventaire
+                        - au niveau de la playbook
+                        - au niveau de fichiers importés dans les playbooks
+                        - au niveau d'un role
+                        * Utilisation d'une variable dans Ansible :
+
+                        ```
+                        My amp goes to {{ max_amp_value }}
+                        ```
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Les variables
+
+                        * Changement entre les versions 1.9 et 2.0
+                        * Priorisation des variables (d'après la documentation Ansible officielle)
+
+                        <!--```-->
+                        <!--* extra vars (-e in the command line) always win-->
+                        <!--* then comes connection variables defined in inventory-->
+                        <!--(ansible_ssh_user, etc)-->
+                        <!--* then comes "most everything else"-->
+                        <!--(command line switches, vars in play, included vars, role vars, etc)-->
+                        <!--* then comes the rest of the variables defined in inventory-->
+                        <!--* then comes facts discovered about a system-->
+                        <!--* then "role defaults",-->
+                        <!--which are the most "defaulty" and lose in priority to everything.-->
+                        <!--```-->
+                    </script>
+                </section>
+                <section data-markdown>
                     <script type="text/template">
                         ## Le templating avec Jinja2
 
                         TODO
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
                         ## Les conditions
 
                         TODO
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
                         ## Les boucles
 
                         TODO
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
                         ## Les blocks
 
-                        TODO
-                    </script>
-                </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
-                    <script type="text/template">
-                        ## Les stratégies
+                        Nouveauté dans le version 2.0
 
                         TODO
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
-                        ## Ansibox pour le développeur, pourquoi c'est une bonne idée
+                        ## Les stratégies
+
+                        Nouveauté dans le version 2.0
+
+                        TODO
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Arborescence typique d'un projet Ansible
+
+                        <pre class="stretch"><code data-trim>
+                            .
+                            +-- group_vars
+                            |   +-- all.yml
+                            |   +-- requirement.yml
+                            |   +-- webserver.yml
+                            |   +-- bdd.yml
+                            +-- host_vars
+                            |   +-- 10.121.211.2.yml
+                            +-- roles
+                            |   +-- mes_roles/...
+                            +-- vars
+                            |   +-- commons.yml
+                            |   +-- env.yml
+                            +-- ansible.cfg
+                            +-- hosts
+                            +-- hosts_prerequis
+                            +-- provisioning.yml
+                            +-- deploy.yml
+                            +-- prerequis.yml
+                        </code></pre>
+                    </script>
+                </section>
+
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Ansibox pour le développeur:
+                        ### Pourquoi est-ce peut être une bonne idée ?
 
                         - Un format YAML qui se rapproche d'une documentation
                         - Aller plus rapidement et plus sereinement en production => tester les scripts de deploiement le plus tôt
@@ -202,30 +385,64 @@
                         - Test unitaire avec RoleSpec
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
-                        ## Difficultés rencontrées
+                        ## Difficultés à surmonter
 
                         - Culture DEV et OPS
-                        - Module versus role => tout le monde n'est pas à l'aise avec le Python
+
+                                ils ne se comprennent pas tout le temps
+                        - Role versus Module
+
+                                tout le monde n'est pas à l'aise avec le Python
                         - Garder un minimum de roles communs
+
+                                gestion des mots de passe, pré-requis systéme et
+                                plus si affinitées
+                        - Une gestion des environnements à mutualiser
+
+                                DEV et OPS autour d'une même table
                     </script>
                 </section>
-                <section data-markdown data-background="images/logo-ansible-docker.png" data-background-size="800px" data-state="bottom">
+                <section data-markdown data-background="images/ansible-docker.png" data-background-size="60%">
                     <script type="text/template">
                         ## Démo
 
                         Déploiement d'un cluster Mongodb avec Ansible dans des containes Docker
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible.png" data-state="ansible_logo">
+                <section data-markdown>
                     <script type="text/template">
                         ## Démo
 
-                        Déploiement d'un cluster Mongodb avec Ansible dans des containes Docker
+                        TODO schema replica 0 uniquement
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Démo
+
+                        TODO schema replica 0 et 1 + config + sharding
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Démo
+
+                        TODO schema replica 0 et 1 + config + sharding
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Démo
 
                         - Explication du container Docker avec sshd
-                        - Faire un schema de la cible mongo à atteindre
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Démo - TODO List
+
                         - Mise en place d'un cluster MongoDB (replica + shard)
                         - Installation des prérequis
                         - Mise en place du replica rs0
@@ -242,389 +459,11 @@
                         - Supervision pendant les tests
                     </script>
                 </section>
+                <section data-markdown data-background="images/questions.jpg" data-background-size="40%">
+                    <script type="text/template">
+                        ## Questions
 
-
-
-
-                <section>
-                    <section data-markdown data-background="images/ansible.png" data-background-size="600px">
-
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Ansible
-
-                            * Outil de la mouvance DevOps
-                            * D'après la documenation Ansible officielle :
-
-                            *Ansible is an IT automation tool. It can configure systems, deploy software, and orchestrate more advanced IT tasks such as continuous deployments or zero downtime rolling updates.*
-                            * Sans agent
-                            * S'appuie sur SSH comme protocole de communication
-                            * S'appuie sur le sytème de templating Jinja2
-                        </script>
-                    </section>
-                    <section data-background="images/ansible_principe.png" data-background-size="1000px">
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Fichier d'inventaire
-
-                            * Contient la liste des hosts managés
-                            * Organisé en hosts et groups
-                            * Un host peut appartentir à plusieurs groups
-
-                            ```
-                            ansible all -i hosts/DEV/hosts -m ping -u deploy
-
-                            ansible all -i hosts/DEV/hosts -m setup -u deploy
-
-                            ansible-playbook target/dependency/ansibox/linky-test.yml
-                            -i target/dependency/ansibox/hosts
-                            --extra-vars '{"env" : "DEV"}'
-                            -u deploy -vvvv
-                            ```
-
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Fichier d'inventaire
-
-                            ```
-                            [localhost]
-                            127.0.0.1 ansible_connection=local
-
-                            [requirement]
-                            10.121.211.109 ansible_ssh_pass={{user_password}} //
-                            ansible_sudo_pass={{user_password}}
-
-                            [admin]
-                            10.121.211.109
-                            10.121.211.103
-
-                            [commons:children]
-                            admin
-
-                            [weblogic_admin:children]
-                            admin
-                            ```
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Playbooks
-
-                            * Elle représente un enchaînement d'actions à réaliser sur un ensemble de machine
-                            * Elle est écrite au format YAML
-                            * Elle s'éxecute de manière séquentielle
-                            * Elle est constituée d'un ou plusieurs *plays*
-                            * Chaque *play* est constitué d'une liste de tâches
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Modules
-
-                            * Une tâche de la playbook a pour objectif l'éxecution d'un module
-
-                            ```
-                            - name: restart webserver
-                            service:
-                            name: httpd
-                            state: restarted
-                            ```
-
-                            * Un module est idempotent
-                            * Un module peut être éxecuter directement par la commande ansible :
-
-                            ```
-                            ansible webservers -m ping
-                            ```
-
-                            * Exemple de module : shell, user, group, authorized_key ...
-
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Roles 1/2
-
-                            * Permet d'organiser les playbooks et d'automatiser le chargement de certains fichiers (vars_files, tasks, handlers ...)
-
-                            ```
-                            site.yml
-                            roles/
-                            common/
-                            files/
-                            templates/
-                            tasks/
-                            handlers/
-                            vars/
-                            defaults/
-                            meta/
-                            webservers/
-                            files/
-                            templates/
-                            tasks/
-                            handlers/
-                            ```
-
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Roles 2/2
-
-                            * L'ensemble de l'arborescence n'est pas obligatoire (fichier non présent => fichier ignoré)
-                            * Appel d'un role dans une playbook
-
-                            ```
-                            ---
-                            - hosts: webservers
-                            roles:
-                            - common
-                            - webservers
-                            ```
-
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Variables 1/2
-
-                            * Une variable permet de gérer les différences entre les systèmes
-                            * Elles peuvent être définies à différents niveaux :
-                            - au niveau de l'inventaire
-                            - au niveau de la playbook
-                            - au niveau de fichiers importés dans les playbooks
-                            - au niveau d'un role
-                            * Utilisation d'une variable dans Ansible :
-
-                            ```
-                            My amp goes to {{ max_amp_value }}
-                            ```
-
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Variables 2/2
-
-                            * Priorisation des variables (d'après la documentation Ansible officielle)
-
-                            ```
-                            * extra vars (-e in the command line) always win
-                            * then comes connection variables defined in inventory
-                            (ansible_ssh_user, etc)
-                            * then comes "most everything else"
-                            (command line switches, vars in play, included vars, role vars, etc)
-                            * then comes the rest of the variables defined in inventory
-                            * then comes facts discovered about a system
-                            * then "role defaults",
-                            which are the most "defaulty" and lose in priority to everything.
-                            ```
-
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Objectifs
-
-                            * Présentation d'Ansible
-                            * __Ansibox pour les projets__
-                            * Liens utiles
-                            * Reflexion
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Principes
-
-                            * Une ansibox par projet
-                            * Une ansibox commune avec des roles Ansible réutilisables
-                            * Dépendances possible sur une ou plusieurs ansibox
-                            * Séparation de l'ansibox projet dans 2 dépôts de sources différents :
-                                - **un dépôt play** qui contient les playbooks et configuration commune au projet
-                                - **un dépôt conf** qui contient les inventaires et configurations spécifiques aux environnements
-                        </script>
-                    </section>
-                    <section data-background="images/worflow_ansibox-1.png" data-background-size="1000px">
-                    </section>
-                    <section data-background="images/worflow_ansibox-2.png" data-background-size="1000px">
-                    </section>
-                    <section data-background="images/worflow_ansibox-3.png" data-background-size="1000px">
-                    </section>
-                    <section data-background="images/worflow_ansibox-4.png" data-background-size="1000px">
-                    </section>
-                    <section data-background="images/worflow_ansibox-5.png" data-background-size="1000px">
-                    </section>
-                    <section data-background="images/worflow_ansibox-6.png" data-background-size="1000px">
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Livrables d'un projet
-
-                            * un targz des playbooks de l'ansibox projet
-                            * un targz par environnement pour les inventaires et la configuration spécifique
-
-                            => 1 projet avec 5 environnements génére 6 livrables projets
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Gestion des dépendances
-
-                            * un projet peut définir des dépendances sur des roles d'autres projets
-                            * mécanismes s'appuyant sur l'utilisation des dépendances Maven
-                            * pas d'utilisation du mécanisme de dépendances transitives pour éviter de complexifier les dépendances
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Arborescence cible pour env = DEV
-
-                            <pre class="stretch"><code data-trim>
-                                .
-                                +-- files/NNA/...
-                                +-- group_vars
-                                |   +-- all/vars.yml
-                                |   +-- weblogic.yml
-                                +-- host_vars
-                                |   +-- ma_machine.yml
-                                +-- roles
-                                |   +-- generics/...
-                                |   +-- NNA/...
-                                +-- vars
-                                |   +-- NNA
-                                |       +-- commons.yml
-                                |       +-- DEV.yml
-                                +-- ansible.cfg
-                                +-- hosts
-                                +-- hosts_prerequis
-                                +-- linky-NNA.yml
-                                +-- linky-prerequis.yml
-                            </code></pre>
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Arborescence cible pour env = DEV
-
-                            <pre class="stretch"><code data-trim>
-                            .
-                            <span style="color:red">+-- files/NNA/...</span>
-                            <span style="color:gray">+-- group_vars</span>
-                            <span style="color:green">|   +-- all/vars.yml</span>
-                            <span style="color:red">|   +-- weblogic.yml</span>
-                            <span style="color:red">+-- host_vars
-                            |   +-- ma_machine.yml</span>
-                            <span style="color:gray">+-- roles</span>
-                            <span style="color:green">|   +-- generics/...</span>
-                            <span style="color:red">|   +-- NNA/...</span>
-                            <span style="color:gray">+-- vars</span>
-                            <span style="color:red">|   +-- NNA
-                            |       +-- commons.yml</span>
-                            <span style="color:yellow">|       +-- DEV.yml</span>
-                            <span style="color:green">+-- ansible.cfg</span>
-                            <span style="color:yellow">+-- hosts
-                            +-- hosts_prerequis</span>
-                            <span style="color:red">+-- linky-NNA.yml</span>
-                            <span style="color:green">+-- linky-prerequis.yml</span>
-                            </code>
-                            <span style="color:green">vert</span> : ansibox-commons || <span style="color:red">rouge</span> : ansibox-play NNA || <span style="color:yellow">jaune</span> : ansibox-conf NNA
-                            </pre>
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Arborescence de l'artefact ansibox-commons
-
-                            ```
-                                .
-                                +-- group_vars
-                                |   +-- all/vars.yml
-                                +-- roles
-                                |   +-- generics/...
-                                +-- ansible.cfg
-                                +-- linky-prerequis.yml
-                            ```
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Arborescence de l'artefact ansibox-play
-
-                            ```
-                                .
-                                +-- files/NNA/...
-                                +-- group_vars
-                                |   +-- weblogic.yml
-                                +-- host_vars
-                                |   +-- ma_machine.yml
-                                +-- roles
-                                |   +-- NNA/...
-                                +-- vars
-                                |   +-- NNA
-                                |       +-- commons.yml
-                                +-- linky-NNA.yml
-                            ```
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Arborescence de l'artefact ansibox-conf pour DEV
-
-                            ```
-                                .
-                                +-- vars
-                                |   +-- NNA
-                                |       +-- DEV.yml
-                                +-- hosts
-                                +-- hosts_prerequis
-                            ```
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Objectifs
-
-                            * Présentation d'Ansible
-                            * Ansibox pour les projets
-                            * __Liens utiles__
-                            * Reflexion
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Liens Linky
-
-                            Stash : http://git.sid.distribution.edf.fr/projects/PLPINT/repos/ansibox/browse
-
-                            Jenkins : http://zed332t6:8089/
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Objectifs
-
-                            * Présentation d'Ansible
-                            * Ansibox pour les projets
-                            * Liens utiles
-                            * __Reflexion__
-                        </script>
-                    </section>
-                    <section data-markdown>
-                        <script type="text/template">
-                            ## Reflexion en cours
-
-                            * Un dépot GIT qui contient toutes les configurations environnementales pour une appli ou alors un dépôt GIT par environnement.
-                            * Gestion des variables Ansible à optimiser
-                            * Comment avec Ansible mettre en évidence les différences d'environnement ?
-                            * Processus pour valider l'éxecution unitaire des playbooks et leur non regression dans le temps.
-                            * Supervision des environnements
-                            * Utilisation Ansible Galaxy ERDF
-                        </script>
-                    </section>
+                    </script>
                 </section>
 			</div>
 		</div>
