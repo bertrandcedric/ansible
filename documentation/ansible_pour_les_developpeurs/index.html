@@ -8,17 +8,10 @@
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/moon.css" id="theme">
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/zenika.css" id="theme">
+        <link rel="stylesheet" href="lib/css/zenburn.css">
         <style>
-        html.ansible_logo div.slide-background.present {
-            background-position: right top;
-            background-size: 100px;
-        }
-        html.bottom div.slide-background.present {
-            background-position: bottom;
-        }
         </style>
 		<!-- Printing and PDF exports -->
 		<script>
@@ -33,19 +26,12 @@
 		<![endif]-->
 	</head>
 	<body>
-        <!--<div id="myLogo" style="-->
-            <!--background-image: url(images/ansible.png);-->
-            <!--position: absolute;-->
-            <!--bottom: 85%;-->
-            <!--right: 2%;-->
-            <!--width: 100px;-->
-            <!--height: 100px;-->
-            <!--z-index: 999999;-->
-            <!--">-->
-        <!--</div>-->
 		<div class="reveal">
 			<div class="slides">
-                <section data-markdown>
+                <section data-markdown
+                         data-background="images/ansible.png"
+                         data-background-size="30%"
+                         data-background-position="50% 80%">
                     <script type="text/template">
                         ##Ansible
 
@@ -91,12 +77,16 @@
                         * Script / Ansible = Ant / Maven
                     </script>
                 </section>
-                <section data-markdown data-background="images/comment_ca_marche.png" data-background-size="800px">
+                <section data-markdown
+                         data-background="images/comment_ca_marche.png"
+                         data-background-size="800px">
                     <script type="text/template">
                         ## En bref
                     </script>
                 </section>
-                <section data-markdown data-background="images/comment_ca_marche_1.png" data-background-size="800px">
+                <section data-markdown
+                         data-background="images/comment_ca_marche_1.png"
+                         data-background-size="800px">
                     <script type="text/template">
                         ## En bref
                     </script>
@@ -229,7 +219,8 @@
                     <script type="text/template">
                         ## Les roles
 
-                        <pre class="stretch"><code data-trim>
+                        <pre class="stretch">
+                            <code data-trim>
                         .
                         +-- deploy.yml
                         +-- roles
@@ -250,7 +241,8 @@
                         |       +-- main.yml
                         +-- jboss_config
                         +-- **/*
-                        </code></pre>
+                            </code>
+                        </pre>
                     </script>
                 </section>
                 <section data-markdown>
@@ -404,7 +396,10 @@
                                 DEV et OPS autour d'une même table
                     </script>
                 </section>
-                <section data-markdown data-background="images/ansible-docker.png" data-background-size="60%">
+                <section data-markdown
+                         data-background="images/ansible-docker.png"
+                         data-background-size="60%"
+                         data-background-position="50% 70%">
                     <script type="text/template">
                         ## Démo
 
@@ -459,7 +454,10 @@
                         - Supervision pendant les tests
                     </script>
                 </section>
-                <section data-markdown data-background="images/questions.jpg" data-background-size="40%">
+                <section data-markdown
+                         data-background="images/questions.jpg"
+                         data-background-size="40%"
+                         data-background-position="50% 60%">
                     <script type="text/template">
                         ## Questions
 
@@ -476,7 +474,7 @@
 				controls: true,
 				progress: true,
 				history: true,
-				center: true,
+				center: false,
 				slideNumber: true,
 
 				transition: 'none', // none/fade/slide/convex/concave/zoom
@@ -492,7 +490,10 @@
 				]
 			});
 
-			Reveal.configure({ slideNumber: 'h.v - c/t' })
+			Reveal.configure({
+			    slideNumber: 'h.v - c/t',
+			    width: '90%'
+			})
 		</script>
 	</body>
 </html>
