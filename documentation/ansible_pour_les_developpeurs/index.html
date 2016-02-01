@@ -12,6 +12,11 @@
         <link rel="stylesheet" href="css/theme/zenika.css" id="theme">
         <link rel="stylesheet" href="lib/css/zenburn.css">
         <style>
+        .reveal {
+          background-image: url('images/ansible-logo.png');
+          background-repeat: no-repeat;
+          background-position: 1% 98%;
+        }
         </style>
 		<!-- Printing and PDF exports -->
 		<script>
@@ -33,9 +38,9 @@
                          data-background-size="30%"
                          data-background-position="50% 80%">
                     <script type="text/template">
-                        ##Ansible
+                        ## Ansible
 
-                        Comment le développeur reprend le pouvoir sur la production
+                        ### Comment le développeur reprend le pouvoir sur la production
                     </script>
 				</section>
                 <section data-markdown>
@@ -74,6 +79,7 @@
                         * Sans agent
                         * S'appuie sur SSH comme protocole de communication
                         * S'appuie sur le sytème de templating Jinja2
+                        * Idempotence
                         * Script / Ansible = Ant / Maven
                     </script>
                 </section>
@@ -103,8 +109,16 @@
                         ## Concepts de base
 
                         - L'inventaire
-                        - Playbooks et tâches
-                        - Module
+                        - Les playbooks, les roles et les tâches
+                        - Les modules
+                        - Les roles
+                        - Les variables
+                        - Les facts
+                        - Le templating avec Jinja2
+                        - Les conditions
+                        - Les boucles
+                        - Les blocks (depuis la v2)
+                        - Les stratégie (depuis la v2)
                 </script>
                 </section>
                 <section data-markdown>
@@ -114,22 +128,22 @@
                         * Contient la liste des hosts managés
                         * Organisé en hosts et groups
                         * Un host peut appartentir à plusieurs groups
-
+                        * Permet facilement de faire évoluer sa topologie de machine
+                        * Ajout de capacité machine simplifié
                     </script>
                 </section>
                 <section data-markdown>
                     <script type="text/template">
                         ## Fichier d'inventaire
 
+                        Example de hosts
                         ```
                         [local]
                         127.0.0.1 ansible_connection=local
 
                         [requirement]
-                        10.121.211.2 ansible_ssh_pass={{user_password}} //
-                        ansible_sudo_pass={{user_password}}
-                        10.121.211.3 ansible_ssh_pass={{user_password}} //
-                        ansible_sudo_pass={{user_password}}
+                        10.121.211.2 ansible_ssh_pass={{user_password}} ansible_sudo_pass={{user_password}}
+                        10.121.211.3 ansible_ssh_pass={{user_password}} ansible_sudo_pass={{user_password}}
 
                         [webserver]
                         10.121.211.2
@@ -141,27 +155,60 @@
 
                         Test de la connexion à mon inventaire
                         ```
-                        ansible -i hosts -m ping all
-                        ansible -i hosts -m ping admin
+                        ansible -i hosts all -m ping
+                        ansible -i hosts admin -m ping
                         ```
                     </script>
                 </section>
                 <section data-markdown>
                     <script type="text/template">
-                        ## Les playbooks et les tâches
+                        ## Les playbooks, les roles et les tâches
 
                         * Une playbook représente un enchaînement d'actions à réaliser sur un ensemble de machine
                         * Elle est écrite au format YAML
                         * Elle s'éxecute de manière séquentielle
                         * Elle est constituée d'un ou plusieurs *plays*
-                        * Chaque *play* est constitué d'une liste de tâches
+                        * Chaque *play* est constitué d'une liste de tâches ou de roles
+
+                        ```
+                        ansible-playbook deploy.yml -i hosts
+                        ansible-playbook deploy.yml -i hosts -t jdk
+                        ansible-playbook deploy.yml -i hosts --extra-vars '{"version": "1.0.1"}'
+                        ```
                     </script>
                 </section>
                 <section data-markdown>
                     <script type="text/template">
-                        ## Les playbooks et les tâches
+                        ## Les playbooks, les roles et les tâches
 
-                        TODO exemple de playbook / play + commande de lancement
+                        <pre class="stretch">
+                            <code data-trim>
+                        - hosts: all
+                          gather_facts: yes
+                          remote_user: deploy
+                          pre_tasks:
+                            - shell: echo 'pre tasks'
+                          roles:
+                            - { role: pre-requis }
+                          tasks:
+                            - shell: echo 'task'
+                          post_tasks:
+                            - shell: echo 'post tasks'
+
+                        - hosts: webserver
+                          gather_facts: no
+                          remote_user: deploy
+                          roles:
+                            - { role: jdk, tags: jdk }
+                            - { role: tomcat }
+
+                        - hosts: bdd
+                          gather_facts: no
+                          remote_user: deploy
+                          roles:
+                            - { role: mysql }
+                            </code>
+                        </pre>
                     </script>
                 </section>
                 <section data-markdown>
@@ -189,22 +236,13 @@
                         * Un module peut être éxecuté directement par la commande ansible :
 
                         ```
-                        ansible -i hosts -m service -a "name=httpd state=started" webserver
-                        ansible -i hosts -m command -a "date" webserver
-                        ```
-                    </script>
-                </section>
-                <section data-markdown>
-                    <script type="text/template">
-                        ## Autres concepts
+                        ansible -i hosts webserver -m copy -a "src=/home/deploy/httpd.conf \
+                                dest=/etc/httpd.conf mode=644 owner=root group=root" --sudo
 
-                        - Role
-                        - Variable
-                        - Templating avec Jinja2
-                        - Condition
-                        - Boucle
-                        - Blocks (v2)
-                        - Stratégie (v2)
+                        ansible -i hosts webserver -m service -a "name=httpd state=started"
+
+                        ansible -i hosts webserver -m shell -a "date"
+                        ```
                     </script>
                 </section>
                 <section data-markdown>
@@ -300,6 +338,150 @@
                 </section>
                 <section data-markdown>
                     <script type="text/template">
+                        ## Les facts
+
+                        * Informations sur les machines de l'inventaire
+                        * Utilisation en temps que variable
+
+                        ```
+                        localhost | success >> {
+                            "ansible_facts": {
+                                "ansible_architecture": "x86_64",
+                                "ansible_date_time": {
+                                    "date": "2016-02-01",
+                                    "day": "01",
+                                    "epoch": "1454337331",
+                                    "hour": "14",
+                                    "iso8601": "2016-02-01T13:35:31Z",
+                                    "iso8601_micro": "2016-02-01T13:35:31.057754Z",
+                                    "minute": "35",
+                                    "month": "02",
+                                    "second": "31",
+                                    "time": "14:35:31",
+                                    "tz": "CET",
+                                    "tz_offset": "+0100",
+                                    "weekday": "Monday",
+                                    "year": "2016"
+                                },
+                                "ansible_distribution": "NA",
+                                "ansible_distribution_major_version": "NA",
+                                "ansible_distribution_release": "NA",
+                                "ansible_distribution_version": "NA",
+                                "ansible_domain": "2kze0.ze0.erd.edf.fr",
+                                "ansible_env": {
+                                    "!::": "::\\",
+                                    "ALLUSERSPROFILE": "C:\\ProgramData",
+                                    "APPDATA": "C:\\Users\\cb1791dn\\AppData\\Roaming",
+                                    "COMMONPROGRAMFILES": "C:\\Program Files\\Common Files",
+                                    "COMPUTERNAME": "ZE0PW1DA",
+                                    "COMSPEC": "C:\\windows\\system32\\cmd.exe",
+                                    "CYGWIN": "winsymlinks:native",
+                                    "CommonProgramFiles(x86)": "C:\\Program Files (x86)\\Common Files",
+                                    "CommonProgramW6432": "C:\\Program Files\\Common Files",
+                                    "DOCKER_CERT_PATH": "C:\\Users\\cb1791dn\\.docker\\machine\\machines\\dev",
+                                    "DOCKER_HOME": "/cygdrive/c/apps/Docker Toolbox",
+                                    "DOCKER_HOST": "tcp://192.168.99.100:2376",
+                                    "DOCKER_MACHINE_NAME": "dev",
+                                    "DOCKER_TLS_VERIFY": "1",
+                                    "FP_NO_HOST_CHECK": "NO",
+                                    "HOME": "/cygdrive/c/Users/cb1791dn",
+                                    "HOMEDRIVE": "C:",
+                                    "HOMEPATH": "\\Users\\cb1791dn",
+                                    "HOSTNAME": "ZE0PW1DA",
+                                    "INFOPATH": "/usr/local/info:/usr/share/info:/usr/info",
+                                    "JAVA_HOME": "/cygdrive/c/Program Files/Java/jdk1.8.0_66",
+                                    "LANG": "C",
+                                    "LC_CTYPE": "C",
+                                    "LESS": "-R",
+                                    "LOCALAPPDATA": "C:\\Users\\cb1791dn\\AppData\\Local",
+                                    "LOGNAME": "CB1791DN",
+                                    "LOGONSERVER": "\\\\ZE0S2047",
+                                    "LSCOLORS": "Gxfxcxdxbxegedabagacad",
+                                    "MANPATH": "/docs/man:",
+                                    "MAVEN_HOME": "/cygdrive/c/apps/apache-maven-3.3.9",
+                                    "MPSCCM": "ze0s2056.2kze0.ze0.erd.edf.fr",
+                                    "NUMBER_OF_PROCESSORS": "8",
+                                    "ORIGINAL_PATH": "/cygdrive/c/Python26:/cygdrive/c/Python26/Scripts:/cygdrive/c/ProgramData/Oracle/Java/javapath:",
+                                    "OS": "Windows_NT",
+                                    "PAGER": "less",
+                                    "PATH": "/cygdrive/c/apps/apache-maven-3.3.9/bin:/cygdrive/c/Program Files/Java/jdk1.8.0_66/bin:/bin:/bin:/bin:/bin:",
+                                    "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC",
+                                    "PRINTER": "PDFCreator",
+                                    "PROCESSOR_ARCHITECTURE": "AMD64",
+                                    "PROCESSOR_IDENTIFIER": "Intel64 Family 6 Model 60 Stepping 3, GenuineIntel",
+                                    "PROCESSOR_LEVEL": "6",
+                                    "PROCESSOR_REVISION": "3c03",
+                                    "PROFILEREAD": "true",
+                                    "PROGRAMFILES": "C:\\Program Files",
+                                    "PSModulePath": "C:\\windows\\system32\\WindowsPowerShell\\v1.0\\Modules\\",
+                                    "PUBLIC": "C:\\Users\\Public",
+                                    "PWD": "/cygdrive/c/workspace/toolbox/ansible",
+                                    "PYTHONPATH": "/lib:",
+                                    "ProgramData": "C:\\ProgramData",
+                                    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+                                    "ProgramW6432": "C:\\Program Files",
+                                    "SBT_HOME": "C:\\Program Files (x86)\\sbt\\",
+                                    "SESSIONNAME": "Console",
+                                    "SHELL": "/bin/zsh",
+                                    "SHLVL": "2",
+                                    "SYSTEMDRIVE": "C:",
+                                    "SYSTEMROOT": "C:\\windows",
+                                    "TEMP": "/tmp",
+                                    "TERM": "xterm",
+                                    "TMP": "/tmp",
+                                    "TZ": "Europe/Paris",
+                                    "UATDATA": "C:\\windows\\CCM\\UATData\\D9F8C395-CAB8-491d-B8AC-179A1FE1BE77",
+                                    "USER": "CB1791DN",
+                                    "USERDNSDOMAIN": "2KZE0.ZE0.ERD.EDF.FR",
+                                    "USERDOMAIN": "2KZE0",
+                                    "USERNAME": "cb1791dn",
+                                    "USERPROFILE": "C:\\Users\\cb1791dn",
+                                    "VBOX_MSI_INSTALL_PATH": "C:\\Program Files\\Oracle\\VirtualBox\\",
+                                    "WINDIR": "C:\\windows",
+                                    "ZSH": "/cygdrive/c/Users/cb1791dn/.oh-my-zsh",
+                                    "_": "/usr/bin/python",
+                                    "export": "",
+                                    "http_proxy": "http://noevipncp2n.edf.fr:3128/",
+                                    "https_proxy": "http://noevipncp2n.edf.fr:3128/",
+                                    "no_proxy": "localhost,192.168.99.100,127.0.0.1,.local,.edf.fr,.erdf.fr",
+                                    "tmp": "",
+                                    "windows_tracing_flags": "3",
+                                    "windows_tracing_logfile": "C:\\BVTBin\\Tests\\installpackage\\csilogfile.log"
+                                },
+                                "ansible_fips": false,
+                                "ansible_fqdn": "ZE0PW1DA.2kze0.ze0.erd.edf.fr",
+                                "ansible_hostname": "ZE0PW1DA",
+                                "ansible_kernel": "2.4.1(0.293/5/3)",
+                                "ansible_machine": "x86_64",
+                                "ansible_nodename": "ZE0PW1DA",
+                                "ansible_os_family": "NA",
+                                "ansible_pkg_mgr": "unknown",
+                                "ansible_python_version": "2.7.10",
+                                "ansible_selinux": false,
+                                "ansible_system": "CYGWIN_NT-6.1",
+                                "ansible_user_dir": "/cygdrive/c/Users/CB1791DN",
+                                "ansible_user_gecos": "U-2KZE0\\CB1791DN,S-1-5-21-1177238915-1004336348-682003330-95929",
+                                "ansible_user_gid": 1049089,
+                                "ansible_user_id": "CB1791DN",
+                                "ansible_user_shell": "/bin/bash",
+                                "ansible_user_uid": 1144505,
+                                "ansible_userspace_architecture": "x86_64",
+                                "ansible_userspace_bits": "64",
+                                "module_setup": true
+                            },
+                            "changed": false
+                        }
+
+                        ```
+
+                        Utilisation
+                        ```
+                        {{ ansible_nodename }}
+                        ```
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
                         ## Le templating avec Jinja2
 
                         TODO
@@ -367,8 +549,8 @@
 
                 <section data-markdown>
                     <script type="text/template">
-                        ## Ansibox pour le développeur:
-                        ### Pourquoi est-ce peut être une bonne idée ?
+                        ## Ansibox pour le développeur
+                        ### Pourquoi c'est peut être une bonne idée ?
 
                         - Un format YAML qui se rapproche d'une documentation
                         - Aller plus rapidement et plus sereinement en production => tester les scripts de deploiement le plus tôt
@@ -439,7 +621,7 @@
                         ## Démo - TODO List
 
                         - Mise en place d'un cluster MongoDB (replica + shard)
-                        - Installation des prérequis
+                        - Installation des prérequis => Use case courant connexion sans mot de passe (Intégration continue)
                         - Mise en place du replica rs0
                         - Création d'un replica rs0
                         - Alimentation en données du replica => manuel
@@ -476,6 +658,7 @@
 				history: true,
 				center: false,
 				slideNumber: true,
+				//overview: false,
 
 				transition: 'none', // none/fade/slide/convex/concave/zoom
 
@@ -492,7 +675,8 @@
 
 			Reveal.configure({
 			    slideNumber: 'h.v - c/t',
-			    width: '90%'
+                width: 1200,
+			    height: 800,
 			})
 		</script>
 	</body>
