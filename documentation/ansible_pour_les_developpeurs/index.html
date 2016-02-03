@@ -51,24 +51,24 @@
                         * Présentation des concepts
                         * Ansibox pour le développeur
                         * Démo => Déploiement d'un cluster Mongodb avec Ansible
+                        * Pour aller plus loin
                     </script>
                 </section>
                 <section data-markdown>
                     <script type="text/template">
                         ## En bref
 
-                        * D'après la documentation Ansible officielle :
+                        * D'après la documentation Ansible officielle
 
                         *Ansible is an IT automation tool. It can configure systems, deploy software, and orchestrate more advanced IT tasks such as continuous deployments or zero downtime rolling updates.*
                     </script>
                 </section>
-                <section data-markdown>
+                <section data-markdown
+                         data-background="images/outils_ops.jpg"
+                         data-background-size="800px"
+                         data-background-position="50% 60%">
                     <script type="text/template">
                         ## En bref
-
-                        Placer Ansible par rapport aux autres outils (Puppet/Chef/Salt ...)
-
-                        TODO
                     </script>
                 </section>
                 <section data-markdown>
@@ -78,7 +78,7 @@
                         * Outil de la mouvance DevOps
                         * Sans agent
                         * S'appuie sur SSH comme protocole de communication
-                        * S'appuie sur le sytème de templating Jinja2
+                        * S'appuie sur le sytème de templating
                         * Idempotence
                         * Script / Ansible = Ant / Maven
                     </script>
@@ -114,7 +114,7 @@
                         - Les roles
                         - Les variables
                         - Les facts
-                        - Le templating avec Jinja2
+                        - Le templating
                         - Les conditions
                         - Les boucles
                         - Les blocks (depuis la v2)
@@ -250,35 +250,30 @@
                         ## Les roles
 
                         * Permet d'organiser les playbooks
-                        * Automatise le chargement de certains fichiers (vars_files, tasks, handlers ...)
-                    </script>
-                </section>
-                <section data-markdown>
-                    <script type="text/template">
-                        ## Les roles
+                        * Automatise le chargement de certains fichiers
 
                         <pre class="stretch">
                             <code data-trim>
-                        .
-                        +-- deploy.yml
-                        +-- roles
-                        +-- bdd_create
-                        |   +-- files/
-                        |   |   +-- **.*
-                        |   +-- templates/
-                        |   |   +-- **.j2
-                        |   +-- tasks
-                        |   |   +-- main.yml
-                        |   +-- handlers
-                        |   |   +-- main.yml
-                        |   +-- vars
-                        |   |   +-- main.yml
-                        |   +-- defaults
-                        |   |   +-- main.yml
-                        |   +-- meta
-                        |       +-- main.yml
-                        +-- jboss_config
-                        +-- **/*
+                                .
+                                +-- deploy.yml
+                                +-- roles
+                                +-- bdd_create
+                                |   +-- files/
+                                |   |   +-- **.*
+                                |   +-- templates/
+                                |   |   +-- **.j2
+                                |   +-- tasks
+                                |   |   +-- main.yml
+                                |   +-- handlers
+                                |   |   +-- main.yml
+                                |   +-- vars
+                                |   |   +-- main.yml
+                                |   +-- defaults
+                                |   |   +-- main.yml
+                                |   +-- meta
+                                |       +-- main.yml
+                                +-- jboss_config
+                                +-- **/*
                             </code>
                         </pre>
                     </script>
@@ -312,7 +307,7 @@
                         * Utilisation d'une variable dans Ansible :
 
                         ```
-                        My amp goes to {{ max_amp_value }}
+                        - shell: echo "Hello World from {{ansible_hostname}} !!!"
                         ```
                     </script>
                 </section>
@@ -320,27 +315,57 @@
                     <script type="text/template">
                         ## Les variables
 
-                        * Changement entre les versions 1.9 et 2.0
-                        * Priorisation des variables (d'après la documentation Ansible officielle)
+                        * Priorisation des variables pour la v2 (le dernier gagne)
 
-                        <!--```-->
-                        <!--* extra vars (-e in the command line) always win-->
-                        <!--* then comes connection variables defined in inventory-->
-                        <!--(ansible_ssh_user, etc)-->
-                        <!--* then comes "most everything else"-->
-                        <!--(command line switches, vars in play, included vars, role vars, etc)-->
-                        <!--* then comes the rest of the variables defined in inventory-->
-                        <!--* then comes facts discovered about a system-->
-                        <!--* then "role defaults",-->
-                        <!--which are the most "defaulty" and lose in priority to everything.-->
-                        <!--```-->
+                        ```
+                        - role defaults
+                        - inventory vars
+                        - inventory group_vars
+                        - inventory host_vars
+                        - playbook group_vars
+                        - playbook host_vars
+                        - host facts
+                        - registered vars
+                        - set_facts
+                        - play vars
+                        - play vars_prompt
+                        - play vars_files
+                        - role and include vars
+                        - block vars (only for tasks in block)
+                        - task vars (only for the task)
+                        - extra vars
+                        ```
+
+                        * **Changement entre les versions 1.9 et 2.0**
                     </script>
                 </section>
                 <section data-markdown>
                     <script type="text/template">
                         ## Les facts
 
-                        * Informations sur les machines de l'inventaire
+                        ### Informations sur les machines de l'inventaire
+
+                        * Recuperation via une commande ansible
+
+                        ```
+                        ansible -i hosts -m setup all
+                        ```
+
+                        * Activation de la récupération dans une playbook
+
+                        ```
+                        ---
+                        - hosts: all
+                          gather_facts: yes
+                          ...
+
+                        ```
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Les facts
+
                         * Utilisation en temps que variable
 
                         ```
@@ -474,7 +499,8 @@
 
                         ```
 
-                        Utilisation
+                        * Utilisation
+
                         ```
                         {{ ansible_nodename }}
                         ```
@@ -482,41 +508,120 @@
                 </section>
                 <section data-markdown>
                     <script type="text/template">
-                        ## Le templating avec Jinja2
+                        ## Le templating
 
-                        TODO
+                        * S'appuie sur le moteur de templating Jinja2
+
+                        * Permet de rendre dynamique des éléments de configuration
+
+                        ```
+                        rs.initiate()
+                        sleep(2000)
+                        {% for host in groups['config'] %}
+                        rs.add("{{ hostvars[host]['ansible_nodename'] }}:{{config.port}}")
+                        sleep(2000)
+                        {% endfor %}
+                        printjson(rs.status())
+                        ```
+
+                        * Utilisation avec le module template
+
+                        ```
+                        - template:
+                            src: "config.js.j2"
+                            dest: "/script/config.js"
+                        ```
+
+                        * Lien utile : http://jinja.pocoo.org/docs/dev/
                     </script>
                 </section>
                 <section data-markdown>
                     <script type="text/template">
                         ## Les conditions
 
-                        TODO
+                        * Permet de rendre l'execution d'une tâche dépendante du résultat d'une autre tâche
+
+                        ```
+                        - name: Check the config status
+                          shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['config'][0]]['ansible_nodename']}} /
+                                --port {{config.port}} /script/config_status.js"
+                          register: st
+
+                        - name: Initialize the config
+                          shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['config'][0]]['ansible_nodename']}} /
+                                --port {{config.port}} /script/config_init.js"
+                          when: st.stdout.find("already initialized") == -1
+                        ```
+
+                        * Syntaxe possible
+
+                        ```
+                        when: foo              => si epic: true
+                        when: not foo          => si epic: false
+                        when: foo is defined
+                        when: foo is undefined
+                        ...
+                        ```
                     </script>
                 </section>
                 <section data-markdown>
                     <script type="text/template">
                         ## Les boucles
 
-                        TODO
+                        * Permet la répétition de tâches
+
+                        ```
+                        - name: Check the replicaset status
+                          shell: "/opt/mongodb/bin/mongo /
+                                --host {{hostvars[groups['replica-' + item.name][0]]['ansible_nodename']}} /
+                                --port {{item.port}} /script/repset_status.js"
+                          register: st
+                          with_items: "{{replica}}"
+
+                        - name: Initialize the replicaset
+                          shell: "/opt/mongodb/bin/mongo /
+                                --host {{hostvars[groups['replica-' + item.1.name][0]]['ansible_nodename']}} /
+                                --port {{item.1.port}} /script/repset_init_{{item.1.name}}.js"
+                          when: st.results[item.0].stdout.find("already initialized") == -1
+                          register: log
+                          with_indexed_items: "{{replica}}"
+                        ```
+
+                        ```
+                        replica: [ { name: rs0, port: 27017 }, { name: rs1, port: 27018 } ]
+                        ```
+
+                        * Répétition avec option de sortie
+
+                        ```
+                        - action: shell /usr/bin/foo
+                          register: result
+                          until: result.stdout.find("all systems go") != -1
+                          retries: 5
+                          delay: 10
+                        ```
                     </script>
                 </section>
                 <section data-markdown>
                     <script type="text/template">
                         ## Les blocks
 
-                        Nouveauté dans le version 2.0
+                        * **Nouveauté dans le version 2.0**
+                        * Centraliser la gestion des conditions au niveau d'un block de tâches
+                        * Permet de mettre en place un mécanisme de gestion d'erreur avec reprise sur erreur
 
-                        TODO
-                    </script>
-                </section>
-                <section data-markdown>
-                    <script type="text/template">
-                        ## Les stratégies
-
-                        Nouveauté dans le version 2.0
-
-                        TODO
+                        ```
+                        - block:
+                            - debug: msg='i execute normally'
+                            - command: /bin/false
+                            - debug: msg='i never execute, cause ERROR!'
+                          rescue:
+                            - debug: msg='I caught an error'
+                            - command: /bin/false
+                            - debug: msg='I also never execute :-('
+                          always:
+                            - debug: msg="this always executes"
+                        ```
                     </script>
                 </section>
                 <section data-markdown>
@@ -634,6 +739,15 @@
                         - Création du serveur de sharding
                         - Activation du sharding + creation index + sharding de la collection => manuel
                         - Supervision pendant les tests
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Pour aller plus loin
+
+                        - Ansible Tower
+                        - Ansible Galaxy
+                        - RoleSpec pour tester unitairement les roles => https://github.com/nickjj/rolespec
                     </script>
                 </section>
                 <section data-markdown
