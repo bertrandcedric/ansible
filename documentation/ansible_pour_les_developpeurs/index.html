@@ -97,11 +97,11 @@
                         ## En bref
                     </script>
                 </section>
-                <section data-markdown>
+                <section data-markdown
+                        data-background="images/it-automation-with-ansible-5-638.jpg"
+                        data-background-size="800px">
                     <script type="text/template">
-                        ## Concepts de base
-
-                        TODO : Présentation des échanges entre machine + problèmatiques de clef ssh
+                        ## En bref
                     </script>
                 </section>
                 <section data-markdown>
@@ -136,7 +136,8 @@
                     <script type="text/template">
                         ## Fichier d'inventaire
 
-                        Example de hosts
+                        * Example de hosts
+
                         ```
                         [local]
                         127.0.0.1 ansible_connection=local
@@ -153,7 +154,8 @@
                         10.121.211.3
                         ```
 
-                        Test de la connexion à mon inventaire
+                        * Test de la connexion à mon inventaire
+
                         ```
                         ansible -i hosts all -m ping
                         ansible -i hosts admin -m ping
@@ -626,7 +628,7 @@
                 </section>
                 <section data-markdown>
                     <script type="text/template">
-                        ## Arborescence typique d'un projet Ansible
+                        ## Arborescence type d'un projet Ansible
 
                         <pre class="stretch"><code data-trim>
                             .
@@ -644,7 +646,8 @@
                             |   +-- env.yml
                             +-- ansible.cfg
                             +-- hosts
-                            +-- hosts_prerequis
+                            |   +-- hosts
+                            |   +-- hosts_prerequis
                             +-- provisioning.yml
                             +-- deploy.yml
                             +-- prerequis.yml
@@ -666,7 +669,7 @@
                 </section>
                 <section data-markdown>
                     <script type="text/template">
-                        ## Difficultés à surmonter
+                        ## Difficultées à surmonter
 
                         - Culture DEV et OPS
 
