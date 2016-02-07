@@ -290,9 +290,9 @@
                         ```
                         ---
                         - hosts: webservers
-                        roles:
-                        - common
-                        - webservers
+                          roles:
+                            - common
+                            - webservers
                         ```
                     </script>
                 </section>
@@ -302,10 +302,10 @@
 
                         * Une variable permet de gérer les différences entre les systèmes
                         * Elles peuvent être définies à différents niveaux :
-                        - au niveau de l'inventaire
-                        - au niveau de la playbook
-                        - au niveau de fichiers importés dans les playbooks
-                        - au niveau d'un role
+                            - au niveau de l'inventaire
+                            - au niveau de la playbook
+                            - au niveau de fichiers importés dans les playbooks
+                            - au niveau d'un role
                         * Utilisation d'une variable dans Ansible :
 
                         ```
@@ -545,12 +545,14 @@
 
                         ```
                         - name: Check the config status
-                          shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['config'][0]]['ansible_nodename']}} /
+                          shell: "/opt/mongodb/bin/mongo /
+                                --host {{hostvars[groups['config'][0]]['ansible_nodename']}} /
                                 --port {{config.port}} /script/config_status.js"
                           register: st
 
                         - name: Initialize the config
-                          shell: "/opt/mongodb/bin/mongo --host {{hostvars[groups['config'][0]]['ansible_nodename']}} /
+                          shell: "/opt/mongodb/bin/mongo /
+                                --host {{hostvars[groups['config'][0]]['ansible_nodename']}} /
                                 --port {{config.port}} /script/config_init.js"
                           when: st.stdout.find("already initialized") == -1
                         ```
@@ -750,7 +752,7 @@
 
                         - Ansible Tower
                         - Ansible Galaxy
-                        - RoleSpec pour tester unitairement les roles => https://github.com/nickjj/rolespec
+                        - RoleSpec pour tester les roles => https://github.com/nickjj/rolespec
                     </script>
                 </section>
                 <section data-markdown
