@@ -40,7 +40,7 @@
                     <script type="text/template">
                         ## Ansible
 
-                        ### Comment le développeur reprend le pouvoir sur la production
+                        ### Ou comment le développeur reprend le pouvoir sur la production
                     </script>
 				</section>
                 <section data-markdown>
@@ -54,6 +54,14 @@
                         * Pour aller plus loin
                     </script>
                 </section>
+                <section data-markdown
+                         data-background="images/outils_ops.jpg"
+                         data-background-size="800px"
+                         data-background-position="50% 70%">
+                    <script type="text/template">
+                        ## En bref
+                    </script>
+                </section>
                 <section data-markdown>
                     <script type="text/template">
                         ## En bref
@@ -63,14 +71,6 @@
                         *Ansible is an IT automation tool. It can configure systems, deploy software, and orchestrate more advanced IT tasks such as continuous deployments or zero downtime rolling updates.*
                     </script>
                 </section>
-                <section data-markdown
-                         data-background="images/outils_ops.jpg"
-                         data-background-size="800px"
-                         data-background-position="50% 60%">
-                    <script type="text/template">
-                        ## En bref
-                    </script>
-                </section>
                 <section data-markdown>
                     <script type="text/template">
                         ## En bref
@@ -78,41 +78,36 @@
                         * Outil de la mouvance DevOps
                         * Sans agent
                         * S'appuie sur SSH comme protocole de communication
-                        * S'appuie sur le sytème de templating
+                        * S'appuie sur un sytème de templating
                         * Idempotence
-                        * Script / Ansible = Ant / Maven
+                        * Les mêmes apports que le passage de Ant vers Maven (ou Gradle)
                     </script>
                 </section>
                 <section data-markdown
                          data-background="images/comment_ca_marche.png"
-                         data-background-size="1000px">
+                         data-background-size="1000px"
+                         data-background-position="50% 70%">
                     <script type="text/template">
                         ## En bref
                     </script>
                 </section>
                 <section data-markdown
-                        data-background="images/it-automation-with-ansible-5-638.jpg"
-                        data-background-size="800px">
+                         data-background="images/ssh.png"
+                         data-background-size="1000px"
+                         data-background-position="50% 70%">
                     <script type="text/template">
                         ## En bref
                     </script>
                 </section>
                 <section data-markdown>
                     <script type="text/template">
-                        ## Concepts de base
+                        ## Concepts de base principaux
 
                         - L'inventaire
                         - Les playbooks, les roles et les tâches
                         - Les modules
                         - Les roles
-                        - Les variables
-                        - Les facts
-                        - Le templating
-                        - Les conditions
-                        - Les boucles
-                        - Les blocks (depuis la v2)
-                        - Les stratégie (depuis la v2)
-                </script>
+                    </script>
                 </section>
                 <section data-markdown>
                     <script type="text/template">
@@ -159,7 +154,7 @@
                     <script type="text/template">
                         ## Les playbooks, les roles et les tâches
 
-                        * Une playbook représente un enchaînement d'actions à réaliser sur un ensemble de machine
+                        * Une playbook représente un enchaînement d'actions à réaliser sur un groupe de machine (présent dans l'inventaire)
                         * Elle est écrite au format YAML
                         * Elle s'éxecute de manière séquentielle
                         * Elle est constituée d'un ou plusieurs *plays*
@@ -176,8 +171,7 @@
                     <script type="text/template">
                         ## Les playbooks, les roles et les tâches
 
-                        <pre class="stretch">
-                            <code data-trim>
+                        <pre class="stretch"><code data-trim>
                         - hosts: all
                           gather_facts: yes
                           remote_user: deploy
@@ -187,6 +181,7 @@
                             - { role: pre-requis }
                           tasks:
                             - shell: echo 'task'
+                            - shell: echo 'task1'
                           post_tasks:
                             - shell: echo 'post tasks'
 
@@ -207,8 +202,17 @@
                     </script>
                 </section>
                 <section data-markdown
+                         data-background="images/comment_ca_marche.png"
+                         data-background-size="1000px"
+                         data-background-position="50% 70%">
+                    <script type="text/template">
+                        ## Inventaires et playbooks
+                    </script>
+                </section>
+                <section data-markdown
                          data-background="images/comment_ca_marche_1.png"
-                         data-background-size="1000px">
+                         data-background-size="1000px"
+                         data-background-position="50% 70%">
                     <script type="text/template">
                         ## Inventaires et playbooks
                     </script>
@@ -225,8 +229,8 @@
                             name: httpd
                             state: restarted
                         ```
-                        * Un module est idempotent en général
-                        * Un module est écrit en python en général
+                        * Un module est idempotent *en général*
+                        * Un module est écrit en python *en général*
                         * Ansible fournit un grand nombre de module par défaut
                         * Exemple de module : shell, user, group, authorized_key, template, copy ...
                     </script>
@@ -254,8 +258,7 @@
                         * Permet d'organiser les playbooks
                         * Automatise le chargement de certains fichiers
 
-                        <pre class="stretch">
-                            <code data-trim>
+                        <pre class="stretch"><code data-trim>
                                 .
                                 +-- deploy.yml
                                 +-- roles
@@ -276,8 +279,7 @@
                                 |       +-- main.yml
                                 +-- jboss_config
                                 +-- **/*
-                            </code>
-                        </pre>
+                        </code></pre>
                     </script>
                 </section>
                 <section data-markdown>
@@ -294,6 +296,19 @@
                             - common
                             - webservers
                         ```
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Autres concepts de base importants
+
+                        - Les variables
+                        - Les facts
+                        - Le templating
+                        - Les conditions
+                        - Les boucles
+                        - Les blocks (depuis la v2)
+                        - Les stratégie (depuis la v2)
                     </script>
                 </section>
                 <section data-markdown>
@@ -673,19 +688,11 @@
                     <script type="text/template">
                         ## Difficultées à surmonter
 
-                        - Culture DEV et OPS
-
-                                ils ne se comprennent pas tout le temps
-                        - Role versus Module
-
-                                tout le monde n'est pas à l'aise avec le Python
-                        - Garder un minimum de roles communs
-
-                                gestion des mots de passe, pré-requis systéme et
-                                plus si affinitées
-                        - Une gestion des environnements à mutualiser
-
-                                DEV et OPS autour d'une même table
+                        - Culture DEV et OPS => ils ne se comprennent pas tout le temps
+                        - Mise en place d'un versioning efficace
+                        - Role versus Module => tout le monde n'est pas à l'aise avec le Python
+                        - Garder un minimum de roles communs => gestion des mots de passe, pré-requis systéme et plus si affinitées
+                        - Une gestion des environnements à mutualiser => DEV et OPS autour d'une même table
                     </script>
                 </section>
                 <section data-markdown
@@ -700,50 +707,25 @@
                 </section>
                 <section data-markdown>
                     <script type="text/template">
-                        ## Démo
+                        ## Démo - Etape 1
+
+                        TODO schema sur la mise en place de docker
+                        => démarrage des instances
+                        => execution des prerequis
+                    </script>
+                </section>
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Démo - Etape 2
 
                         TODO schema replica 0 uniquement
                     </script>
                 </section>
                 <section data-markdown>
                     <script type="text/template">
-                        ## Démo
+                        ## Démo - Etape 3
 
                         TODO schema replica 0 et 1 + config + sharding
-                    </script>
-                </section>
-                <section data-markdown>
-                    <script type="text/template">
-                        ## Démo
-
-                        TODO schema replica 0 et 1 + config + sharding
-                    </script>
-                </section>
-                <section data-markdown>
-                    <script type="text/template">
-                        ## Démo
-
-                        - Explication du container Docker avec sshd
-                    </script>
-                </section>
-                <section data-markdown>
-                    <script type="text/template">
-                        ## Démo - TODO List
-
-                        - Mise en place d'un cluster MongoDB (replica + shard)
-                        - Installation des prérequis => Use case courant connexion sans mot de passe (Intégration continue)
-                        - Mise en place du replica rs0
-                        - Création d'un replica rs0
-                        - Alimentation en données du replica => manuel
-                        - Simulation coupure reseau => docker pause / docker unpause
-                        - Simulation perte machine => docker rm -f / docker-compose scale
-                        - Installation des prérequis
-                        - Mise en place du sharding
-                        - Création d'un replica rs1
-                        - Création des serveurs de configuration
-                        - Création du serveur de sharding
-                        - Activation du sharding + creation index + sharding de la collection => manuel
-                        - Supervision pendant les tests
                     </script>
                 </section>
                 <section data-markdown>

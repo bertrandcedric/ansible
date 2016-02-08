@@ -6,6 +6,29 @@ Après une présentation des concepts autour d'Ansible, nous verrons comment le 
 Un outil idéal dans la mise en place d'un démarche DevOps.
 Démonstration des concepts en couplant Ansible avec Docker.
 
+## Demo
+
+Etape 1:
+- Démarrage des instances de replica rs0 + client
+- Installation des prérequis => Use case courant connexion sans mot de passe (Intégration continue)
+
+Etape 2:
+- Mise en place du replica rs0
+- Création d'un replica rs0
+- Alimentation en données du replica => manuel
+- Simulation coupure reseau => docker pause / docker unpause
+- Simulation perte machine => docker rm -f / docker-compose scale
+
+Etape 3:
+- Démarrage des instances de replica rs1 + sharding + config
+- Installation des prérequis
+- Mise en place du sharding
+- Création d'un replica rs1
+- Création des serveurs de configuration
+- Création du serveur de sharding
+- Activation du sharding + creation index + sharding de la collection => manuel
+- Supervision pendant les tests
+
 ##Presentation des concepts Ansible
 - Placer Ansible par rapport aux autres outils (Puppet/Chef/Salt ...)
 - Principe de base => sans agent / SSH

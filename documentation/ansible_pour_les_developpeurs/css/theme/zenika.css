@@ -305,3 +305,8 @@ body {
   content: url('images/zenika-logo-small.png');
   float: right;
 }
+
+.reveal li {
+  margin: 5px;
+  padding: 5px;
+}
