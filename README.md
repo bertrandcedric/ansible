@@ -108,10 +108,9 @@ mongo --host {{machine server}}
 
 ### Insertion des données avec données
 ```
-mongostat --host e828b444f458 --port 27017
+mongostat --host {{secondaire}} --port 27017
 
-mongo --host e828b444f458 --port 27017
-rs.slaveOk()
+mongo --host {{primaire}} --port 27017
 load("/script/data.js")
 
 db.test_collection.count()
