@@ -13,10 +13,8 @@ git submodule update --init --recursive
 docker-machine create --driver virtualbox dev
 docker-machine start dev
 eval "$(docker-machine env dev)"
-
 docker rm -f $(docker ps -a -q)
 docker rmi -f $(docker images -a -q)
-
 docker build --build-arg pwd=XXXX --no-cache -t centos_ssh centos_ssh/.
 ```
 
@@ -49,7 +47,6 @@ rs.status() => montrer les secondaires et primaire
 ```
 docker pause {{docker_id}}
 docker unpause {{docker_id}}
-
 ansible-playbook mongo.yml -i hosts/mongo -t replica
 ```
 
@@ -57,7 +54,6 @@ ansible-playbook mongo.yml -i hosts/mongo -t replica
 ```
 docker stop {{docker_id}}
 docker start {{docker_id}}
-
 ansible-playbook mongo.yml -i hosts/mongo -t replica
 ```
 
@@ -66,11 +62,9 @@ ansible-playbook mongo.yml -i hosts/mongo -t replica
 sudo su - mongod
 mongo --host {{machine server}}
 mongostat --host {{machine server}} --port 27017
-
 mongo --host {{machine server}} --port 27017
 rs.slaveOk()
 load("/script/data.js") => sur le master
-
 db.test_collection.count()
 db.test_collection.find()
 ```
@@ -90,19 +84,14 @@ ansible -m ping -i hosts/mongo_shard all -u deploy
 - Mise en place du sharding
 ```
 ansible-playbook mongo.yml -i hosts/mongo_shard
-
 sudo su - mongod
 mongo --host {{sharding}} --port 27017 => connection sur la machine sharding
-
 db.stats() => resultset rs1 vide
-
 mongostat --host {{machine server}} --port 27017
-
 sh.enableSharding( "test" )
 db.test_collection.createIndex( { number : 1 } )
 sh.shardCollection( "test.test_collection", { "number" : 1 } )
  => traitement long (penser à présenter autre choses en attendant)
 db.stats()
 db.printShardingStatus(true)
-
 ```
