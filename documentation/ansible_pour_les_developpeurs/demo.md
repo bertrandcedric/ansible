@@ -51,7 +51,10 @@ docker pause {{docker_id}}
 docker unpause {{docker_id}}
 
 ansible-playbook mongo.yml -i hosts/mongo -t replica
+```
 
+- Simulation arrêt machine => docker stop / docker start
+```
 docker stop {{docker_id}}
 docker start {{docker_id}}
 
@@ -60,6 +63,7 @@ ansible-playbook mongo.yml -i hosts/mongo -t replica
 
 - Alimentation en données du replica => manuel
 ```
+sudo su - mongod
 mongo --host {{machine server}}
 mongostat --host {{machine server}} --port 27017
 
@@ -71,9 +75,6 @@ db.test_collection.count()
 db.test_collection.find()
 ```
 
-- Simulation coupure reseau => docker pause / docker unpause
-- Simulation perte machine => docker rm -f / docker-compose scale
-
 ## Etape 2:
 - Démarrage des instances de replica rs1 + sharding + config
 ```
@@ -81,9 +82,27 @@ docker-compose -p sample scale client=1 replica=3 config=3 sharding=1
 ```
 
 - Installation des prérequis
+```
+ansible-playbook prerequis.yml -i hosts/mongo_shard --extra-vars "{'public_ssh_key' : '$(cat ~/.ssh/id_rsa.pub)'}" -k
+ansible -m ping -i hosts/mongo_shard all -u deploy
+```
+
 - Mise en place du sharding
-- Création d'un replica rs1
-- Création des serveurs de configuration
-- Création du serveur de sharding
-- Activation du sharding + creation index + sharding de la collection => manuel
-- Supervision pendant les tests
+```
+ansible-playbook mongo.yml -i hosts/mongo_shard
+
+sudo su - mongod
+mongo --host {{sharding}} --port 27017 => connection sur la machine sharding
+
+db.stats() => resultset rs1 vide
+
+mongostat --host {{machine server}} --port 27017
+
+sh.enableSharding( "test" )
+db.test_collection.createIndex( { number : 1 } )
+sh.shardCollection( "test.test_collection", { "number" : 1 } )
+ => traitement long (penser à présenter autre choses en attendant)
+db.stats()
+db.printShardingStatus(true)
+
+```
