@@ -77,7 +77,8 @@ docker-compose -p sample scale client=1 replica=3 config=3 sharding=1
 
 - Installation des prérequis
 ```
-ansible-playbook prerequis.yml -i hosts/mongo_shard --extra-vars "{'public_ssh_key' : '$(cat ~/.ssh/id_rsa.pub)'}" -k
+ansible-playbook prerequis.yml -i hosts/mongo_shard \ 
+    --extra-vars "{'public_ssh_key' : '$(cat ~/.ssh/id_rsa.pub)'}" -k
 ansible -m ping -i hosts/mongo_shard all -u deploy
 ```
 
