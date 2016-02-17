@@ -146,7 +146,7 @@
 
                         ```
                         ansible -i hosts all -m ping
-                        ansible -i hosts admin -m ping
+                        ansible -i hosts webserver -m ping
                         ```
                     </script>
                 </section>
@@ -227,7 +227,7 @@
                         - name: restart webserver
                           service:
                             name: httpd
-                            state: restarted
+                            state: started
                         ```
                         * Un module est idempotent *en général*
                         * Un module est écrit en python *en général*
@@ -262,23 +262,23 @@
                                 .
                                 +-- deploy.yml
                                 +-- roles
-                                +-- bdd_create
-                                |   +-- files/
-                                |   |   +-- **.*
-                                |   +-- templates/
-                                |   |   +-- **.j2
-                                |   +-- tasks
-                                |   |   +-- main.yml
-                                |   +-- handlers
-                                |   |   +-- main.yml
-                                |   +-- vars
-                                |   |   +-- main.yml
-                                |   +-- defaults
-                                |   |   +-- main.yml
-                                |   +-- meta
-                                |       +-- main.yml
-                                +-- jboss_config
-                                +-- **/*
+                                    +-- bdd_create
+                                    |   +-- files/
+                                    |   |   +-- **.*
+                                    |   +-- templates/
+                                    |   |   +-- **.j2
+                                    |   +-- tasks
+                                    |   |   +-- main.yml
+                                    |   +-- handlers
+                                    |   |   +-- main.yml
+                                    |   +-- vars
+                                    |   |   +-- main.yml
+                                    |   +-- defaults
+                                    |   |   +-- main.yml
+                                    |   +-- meta
+                                    |       +-- main.yml
+                                    +-- jboss_config
+                                    +-- common
                         </code></pre>
                     </script>
                 </section>
@@ -294,7 +294,11 @@
                         - hosts: webservers
                           roles:
                             - common
-                            - webservers
+                            - jboss_config
+                        - hosts: bdd
+                          roles:
+                            - common
+                            - bdd_create
                         ```
                     </script>
                 </section>
