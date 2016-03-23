@@ -1,0 +1,34 @@
+---
+# Gather facts to be able to use them in next plays
+- hosts: all
+  gather_facts: yes
+  remote_user: deploy
+
+- hosts: all
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: etc_hosts, machines: all }
+
+- hosts: zoo_keeper
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: jdk, tags: [jdk] }
+    - { role: zookeeper/install, tags: [zookeeper] }
+    - { role: zookeeper/server, tags: [zookeeper] }
+
+- hosts: kafka
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: jdk, tags: [jdk] }
+    - { role: kafka/install }
+    - { role: kafka/server }
+
+- hosts: client
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: jdk, tags: [jdk] }
+    - { role: kafka/install }

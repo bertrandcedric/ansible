@@ -1,4 +1,4 @@
-{% for host in groups['server'] %}
+{% for host in groups['zoo_keeper'] %}
 {% if ansible_hostname == hostvars[host]['ansible_hostname'] %}
 {{loop.index}}
 {% endif %}

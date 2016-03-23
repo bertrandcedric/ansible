@@ -1,4 +1,6 @@
-FROM centos
+FROM centos_proxy
+#FROM centos
+
 ARG pwd
 
 RUN yum -y update

@@ -1,0 +1,21 @@
+---
+#- shell: bin/kafka-server-stop.sh
+#  args:
+#    chdir: "/opt/kafka"
+#  become: yes
+
+- set_fact: kafka_server_zookeeper_connect="{{hostvars[item]['ansible_hostname']}}:2181"
+  with_items:
+    - "{{groups['zoo_keeper']}}"
+
+- set_fact: kafka_broker_id={{item.0 + 1}}
+  with_indexed_items: "{{ groups['kafka'] }}"
+  when: item.1 == inventory_hostname
+
+- template: src=server.properties.j2 dest=/opt/kafka/config/server.properties
+  become: yes
+
+- shell: bin/kafka-server-start.sh -daemon config/server.properties
+  args:
+    chdir: "/opt/kafka"
+  become: yes

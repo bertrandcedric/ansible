@@ -1,0 +1,16 @@
+version: '2'
+services:
+  zoo_keeper:
+    image: centos_ssh
+    ports:
+      - "22"
+
+  kafka:
+    image: centos_ssh
+    ports:
+      - "22"
+
+  client:
+    image: centos_ssh
+    ports:
+      - "22"

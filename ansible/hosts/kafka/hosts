@@ -1,0 +1,44 @@
+#!/bin/bash
+
+NAME=kafka
+NUMBER_OF_MACHINE=$NB_MACHINE
+
+docker_ip=$(docker-machine ip dev)
+
+port=$(docker port ${NAME}_client_1 22| sed 's/.*://')
+machine_host="${machine_host} \"client\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
+
+port=$(docker port ${NAME}_zoo_keeper_1 22| sed 's/.*://')
+machine_host="${machine_host} \"zoo_keeper\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
+
+i=1
+while [ $i -lt $NUMBER_OF_MACHINE ]
+do
+    kafka="${kafka} \"kafka_$i\", "
+    port=$(docker port ${NAME}_kafka_$i 22| sed 's/.*://')
+    machine_host="${machine_host} \"kafka_$i\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
+    i=$[$i+1]
+done
+
+kafka="${kafka} \"kafka_$NUMBER_OF_MACHINE\""
+port=$(docker port ${NAME}_kafka_$NUMBER_OF_MACHINE 22| sed 's/.*://')
+machine_host="${machine_host} \"kafka_$NUMBER_OF_MACHINE\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}"
+
+cat << EOF
+{
+  "client": {
+    "hosts": [ "client" ]
+  },
+  "zoo_keeper": {
+    "hosts": [ "zoo_keeper" ]
+  },
+  "kafka": {
+    "hosts": [ $kafka ]
+  },
+  "_meta": {
+    "hostvars": {
+      $machine_host
+    }
+  }
+}
+EOF

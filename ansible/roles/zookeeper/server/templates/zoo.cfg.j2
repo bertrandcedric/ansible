@@ -2,7 +2,7 @@ standaloneEnabled=false
 tickTime=2000
 dataDir=/data
 clientPort=2181
-{% for host in groups['server'] %}
+{% for host in groups['zoo_keeper'] %}
 server.{{loop.index}}={{ hostvars[host]['ansible_default_ipv4']['address'] }}:2888:3888
 {% endfor %}
 initLimit=5

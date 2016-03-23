@@ -1,0 +1,23 @@
+---
+- stat: path="/opt/kafka"
+  register: st
+  become: yes
+
+- unarchive:
+    src: "{{kafka_version}}.tgz"
+    dest: "/opt"
+  become: yes
+  when: not st.stat.exists
+
+- file:
+    src: "/opt/{{kafka_version}}"
+    dest: "/opt/kafka"
+    state: link
+  become: yes
+
+- lineinfile:
+    dest: "/home/deploy/.bashrc"
+    line: 'export PATH=$PATH:/opt/kafka/bin'
+    insertafter: 'EOF'
+    regexp: 'export PATH=\$PATH:/opt/kafka/bin'
+    state: present
