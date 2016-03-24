@@ -16,13 +16,15 @@ while [ $i -lt $NUMBER_OF_MACHINE ]
 do
     kafka="${kafka} \"kafka_$i\", "
     port=$(docker port ${NAME}_kafka_$i 22| sed 's/.*://')
-    machine_host="${machine_host} \"kafka_$i\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
+    kafka_port=$(docker port ${NAME}_kafka_$i 9092| sed 's/.*://')
+    machine_host="${machine_host} \"kafka_$i\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\", \"ansible_kafka_port\": \"$kafka_port\"}, "
     i=$[$i+1]
 done
 
 kafka="${kafka} \"kafka_$NUMBER_OF_MACHINE\""
 port=$(docker port ${NAME}_kafka_$NUMBER_OF_MACHINE 22| sed 's/.*://')
-machine_host="${machine_host} \"kafka_$NUMBER_OF_MACHINE\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}"
+kafka_port=$(docker port ${NAME}_kafka_$NUMBER_OF_MACHINE 9092| sed 's/.*://')
+machine_host="${machine_host} \"kafka_$NUMBER_OF_MACHINE\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\", \"ansible_kafka_port\": \"$kafka_port\"}"
 
 cat << EOF
 {
