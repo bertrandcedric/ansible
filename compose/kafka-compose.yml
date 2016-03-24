@@ -9,6 +9,7 @@ services:
     image: centos_ssh
     ports:
       - "22"
+      - "9092"
 
   client:
     image: centos_ssh
