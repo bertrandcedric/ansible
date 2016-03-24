@@ -1,4 +1,12 @@
 ---
+- get_url: url="{{mongo_url}}"
+    mode=0644
+    force=no
+    validate_certs=no
+    dest="{{workspace}}/mongodb-{{mongo_version}}.tgz"
+  delegate_to: localhost
+  run_once: true
+
 - name: Create the mongod group
   group:
     name: mongod
@@ -23,13 +31,13 @@
   become: yes
 
 - name: Check install mongodb
-  stat: path="/opt/{{mongo_version}}"
+  stat: path="/opt/mongodb-{{mongo_version}}"
   register: st
   become: yes
 
 - name: Install mongodb
   unarchive:
-    src: "{{mongo_version}}.tgz"
+    src: "{{workspace}}/mongodb-{{mongo_version}}.tgz"
     dest: "/opt"
     owner: mongod
     group: mongod
@@ -38,7 +46,7 @@
 
 - name: Create symlink /opt/mongodb
   file:
-    src: "/opt/{{mongo_version}}"
+    src: "/opt/mongodb-{{mongo_version}}"
     dest: "/opt/mongodb"
     owner: mongod
     group: mongod

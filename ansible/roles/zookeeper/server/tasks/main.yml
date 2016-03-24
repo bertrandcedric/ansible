@@ -8,12 +8,12 @@
 
 - name: Create the zookeeper conf directory
   file:
-    path=/opt/zookeeper-3.4.8/conf
+    path=/opt/zookeeper/conf
     state=directory
   become: yes
 
 - name: Create the zoo.cfg file
-  template: src=zoo.cfg.j2 dest=/opt/zookeeper-3.4.8/conf/zoo.cfg
+  template: src=zoo.cfg.j2 dest=/opt/zookeeper/conf/zoo.cfg
   become: yes
 
 - name: Create the myid file

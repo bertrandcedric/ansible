@@ -1,16 +1,24 @@
 ---
+- get_url: url="{{kafka_url}}"
+    mode=0644
+    force=no
+    validate_certs=no
+    dest="{{workspace}}/kafka_{{kafka_version}}.tgz"
+  delegate_to: localhost
+  run_once: true
+
 - stat: path="/opt/kafka"
   register: st
   become: yes
 
 - unarchive:
-    src: "{{kafka_version}}.tgz"
+    src: "{{workspace}}/kafka_{{kafka_version}}.tgz"
     dest: "/opt"
   become: yes
   when: not st.stat.exists
 
 - file:
-    src: "/opt/{{kafka_version}}"
+    src: "/opt/kafka_{{kafka_version}}"
     dest: "/opt/kafka"
     state: link
   become: yes

@@ -1,19 +1,19 @@
 ---
-- name: creation du group deploy
-  group: name=deploy state=present
+- group: name=deploy state=present
   become: yes
-- name: creation de l'utilisateur deploy
-  user: name=deploy group=deploy
+- user: name=deploy group=deploy
   become: yes
-- name: ajout la clef dans authorized_key de deploy
-  authorized_key: user=deploy key="{{public_ssh_key}}"
+- authorized_key: user=deploy key="{{public_ssh_key}}"
   become: yes
-- name: ajout sudoers
-  copy: src=sudoers_prerequis
-        dest=/etc/sudoers.d/sudoers_prerequis
-        owner=root
-        group=root
-        mode=0440
-        backup=yes
-        validate='/usr/sbin/visudo -cf %s'
+- copy: src=sudoers_prerequis
+    dest=/etc/sudoers.d/sudoers_prerequis
+    owner=root
+    group=root
+    mode=0440
+    backup=yes
+    validate='/usr/sbin/visudo -cf %s'
   become: yes
+- file: path={{workspace}}
+    state=directory
+  delegate_to: localhost
+  run_once: true

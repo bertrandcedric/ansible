@@ -1,25 +1,29 @@
 ---
-- name: Check install zookeeper
-  stat: path="/opt/zookeeper-3.4.8"
+- get_url: url="{{zookeeper_url}}"
+    mode=0644
+    force=no
+    validate_certs=no
+    dest="{{workspace}}/zookeeper-{{zookeeper_version}}.tar.gz"
+  delegate_to: localhost
+  run_once: true
+
+- stat: path="/opt/zookeeper-{{zookeeper_version}}"
   register: st
   become: yes
 
-- name: Install zookeeper
-  unarchive:
-    src: "zookeeper-3.4.8.tar.gz"
+- unarchive:
+    src: "{{workspace}}/zookeeper-{{zookeeper_version}}.tar.gz"
     dest: "/opt"
   become: yes
   when: not st.stat.exists
 
-- name: Create symlink /opt/zookeeper
-  file:
-    src: "/opt/zookeeper-3.4.8"
+- file:
+    src: "/opt/zookeeper-{{zookeeper_version}}"
     dest: "/opt/zookeeper"
     state: link
   become: yes
 
-- name: Adding the path in the bashrc files
-  lineinfile:
+- lineinfile:
     dest: "/home/deploy/.bashrc"
     line: 'export PATH=$PATH:/opt/zookeeper/bin'
     insertafter: 'EOF'
