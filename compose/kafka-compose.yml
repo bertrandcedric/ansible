@@ -4,6 +4,7 @@ services:
     image: centos_ssh
     ports:
       - "22"
+      - "2181"
 
   kafka:
     image: centos_ssh
