@@ -13,6 +13,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -88,6 +89,17 @@ public class KafkaSample {
         twitterClient.getClient().stop();
     }
 
+    @Test
+    public void twitterTest() throws InterruptedException {
+        TwitterClient twitterClient = new TwitterClient();
+        for (int i = 0; i < 10; i++) {
+            JSONObject obj = new JSONObject(twitterClient.getQueue().take());
+            String text = obj.getString("text");
+            System.out.println(text);
+        }
+        twitterClient.getClient().stop();
+    }
+
     private class TwitterClient {
         private BlockingQueue<String> queue;
         private Client client;
@@ -103,7 +115,7 @@ public class KafkaSample {
         public TwitterClient() {
             queue = new LinkedBlockingQueue<>(10000);
             StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
-            endpoint.trackTerms(Lists.newArrayList("twitterapi", "#ZenikaIT"));
+            endpoint.trackTerms(Lists.newArrayList("#News"));
 
             String consumerKey = "jxHG2aYojjTbL1NUYMSR4pbJE";
             String consumerSecret = "z8ZkYrVyaYJBede3b27k4ZSo1yDTzU7hIAspLv0P5COTUKZogi";
