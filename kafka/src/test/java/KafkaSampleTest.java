@@ -7,6 +7,7 @@ import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
 import kafka.producer.KeyedMessage;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -21,7 +22,7 @@ import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class KafkaSample {
+public class KafkaSampleTest {
 
     @Test
     public void kafkaProducer() {
@@ -52,7 +53,8 @@ public class KafkaSample {
         props.put("session.timeout.ms", "30000");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+
+        Consumer<String, String> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList("topic3"));
         System.out.println("Topic list : ");
         consumer.listTopics().values().forEach(System.out::println);
@@ -65,8 +67,6 @@ public class KafkaSample {
 
     @Test
     public void twitterKafkaConsumer() throws InterruptedException {
-        TwitterClient twitterClient = new TwitterClient();
-
         Properties props = new Properties();
         props.put("bootstrap.servers", "192.168.99.100:32826");
         props.put("acks", "all");
@@ -77,16 +77,19 @@ public class KafkaSample {
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-        String topic = "twitter-topic";
         Producer<String, String> producer = new KafkaProducer<>(props);
-        KeyedMessage<String, String> message = null;
+
+        TwitterClient twitterClient = new TwitterClient();
+        String topic = "twitter-topic";
+        KeyedMessage<String, String> message;
         for (int i = 0; i < 10; i++) {
             message = new KeyedMessage<>(topic, twitterClient.getQueue().take());
             producer.send(new ProducerRecord<>("topic3", message.key(), message.message()));
         }
 
-        producer.close();
         twitterClient.getClient().stop();
+
+        producer.close();
     }
 
     @Test
@@ -113,7 +116,7 @@ public class KafkaSample {
         }
 
         public TwitterClient() {
-            queue = new LinkedBlockingQueue<>(10000);
+            queue = new LinkedBlockingQueue<>(10);
             StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
             endpoint.trackTerms(Lists.newArrayList("#News"));
 
