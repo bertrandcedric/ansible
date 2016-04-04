@@ -1,0 +1,5 @@
+---
+- copy: src="kafka-assembly-0.1-SNAPSHOT.jar" dest="/opt/kafka-connect.jar" mode=777
+  become: yes
+- copy: src="connect-file-sink.properties" dest="/opt/connect-file-sink.properties" mode=777
+  become: yes
