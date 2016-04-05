@@ -1,3 +1,4 @@
 target/
-kafka/project/
+kafka/project/project
+kafka/project/target
 *.jar

@@ -16,3 +16,4 @@ services:
     image: centos_ssh
     ports:
       - "22"
+      - "8083"

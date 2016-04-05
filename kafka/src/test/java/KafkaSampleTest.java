@@ -38,7 +38,7 @@ public class KafkaSampleTest {
 
         Producer<String, String> producer = new KafkaProducer<>(props);
         for (int i = 0; i < 1000; i++)
-            producer.send(new ProducerRecord<>("topic3", Integer.toString(i), Integer.toString(i)));
+            producer.send(new ProducerRecord<>("connect-test", Integer.toString(i), Integer.toString(i)));
 
         producer.close();
     }
@@ -46,7 +46,7 @@ public class KafkaSampleTest {
     @Test
     public void kafkaConsumer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.99.100:32777");
+        props.put("bootstrap.servers", "192.168.99.100:32775");
         props.put("group.id", "test");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
@@ -55,7 +55,7 @@ public class KafkaSampleTest {
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 
         Consumer<String, String> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Arrays.asList("topic3"));
+        consumer.subscribe(Arrays.asList("connect-test"));
         System.out.println("Topic list : ");
         consumer.listTopics().values().forEach(System.out::println);
         while (true) {

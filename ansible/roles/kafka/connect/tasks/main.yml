@@ -1,5 +1,25 @@
 ---
+- set_fact: kafka_server_connect="{{hostvars[groups['kafka'][0]]['ansible_hostname']}}:9092"
 - copy: src="kafka-assembly-0.1-SNAPSHOT.jar" dest="/opt/kafka-connect.jar" mode=777
   become: yes
-- copy: src="connect-file-sink.properties" dest="/opt/connect-file-sink.properties" mode=777
+- copy: src="{{item}}" dest="/opt/{{item}}" mode=777
+  with_items:
+    - connect-file-sink.properties
+    - connect-file-source.properties
   become: yes
+- template: src="{{item}}" dest="/opt/{{item}}" mode=777
+  with_items:
+    - connect-standalone.properties
+    - connect-distributed.properties
+  become: yes
+- shell:  pkill -f 'kafka-connect.jar'
+  failed_when: false
+  become: yes
+- file: dest=/tmp/connect.offsets state=absent
+- file: dest=~/test.txt state=absent
+- file: dest=~/test.sink.txt state=absent
+- shell: /opt/kafka/bin/connect-standalone.sh /opt/connect-standalone.properties /opt/connect-file-sink.properties /opt/connect-file-source.properties &
+  environment:
+    CLASSPATH: /opt/kafka-connect.jar
+
+# for i in {1..1000}; do echo "kafka$i" >> test.txt; done

@@ -32,4 +32,4 @@
   roles:
     - { role: jdk, tags: [jdk] }
     - { role: kafka/install }
-    - { role: kafka/connect }
+    - { role: kafka/connect, tags: [connect] }
