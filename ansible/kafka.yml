@@ -14,7 +14,7 @@
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: jdk, tags: [jdk] }
+    - { role: jdk, tags: [zookeeper] }
     - { role: zookeeper/install, tags: [zookeeper] }
     - { role: zookeeper/server, tags: [zookeeper] }
 
@@ -22,14 +22,20 @@
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: jdk, tags: [jdk] }
-    - { role: kafka/install }
-    - { role: kafka/server }
+    - { role: jdk, tags: [kafka] }
+    - { role: kafka/install, tags: [kafka] }
+    - { role: kafka/server, tags: [kafka] }
+
+- hosts: grafana
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: grafana, tags: [grafana] }
 
 - hosts: client
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: jdk, tags: [jdk] }
-    - { role: kafka/install }
-    - { role: kafka/connect, tags: [connect] }
+    - { role: jdk, tags: [client] }
+    - { role: kafka/install, tags: [client] }
+    - { role: kafka/connect, tags: [client, connect] }

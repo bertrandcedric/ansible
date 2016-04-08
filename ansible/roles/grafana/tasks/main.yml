@@ -1,0 +1,29 @@
+---
+- get_url: url="{{grafana_url}}"
+    mode=0644
+    force=no
+    validate_certs=no
+    dest="{{workspace}}/{{grafana_version}}.rpm"
+  delegate_to: localhost
+  run_once: true
+
+- stat: path="/tmp/{{grafana_version}}.rpm"
+  register: st
+  become: yes
+
+- copy: src="{{workspace}}/{{grafana_version}}.rpm" dest="/tmp/{{grafana_version}}.rpm" mode=777
+  when: not st.stat.exists
+
+- copy: src="{{item}}" dest="/tmp/{{item}}" mode=777
+  with_items:
+    - initscripts-9.49.30-1.el7.x86_64.rpm
+    - fontconfig-2.10.95-7.el7.i686.rpm
+
+#- shell: rpm -i --replacepkgs /tmp/{{item}}
+#  with_items:
+#    - initscripts-9.49.30-1.el7.x86_64.rpm
+#    - fontconfig-2.10.95-7.el7.i686.rpm
+#  become: yes
+
+- shell: rpm -i --replacepkgs /tmp/{{grafana_version}}.rpm
+  become: yes

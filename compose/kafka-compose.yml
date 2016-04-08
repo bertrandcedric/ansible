@@ -6,6 +6,12 @@ services:
       - "22"
       - "2181"
 
+  grafana:
+    image: centos_ssh
+    ports:
+      - "22"
+      - "3000"
+
   kafka:
     image: centos_ssh
     ports:
