@@ -14,5 +14,8 @@
 - copy: src="{{workspace}}/{{jdk_version}}.rpm" dest="/tmp/{{jdk_version}}.rpm" mode=777
   when: not st.stat.exists
 
-- shell: sudo rpm -i --replacepkgs /tmp/{{jdk_version}}.rpm
+- yum: name=/tmp/{{jdk_version}}.rpm state=present
   become: yes
+
+#- shell: rpm -i --replacepkgs /tmp/{{jdk_version}}.rpm
+#  become: yes

@@ -14,16 +14,11 @@
 - copy: src="{{workspace}}/{{grafana_version}}.rpm" dest="/tmp/{{grafana_version}}.rpm" mode=777
   when: not st.stat.exists
 
-- copy: src="{{item}}" dest="/tmp/{{item}}" mode=777
-  with_items:
-    - initscripts-9.49.30-1.el7.x86_64.rpm
-    - fontconfig-2.10.95-7.el7.i686.rpm
+- yum: name=fontconfig state=present
+  become: yes
 
-#- shell: rpm -i --replacepkgs /tmp/{{item}}
-#  with_items:
-#    - initscripts-9.49.30-1.el7.x86_64.rpm
-#    - fontconfig-2.10.95-7.el7.i686.rpm
-#  become: yes
+- yum: name=/tmp/{{grafana_version}}.rpm state=present
+  become: yes
 
-- shell: rpm -i --replacepkgs /tmp/{{grafana_version}}.rpm
+- service: name=grafana-server state=restarted
   become: yes
