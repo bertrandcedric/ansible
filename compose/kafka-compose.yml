@@ -6,6 +6,11 @@ services:
       - "22"
       - "2181"
 
+  graphite:
+    image: centos_ssh
+    ports:
+      - "22"
+
   grafana:
     image: centos_ssh
     ports:

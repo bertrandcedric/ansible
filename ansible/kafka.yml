@@ -18,6 +18,18 @@
     - { role: zookeeper/install, tags: [zookeeper] }
     - { role: zookeeper/server, tags: [zookeeper] }
 
+- hosts: graphite
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: graphite, tags: [graphite] }
+
+- hosts: grafana
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: grafana, tags: [grafana] }
+
 - hosts: kafka
   gather_facts: no
   remote_user: deploy
@@ -26,11 +38,6 @@
     - { role: kafka/install, tags: [kafka] }
     - { role: kafka/server, tags: [kafka] }
 
-- hosts: grafana
-  gather_facts: no
-  remote_user: deploy
-  roles:
-    - { role: grafana, tags: [grafana] }
 
 - hosts: client
   gather_facts: no
