@@ -17,7 +17,9 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -27,7 +29,7 @@ public class KafkaSampleTest {
     @Test
     public void kafkaProducer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.99.100:32777");
+        props.put("bootstrap.servers", "192.168.99.100:32770");
         props.put("acks", "all");
         props.put("retries", 0);
         props.put("batch.size", 16384);
@@ -46,7 +48,7 @@ public class KafkaSampleTest {
     @Test
     public void kafkaConsumer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.99.100:32775");
+        props.put("bootstrap.servers", "192.168.99.100:32770");
         props.put("group.id", "test");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
@@ -68,7 +70,7 @@ public class KafkaSampleTest {
     @Test
     public void twitterKafkaConsumer() throws InterruptedException {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.99.100:32826");
+        props.put("bootstrap.servers", "192.168.99.100:32770");
         props.put("acks", "all");
         props.put("retries", 0);
         props.put("batch.size", 16384);
@@ -79,12 +81,16 @@ public class KafkaSampleTest {
 
         Producer<String, String> producer = new KafkaProducer<>(props);
 
-        TwitterClient twitterClient = new TwitterClient();
-        String topic = "twitter-topic";
+        TwitterClient twitterClient = new TwitterClient(Lists.newArrayList("#News"));
+        String topic = "topic3";
         KeyedMessage<String, String> message;
-        for (int i = 0; i < 10; i++) {
-            message = new KeyedMessage<>(topic, twitterClient.getQueue().take());
-            producer.send(new ProducerRecord<>("topic3", message.key(), message.message()));
+        for (int i = 0; i < 1000; i++) {
+            JSONObject obj = new JSONObject(twitterClient.getQueue().take());
+
+            String text = obj.toString();
+            Integer user_id = obj.getJSONObject("user").getInt("id");
+            message = new KeyedMessage<>(topic, user_id.toString(), text);
+            producer.send(new ProducerRecord<>(message.topic(), message.key(), message.message()));
         }
 
         twitterClient.getClient().stop();
@@ -94,7 +100,7 @@ public class KafkaSampleTest {
 
     @Test
     public void twitterTest() throws InterruptedException {
-        TwitterClient twitterClient = new TwitterClient();
+        TwitterClient twitterClient = new TwitterClient(Lists.newArrayList("#News"));
         for (int i = 0; i < 10; i++) {
             JSONObject obj = new JSONObject(twitterClient.getQueue().take());
             String text = obj.getString("text");
@@ -115,10 +121,10 @@ public class KafkaSampleTest {
             return client;
         }
 
-        public TwitterClient() {
+        public TwitterClient(List<String> terms) {
             queue = new LinkedBlockingQueue<>(10);
             StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
-            endpoint.trackTerms(Lists.newArrayList("#News"));
+            endpoint.trackTerms(terms);
 
             String consumerKey = "jxHG2aYojjTbL1NUYMSR4pbJE";
             String consumerSecret = "z8ZkYrVyaYJBede3b27k4ZSo1yDTzU7hIAspLv0P5COTUKZogi";
