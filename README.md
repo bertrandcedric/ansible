@@ -46,6 +46,8 @@ docker-compose -p sample scale client=1 replica=3 config=3 sharding=1
 
 ansible -m ping -i hosts/hosts all -u root -k
 ansible-playbook sample.yml -i hosts/hosts -u root -k
+
+ansible -m debug -a "var=hostvars[inventory_hostname]" -i hosts all -u deploy
 ```
 
 ## Provisionning avec ansible d'un cluster Zookeeper

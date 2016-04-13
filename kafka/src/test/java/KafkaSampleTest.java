@@ -14,6 +14,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.TopicPartition;
 import org.json.JSONObject;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class KafkaSampleTest {
     @Test
     public void kafkaProducer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.99.100:32770");
+        props.put("bootstrap.servers", "192.168.99.100:32775");
         props.put("acks", "all");
         props.put("retries", 0);
         props.put("batch.size", 16384);
@@ -40,7 +41,7 @@ public class KafkaSampleTest {
 
         Producer<String, String> producer = new KafkaProducer<>(props);
         for (int i = 0; i < 1000; i++)
-            producer.send(new ProducerRecord<>("connect-test", Integer.toString(i), Integer.toString(i)));
+            producer.send(new ProducerRecord<>("topic1", Integer.toString(i % 10), Integer.toString(i)));
 
         producer.close();
     }
@@ -48,18 +49,22 @@ public class KafkaSampleTest {
     @Test
     public void kafkaConsumer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.99.100:32770");
+        props.put("bootstrap.servers", "192.168.99.100:32775");
         props.put("group.id", "test");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
         props.put("session.timeout.ms", "30000");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+//        props.put("auto.offset.reset", "latest");
 
         Consumer<String, String> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Arrays.asList("connect-test"));
+        consumer.subscribe(Arrays.asList("topic1"));
         System.out.println("Topic list : ");
-        consumer.listTopics().values().forEach(System.out::println);
+        consumer.listTopics().values().stream().flatMap(l -> l.stream()).filter(f -> f.topic().equals("topic1")).forEach(System.out::println);
+        System.out.println("Metrics : ");
+        consumer.metrics().values().forEach(x -> System.out.println(x.metricName() + " => " + x.value()));
+
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records)
@@ -68,7 +73,76 @@ public class KafkaSampleTest {
     }
 
     @Test
-    public void twitterKafkaConsumer() throws InterruptedException {
+    public void kafkaConsumer1() {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "192.168.99.100:32775");
+        props.put("group.id", "test");
+        props.put("enable.auto.commit", "true");
+        props.put("auto.commit.interval.ms", "1000");
+        props.put("session.timeout.ms", "30000");
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
+        Consumer<String, String> consumer = new KafkaConsumer<>(props);
+        consumer.subscribe(Arrays.asList("topic1"));
+        System.out.println("Topic list : ");
+        consumer.listTopics().values().forEach(System.out::println);
+
+        while (true) {
+            ConsumerRecords<String, String> records = consumer.poll(100);
+            for (ConsumerRecord<String, String> record : records)
+                System.out.println(String.format("offset = %d, key = %s, value = %s", record.offset(), record.key(), record.value()));
+        }
+    }
+
+    @Test
+    public void kafkaConsumer2() {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "192.168.99.100:32775");
+        props.put("group.id", "test");
+        props.put("enable.auto.commit", "true");
+        props.put("auto.commit.interval.ms", "1000");
+        props.put("session.timeout.ms", "30000");
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
+        Consumer<String, String> consumer = new KafkaConsumer<>(props);
+        consumer.subscribe(Arrays.asList("topic1"));
+        System.out.println("Topic list : ");
+        consumer.listTopics().values().forEach(System.out::println);
+
+        while (true) {
+            ConsumerRecords<String, String> records = consumer.poll(100);
+            for (ConsumerRecord<String, String> record : records)
+                System.out.println(String.format("offset = %d, key = %s, value = %s", record.offset(), record.key(), record.value()));
+        }
+    }
+
+    @Test
+    public void kafkaConsumer3() {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "192.168.99.100:32775");
+        props.put("group.id", "test");
+        props.put("enable.auto.commit", "true");
+        props.put("auto.commit.interval.ms", "1000");
+        props.put("session.timeout.ms", "30000");
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
+        Consumer<String, String> consumer = new KafkaConsumer<>(props);
+        consumer.subscribe(Arrays.asList("topic1"));
+        System.out.println("Topic list : ");
+        consumer.listTopics().values().forEach(System.out::println);
+
+        while (true) {
+            ConsumerRecords<String, String> records = consumer.poll(100);
+            for (ConsumerRecord<String, String> record : records)
+                System.out.println(String.format("offset = %d, key = %s, value = %s", record.offset(), record.key(), record.value()));
+        }
+    }
+
+    @Test
+    public void twitterKafkaProducer() throws InterruptedException {
         Properties props = new Properties();
         props.put("bootstrap.servers", "192.168.99.100:32770");
         props.put("acks", "all");
