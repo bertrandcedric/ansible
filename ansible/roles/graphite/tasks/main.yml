@@ -1,0 +1,2 @@
+---
+- debug: msg="installation graphite"
