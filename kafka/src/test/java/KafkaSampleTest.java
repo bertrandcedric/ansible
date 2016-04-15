@@ -162,8 +162,8 @@ public class KafkaSampleTest {
             JSONObject obj = new JSONObject(twitterClient.getQueue().take());
 
             String text = obj.toString();
-            Integer user_id = obj.getJSONObject("user").getInt("id");
-            message = new KeyedMessage<>(topic, user_id.toString(), text);
+            Double user_id = obj.getJSONObject("user").getDouble("id");
+            message = new KeyedMessage<>(topic, String.valueOf(user_id), text);
             producer.send(new ProducerRecord<>(message.topic(), message.key(), message.message()));
         }
 
