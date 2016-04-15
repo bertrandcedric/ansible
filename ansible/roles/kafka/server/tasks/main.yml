@@ -12,7 +12,7 @@
   with_indexed_items: "{{ groups['kafka'] }}"
   when: item.1 == inventory_hostname
 
-- copy: src={{item}} dest=/opt/kafka/libs/{{item}}
+- copy: src={{workspace}}/{{item}} dest=/opt/kafka/libs/{{item}}
   with_items:
     - graphite-assembly-0.1-SNAPSHOT.jar
   become: yes
