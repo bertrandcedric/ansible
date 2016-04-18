@@ -1,2 +1,18 @@
 ---
-- debug: msg="installation graphite"
+- shell: pip install --upgrade pip
+  become: yes
+- shell: pip install https://github.com/graphite-project/ceres/tarball/master
+  become: yes
+#- shell: yum -y install python-whisper
+#  become: yes
+- yum: name=python-carbon state=present
+  become: yes
+- yum: name=graphite-web state=present
+  become: yes
+- template: src="{{item}}" dest="/opt/graphite/conf/{{item}}"
+  with_items:
+    - carbon.conf
+    - storage-schemas.conf
+  become: yes
+- shell: /opt/graphite/bin/carbon-cache.py start
+  become: yes

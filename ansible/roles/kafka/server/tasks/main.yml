@@ -12,6 +12,12 @@
   with_indexed_items: "{{ groups['kafka'] }}"
   when: item.1 == inventory_hostname
 
+- set_fact: graphite_server="{{hostvars[item]['ansible_hostname']}}"
+  with_items:
+    - "{{groups['graphite']}}"
+
+- debug: var=graphite_server
+
 - copy: src={{workspace}}/{{item}} dest=/opt/kafka/libs/{{item}}
   with_items:
     - graphite-assembly-0.1-SNAPSHOT.jar

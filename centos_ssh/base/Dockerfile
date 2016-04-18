@@ -1,10 +1,10 @@
 #FROM centos_proxy
-FROM centos
+FROM centos:7
 
 ARG pwd
 
 RUN yum -y update
-RUN yum install -y initscripts openssh-clients openssh-server sudo nc
+RUN yum install -y epel-release initscripts openssh-clients openssh-server sudo nc python-pip gcc httpd
 
 ADD sshd_config /etc/ssh/sshd_config
 
