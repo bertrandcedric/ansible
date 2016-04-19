@@ -5,3 +5,7 @@ config:
   port: 27019
 sharding:
   chunkSize: 1
+proxy_env:
+  https_proxy: http://noevipncp2n.edf.fr:3128/
+  http_proxy: http://noevipncp2n.edf.fr:3128/
+  no_proxy: localhost

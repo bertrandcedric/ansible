@@ -6,6 +6,7 @@ import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
 import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
+import kafka.admin.ConsumerGroupCommand;
 import kafka.producer.KeyedMessage;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -41,7 +42,7 @@ public class KafkaSampleTest {
 
         Producer<String, String> producer = new KafkaProducer<>(props);
         for (int i = 0; i < 1000; i++)
-            producer.send(new ProducerRecord<>("topic1", Integer.toString(i % 10), Integer.toString(i)));
+            producer.send(new ProducerRecord<>("topic2", Integer.toString(i % 10), Integer.toString(i)));
 
         producer.close();
     }
@@ -50,25 +51,23 @@ public class KafkaSampleTest {
     public void kafkaConsumer() {
         Properties props = new Properties();
         props.put("bootstrap.servers", "192.168.99.100:32775");
-        props.put("group.id", "test");
+        props.put("group.id", "test1");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
         props.put("session.timeout.ms", "30000");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-//        props.put("auto.offset.reset", "latest");
+        props.put("auto.offset.reset", "earliest");
 
-        Consumer<String, String> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Arrays.asList("topic1"));
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+        consumer.subscribe(Arrays.asList("topic2"));
         System.out.println("Topic list : ");
-        consumer.listTopics().values().stream().flatMap(l -> l.stream()).filter(f -> f.topic().equals("topic1")).forEach(System.out::println);
+        consumer.listTopics().values().stream().flatMap(l -> l.stream()).filter(f -> f.topic().equals("topic2")).forEach(System.out::println);
         System.out.println("Metrics : ");
         consumer.metrics().values().forEach(x -> System.out.println(x.metricName() + " => " + x.value()));
-
+        consumer.seekToBeginning();
         while (true) {
-            ConsumerRecords<String, String> records = consumer.poll(100);
-            for (ConsumerRecord<String, String> record : records)
-                System.out.println(String.format("offset = %d, key = %s, value = %s", record.offset(), record.key(), record.value()));
+            consumer.poll(100).forEach(record -> System.out.println(String.format("offset = %d, key = %s, value = %s", record.offset(), record.key(), record.value())));
         }
     }
 

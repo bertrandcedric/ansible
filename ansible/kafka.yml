@@ -8,7 +8,7 @@
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: etc_hosts, machines: all }
+    - { role: etc_hosts, machines: all, tags: [all] }
 
 - hosts: zoo_keeper
   gather_facts: no
@@ -37,7 +37,6 @@
     - { role: jdk, tags: [kafka] }
     - { role: kafka/install, tags: [kafka] }
     - { role: kafka/server, tags: [kafka] }
-
 
 - hosts: client
   gather_facts: no

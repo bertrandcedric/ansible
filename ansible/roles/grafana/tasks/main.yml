@@ -15,9 +15,11 @@
   when: not st.stat.exists
 
 - yum: name=fontconfig state=present
+  environment: "{{proxy_env}}"
   become: yes
 
 - yum: name=/tmp/{{grafana_version}}.rpm state=present
+  environment: "{{proxy_env}}"
   become: yes
 
 - service: name=grafana-server state=restarted

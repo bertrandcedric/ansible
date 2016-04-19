@@ -1,18 +1,65 @@
 ---
+- yum: name=python-pip state=present
+  become: yes
+  environment: "{{proxy_env}}"
 - shell: pip install --upgrade pip
   become: yes
+  environment: "{{proxy_env}}"
+- yum: name=gcc state=present
+  become: yes
+  environment: "{{proxy_env}}"
+- yum: name=python-devel state=present
+  become: yes
+  environment: "{{proxy_env}}"
+- yum: name=libffi-devel state=present
+  become: yes
+  environment: "{{proxy_env}}"
+- yum: name=pycairo state=present
+  become: yes
+  environment: "{{proxy_env}}"
+
 - shell: pip install https://github.com/graphite-project/ceres/tarball/master
   become: yes
-#- shell: yum -y install python-whisper
-#  become: yes
-- yum: name=python-carbon state=present
+  environment: "{{proxy_env}}"
+- shell: pip install whisper
   become: yes
-- yum: name=graphite-web state=present
+  environment: "{{proxy_env}}"
+- shell: pip install carbon
   become: yes
+  environment: "{{proxy_env}}"
+- shell: pip install graphite-web
+  become: yes
+  environment: "{{proxy_env}}"
+- shell: pip install graphite-api
+  become: yes
+  environment: "{{proxy_env}}"
+
+- yum: name=httpd state=present
+  become: yes
+  environment: "{{proxy_env}}"
+- yum: name=mod_wsgi state=present
+  become: yes
+  environment: "{{proxy_env}}"
+
 - template: src="{{item}}" dest="/opt/graphite/conf/{{item}}"
   with_items:
     - carbon.conf
     - storage-schemas.conf
   become: yes
+- copy: src="{{item}}" dest="/opt/graphite/conf/{{item}}"
+  with_items:
+    - graphite-api.wsgi
+  become: yes
+- copy: src="{{item}}" dest="/etc/httpd/conf.d/{{item}}"
+  with_items:
+    - graphite.conf
+  become: yes
+- copy: src="{{item}}" dest="/etc/{{item}}"
+  with_items:
+    - graphite-api.yaml
+  become: yes
+
 - shell: /opt/graphite/bin/carbon-cache.py start
+  become: yes
+- shell: httpd -k restart
   become: yes
