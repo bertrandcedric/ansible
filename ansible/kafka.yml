@@ -8,7 +8,7 @@
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: etc_hosts, machines: all, tags: [all] }
+    - { role: etc_hosts, machines: all, tags: [etc, zookeeper, graphite, grafana, kafka, client] }
 
 - hosts: zoo_keeper
   gather_facts: no

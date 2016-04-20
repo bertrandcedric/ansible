@@ -31,7 +31,7 @@ public class KafkaSampleTest {
     @Test
     public void kafkaProducer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.99.100:32775");
+        props.put("bootstrap.servers", "192.168.99.100:32814");
         props.put("acks", "all");
         props.put("retries", 0);
         props.put("batch.size", 16384);
@@ -50,7 +50,7 @@ public class KafkaSampleTest {
     @Test
     public void kafkaConsumer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.99.100:32775");
+        props.put("bootstrap.servers", "192.168.99.100:32814");
         props.put("group.id", "test1");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");

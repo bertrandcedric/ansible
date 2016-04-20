@@ -59,7 +59,15 @@
     - graphite-api.yaml
   become: yes
 
+- shell: /opt/graphite/bin/carbon-cache.py status
+  become: yes
+  register: carbon_status
+  failed_when: false
 - shell: /opt/graphite/bin/carbon-cache.py start
+  become: yes
+  when: carbon_status.rc != 0
+
+- file: path=/opt/graphite state=directory mode=0777
   become: yes
 - shell: httpd -k restart
   become: yes

@@ -19,6 +19,7 @@
 - file: dest=~/test.txt state=absent
 - file: dest=~/test.sink.txt state=absent
 - shell: /opt/kafka/bin/connect-standalone.sh /opt/connect-standalone.properties /opt/connect-file-sink.properties /opt/connect-file-source.properties &
+  become: yes
   environment:
     CLASSPATH: /opt/kafka-connect.jar
 
