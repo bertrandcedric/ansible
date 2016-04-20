@@ -31,7 +31,7 @@ public class KafkaSampleTest {
     @Test
     public void kafkaProducer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.99.100:32814");
+        props.put("bootstrap.servers", "192.168.99.100:32784");
         props.put("acks", "all");
         props.put("retries", 0);
         props.put("batch.size", 16384);
@@ -50,8 +50,8 @@ public class KafkaSampleTest {
     @Test
     public void kafkaConsumer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.99.100:32814");
-        props.put("group.id", "test1");
+        props.put("bootstrap.servers", "192.168.99.100:32784");
+        props.put("group.id", "test");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
         props.put("session.timeout.ms", "30000");
@@ -59,7 +59,7 @@ public class KafkaSampleTest {
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("auto.offset.reset", "earliest");
 
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+        Consumer<String, String> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList("topic2"));
         System.out.println("Topic list : ");
         consumer.listTopics().values().stream().flatMap(l -> l.stream()).filter(f -> f.topic().equals("topic2")).forEach(System.out::println);

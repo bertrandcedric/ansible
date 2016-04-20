@@ -1,6 +1,6 @@
 javaOptions in run += "-Xmx8192M -XX:MaxPermSize=256M"
 
-//scalaVersion := "2.11.8"
+scalaVersion := "2.11.8"
 
 libraryDependencies ++= Seq(
   "junit" % "junit" % "4.12" % "test",
