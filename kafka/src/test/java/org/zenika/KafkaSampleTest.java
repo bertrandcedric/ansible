@@ -1,10 +1,12 @@
 package org.zenika;
 
+import kafka.producer.KeyedMessage;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -29,7 +31,9 @@ public class KafkaSampleTest {
 
         Producer<String, String> producer = new KafkaProducer<>(props);
         for (int i = 0; i < 10000; i++) {
-            producer.send(new ProducerRecord<>(topic, Integer.toString(i % 10), Integer.toString(i)));
+            JSONObject obj = new JSONObject().put("test", i);
+            KeyedMessage<String, String> message = new KeyedMessage<>(topic, String.valueOf(i % 10), obj.toString());
+            producer.send(new ProducerRecord<>(message.topic(), message.key(), message.message()));
         }
 
         producer.close();
