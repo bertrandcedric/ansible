@@ -1,5 +1,5 @@
-#FROM centos_proxy
-FROM centos:7
+FROM centos_proxy
+#FROM centos:7
 
 ARG pwd
 
