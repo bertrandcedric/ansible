@@ -18,7 +18,7 @@ public class KafkaSampleTest {
     private String topic = "topic2";
 
     @Test
-    public void kafkaProducer() {
+    public void kafkaProducer() throws InterruptedException {
         Properties props = new Properties();
         props.put("bootstrap.servers", bootstrap_servers);
         props.put("acks", "all");
@@ -30,7 +30,8 @@ public class KafkaSampleTest {
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
         Producer<String, String> producer = new KafkaProducer<>(props);
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000000; i++) {
+            Thread.sleep(Double.valueOf(Math.random() * 400).longValue());
             JSONObject obj = new JSONObject().put("test", i);
             KeyedMessage<String, String> message = new KeyedMessage<>(topic, String.valueOf(i % 10), obj.toString());
             producer.send(new ProducerRecord<>(message.topic(), message.key(), message.message()));
@@ -59,7 +60,7 @@ public class KafkaSampleTest {
 //        consumer.metrics().values().forEach(x -> System.out.println(x.metricName() + " => " + x.value()));
         consumer.seekToBeginning();
         while (true) {
-            consumer.poll(100).forEach(record -> System.out.println(String.format("offset = %d, key = %s, value = %s", record.offset(), record.key(), record.value())));
+            consumer.poll(1).forEach(record -> System.out.println(String.format("offset = %d, key = %s, value = %s", record.offset(), record.key(), record.value())));
         }
     }
 }
