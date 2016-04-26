@@ -31,7 +31,7 @@ public class KafkaSampleTest {
 
         Producer<String, String> producer = new KafkaProducer<>(props);
         for (int i = 0; i < 1000000; i++) {
-            Thread.sleep(Double.valueOf(Math.random() * 400).longValue());
+            Thread.sleep(Double.valueOf(Math.random() * 100).longValue());
             JSONObject obj = new JSONObject().put("test", i);
             KeyedMessage<String, String> message = new KeyedMessage<>(topic, String.valueOf(i % 10), obj.toString());
             producer.send(new ProducerRecord<>(message.topic(), message.key(), message.message()));
