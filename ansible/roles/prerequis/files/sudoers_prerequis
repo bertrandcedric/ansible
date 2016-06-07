@@ -1,1 +1,3 @@
 deploy ALL=(ALL) NOPASSWD:ALL
+
+Defaults:deploy !requiretty

@@ -1,0 +1,26 @@
+---
+# Gather facts to be able to use them in next plays
+- hosts: all
+  gather_facts: yes
+  remote_user: deploy
+
+- hosts: all
+  gather_facts: no
+  remote_user: deploy
+  roles:
+   - { role: etc_hosts, machines: all }
+
+- hosts: client
+  gather_facts: no
+  remote_user: deploy
+  roles:
+   - { role: jdk, tags: [jdk] }
+   - { role: cassandra/install, tags: [cassandra] }
+
+- hosts: cassandra
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: jdk, tags: [jdk] }
+    - { role: cassandra/install, tags: [cassandra] }
+    - { role: cassandra/server, tags: [cassandra] }

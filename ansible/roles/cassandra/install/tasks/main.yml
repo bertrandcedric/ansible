@@ -1,0 +1,33 @@
+---
+- get_url: 
+    url: "{{cassandra_url}}"
+    mode: 0644
+    force: no
+    validate_certs: no
+    dest: "{{workspace}}/cassandra-{{cassandra_version}}.tar.gz"
+  delegate_to: localhost
+  run_once: true
+
+- stat: 
+    path: "/opt/cassandra-{{cassandra_version}}"
+  register: st
+  become: yes
+
+- unarchive:
+    src: "{{workspace}}/cassandra-{{cassandra_version}}.tar.gz"
+    dest: "/opt"
+  become: yes
+  when: not st.stat.exists
+
+- file:
+    src: "/opt/apache-cassandra-{{cassandra_version}}"
+    dest: "/opt/cassandra"
+    state: link
+  become: yes
+
+- lineinfile:
+    dest: "/home/deploy/.bashrc"
+    line: 'export PATH=$PATH:/opt/cassandra/bin'
+    insertafter: 'EOF'
+    regexp: 'export PATH=\$PATH:/opt/cassandra/bin'
+    state: present

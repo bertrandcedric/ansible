@@ -1,0 +1,37 @@
+---
+- block:
+  - set_fact: 
+      node_name: "{{ hostvars[item]['ansible_nodename'] }}"
+    with_items:
+      - "{{groups['cassandra']}}"
+    register: nodes_name
+  - set_fact: 
+      seeds: "{{ nodes_name.results | map(attribute='ansible_facts.node_name') | join(',') }}"
+  delegate_to: localhost
+  run_once: true
+- name: Create the cassandra.yaml file
+  template: 
+    src: cassandra.yaml.j2 
+    dest: /opt/cassandra/conf/cassandra.yaml
+  become: yes
+
+- name: create folder structure
+  file:
+    path: "/opt/cassandra/{{item}}"
+    mode: 0777
+    state: directory
+  with_items:
+    - data/data
+    - data/commitlog
+    - data/saved_caches
+    - data/hints
+    - logs
+  become: yes
+
+- shell: "pgrep java"
+  register: proc_cassandra
+  failed_when: false
+- name: Launch cassandra
+  shell: cassandra
+  register: log
+  when: proc_cassandra.rc == 1

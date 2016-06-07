@@ -1,19 +1,27 @@
 ---
-- group: name=deploy state=present
+- group: 
+    name: deploy 
+    state: present
   become: yes
-- user: name=deploy group=deploy
+- user: 
+    name: deploy 
+    group: deploy
   become: yes
-- authorized_key: user=deploy key="{{public_ssh_key}}"
+- authorized_key: 
+    user: deploy 
+    key: "{{public_ssh_key}}"
   become: yes
-- copy: src=sudoers_prerequis
-    dest=/etc/sudoers.d/sudoers_prerequis
-    owner=root
-    group=root
-    mode=0440
-    backup=yes
-    validate='/usr/sbin/visudo -cf %s'
+- copy: 
+    src: sudoers_prerequis
+    dest: /etc/sudoers.d/sudoers_prerequis
+    owner: root
+    group: root
+    mode: 0440
+    backup: yes
+    validate: '/usr/sbin/visudo -cf %s'
   become: yes
-- file: path={{workspace}}
-    state=directory
+- file: 
+    path: "{{workspace}}"
+    state: directory
   delegate_to: localhost
   run_once: true

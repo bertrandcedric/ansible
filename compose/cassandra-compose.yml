@@ -1,0 +1,12 @@
+version: '2'
+services:
+  cassandra:
+    image: centos_ssh
+    ports:
+      - "22"
+      - "7199"
+
+  client:
+    image: centos_ssh
+    ports:
+      - "22"

@@ -37,9 +37,11 @@
 - yum: name=httpd state=present
   become: yes
   environment: "{{proxy_env}}"
+  failed_when: false
 - yum: name=mod_wsgi state=present
   become: yes
   environment: "{{proxy_env}}"
+  failed_when: false
 
 - template: src="{{item}}" dest="/opt/graphite/conf/{{item}}"
   with_items:

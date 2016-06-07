@@ -1,5 +1,5 @@
 ---
-workspace: /tmp/ansible
+workspace: ~/workspace/tmp_ansible
 config:
   name: configReplSet
   port: 27019

@@ -1,21 +1,26 @@
 ---
-- get_url: url="{{jdk_url}}"
-    mode=0644
-    force=no
-    validate_certs=no
-    dest="{{workspace}}/{{jdk_version}}.rpm"
+- get_url: 
+    url: "{{jdk_url}}"
+    mode: 0644
+    force: no
+    validate_certs: no
+    headers: "Cookie:oraclelicense=accept-securebackup-cookie"
+    dest: "{{workspace}}/{{jdk_version}}.rpm"
   delegate_to: localhost
   run_once: true
 
-- stat: path="/tmp/{{jdk_version}}.rpm"
+- stat: 
+    path: "/tmp/{{jdk_version}}.rpm"
   register: st
   become: yes
 
-- copy: src="{{workspace}}/{{jdk_version}}.rpm" dest="/tmp/{{jdk_version}}.rpm" mode=777
+- copy: 
+    src: "{{workspace}}/{{jdk_version}}.rpm" 
+    dest: "/tmp/{{jdk_version}}.rpm" 
+    mode: 777
   when: not st.stat.exists
 
-- yum: name=/tmp/{{jdk_version}}.rpm state=present
+- yum: 
+    name: /tmp/{{jdk_version}}.rpm 
+    state: present
   become: yes
-
-#- shell: rpm -i --replacepkgs /tmp/{{jdk_version}}.rpm
-#  become: yes

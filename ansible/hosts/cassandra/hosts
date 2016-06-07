@@ -1,0 +1,39 @@
+#!/bin/bash
+
+NAME=cassandra
+NUMBER_OF_MACHINE=$NB_MACHINE
+
+docker_ip=127.0.0.1
+#docker_ip=$(docker-machine ip dev)
+
+port=$(docker port ${NAME}_client_1 22| sed 's/.*://')
+machine_host="${machine_host} \"client\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
+
+i=1
+while [ $i -lt $NUMBER_OF_MACHINE ]
+do
+    cassandra="${cassandra} \"cassandra_$i\", "
+    port=$(docker port ${NAME}_cassandra_$i 22| sed 's/.*://')
+    machine_host="${machine_host} \"cassandra_$i\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}, "
+    i=$[$i+1]
+done
+
+cassandra="${cassandra} \"cassandra_$NUMBER_OF_MACHINE\""
+port=$(docker port ${NAME}_cassandra_$NUMBER_OF_MACHINE 22| sed 's/.*://')
+machine_host="${machine_host} \"cassandra_$NUMBER_OF_MACHINE\": {\"ansible_ssh_host\": \"$docker_ip\", \"ansible_ssh_port\": \"$port\"}"
+
+cat << EOF
+{
+  "client": {
+    "hosts": [ "client" ]
+  },
+  "cassandra": {
+    "hosts": [ $cassandra ]
+  },
+  "_meta": {
+    "hostvars": {
+      $machine_host
+    }
+  }
+}
+EOF
