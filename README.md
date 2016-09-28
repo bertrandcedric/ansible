@@ -42,7 +42,8 @@ git submodule update --init --recursive
 
 ### Test ansible sur une vm docker
 ```
-docker-compose -p sample scale client=1 replica=3 config=3 sharding=1
+docker network create mongo_default
+docker-compose -p mongo scale client=1 replica=3 config=3 sharding=1
 
 ansible -m ping -i hosts/hosts all -u root -k
 ansible-playbook sample.yml -i hosts/hosts -u root -k

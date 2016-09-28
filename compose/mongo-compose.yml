@@ -1,26 +1,28 @@
-client:
-  image: centos_ssh
-  ports:
-    - "22"
-    - "8080"
+version: '2'
+services:
+  client:
+    image: centos_ssh
+    ports:
+      - "22"
+      - "8080"
 
-config:
-  image: centos_ssh
-  ports:
-    - "22"
-    - "8080"
+  config:
+    image: centos_ssh
+    ports:
+      - "22"
+      - "8080"
 
-sharding:
-  image: centos_ssh
-  ports:
-    - "22"
-    - "8080"
-    - "27017"
+  sharding:
+    image: centos_ssh
+    ports:
+      - "22"
+      - "8080"
+      - "27017"
 
-replica:
-  image: centos_ssh
-  ports:
-    - "22"
-    - "8080"
-    - "27017"
-    - "27018"
+  replica:
+    image: centos_ssh
+    ports:
+      - "22"
+      - "8080"
+      - "27017"
+      - "27018"

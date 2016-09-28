@@ -1,5 +1,5 @@
 #!/bin/bash
-PROJECT=$1
+PROJECT=${ENV_PROJECT}
 HOST=127.0.0.1
 SERVICES=$(docker-compose -f compose/${PROJECT}-compose.yml -p ${PROJECT} config --services | tr " " "\n")
 
