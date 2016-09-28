@@ -4,12 +4,6 @@ client:
     - "22"
     - "8080"
 
-server:
-  image: centos_ssh
-  ports:
-    - "22"
-    - "8080"
-
 config:
   image: centos_ssh
   ports:

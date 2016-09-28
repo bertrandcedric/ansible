@@ -1,0 +1,17 @@
+---
+# Gather facts to be able to use them in next plays
+- hosts: all
+  gather_facts: yes
+  remote_user: deploy
+
+- hosts: all
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: etc_hosts, machines: all, tags: [etc, zookeeper, graphite, grafana, kafka, client] }
+
+- hosts: hadoop
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: jdk }

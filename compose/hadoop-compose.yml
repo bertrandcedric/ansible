@@ -1,0 +1,9 @@
+master:
+  image: centos_ssh
+  ports:
+    - "22"
+
+slave:
+  image: centos_ssh
+  ports:
+    - "22"
