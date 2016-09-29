@@ -1,4 +1,7 @@
 ---
+- yum: name=which state=present
+  become: yes
+
 - get_url:
     url: "{{hadoop_url}}"
     mode: 0644

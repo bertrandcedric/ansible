@@ -1,17 +1,26 @@
 ---
-- group: 
-    name: deploy 
+- group:
+    name: deploy
     state: present
   become: yes
-- user: 
-    name: deploy 
+- user:
+    name: deploy
     group: deploy
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
   become: yes
-- authorized_key: 
-    user: deploy 
+- fetch: src=/home/deploy/.ssh/id_rsa.pub dest={{workspace}}/fetch
+  become: yes
+- authorized_key:
+    user: deploy
+    key: "{{ lookup('file', '{{workspace}}/fetch/{{inventory_hostname}}/home/deploy/.ssh/id_rsa.pub') }}"
+  become: yes
+- authorized_key:
+    user: deploy
     key: "{{public_ssh_key}}"
   become: yes
-- copy: 
+- copy:
     src: sudoers_prerequis
     dest: /etc/sudoers.d/sudoers_prerequis
     owner: root
@@ -20,7 +29,7 @@
     backup: yes
     validate: '/usr/sbin/visudo -cf %s'
   become: yes
-- file: 
+- file:
     path: "{{workspace}}"
     state: directory
   delegate_to: localhost
