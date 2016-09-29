@@ -4,13 +4,19 @@
   gather_facts: yes
   remote_user: deploy
 
-- hosts: all
+#- hosts: all
+#  gather_facts: no
+#  remote_user: deploy
+#  roles:
+#    - { role: etc_hosts, machines: all }
+
+- hosts: master
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: etc_hosts, machines: all, tags: [etc, zookeeper, graphite, grafana, kafka, client] }
+    - { role: jdk }
 
-- hosts: hadoop
+- hosts: slave
   gather_facts: no
   remote_user: deploy
   roles:
