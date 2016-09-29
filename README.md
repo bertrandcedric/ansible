@@ -34,11 +34,9 @@ docker network rm kafka_default
 docker network create kafka_default
 docker-compose -f compose/kafka-compose.yml -p kafka scale kafka=2 zoo_keeper=1 graphite=1 grafana=1 client=1
 
-export ENV_PROJECT=kafka
+ENV_PROJECT=kafka ansible -m ping -i hosts/hosts all -u root -k
 
-ansible -m ping -i hosts/hosts all -u root -k
+ENV_PROJECT=kafka ansible-playbook prerequis.yml -i hosts/hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k
 
-ansible-playbook prerequis.yml -i hosts/hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k
-
-ansible -m debug -a "var=hostvars[inventory_hostname]" -i hosts/hosts all -u deploy
+ENV_PROJECT=kafka ansible -m debug -a "var=hostvars[inventory_hostname]" -i hosts/hosts all -u deploy
 ```
