@@ -26,6 +26,5 @@
     - { role: hadoop/core, tags: [core] }
     - { role: hadoop/slave, tags: [slave] }
 
-
 # Faire un format du cluster => hdfs namenode -format
-# Demarrer le cluster (attention à l'autorisation des clefs) => start-dfs.sh / start-yarn.sh
+# Démarrage sur le master (attention à l'autorisation des clefs) => start-dfs.sh / start-yarn.sh / mr-jobhistory-daemon.sh start historyserver
