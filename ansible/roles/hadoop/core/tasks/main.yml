@@ -1,5 +1,50 @@
 ---
+- yum: name=which state=present
+  become: yes
 
+- get_url:
+    url: "{{hadoop_url}}"
+    mode: 0644
+    force: no
+    validate_certs: no
+    dest: "{{workspace}}/hadoop-{{hadoop_version}}.tar.gz"
+  delegate_to: localhost
+  run_once: true
+
+- stat: path="/usr/local/hadoop"
+  register: st
+
+- unarchive:
+    src: "{{workspace}}/hadoop-{{hadoop_version}}.tar.gz"
+    dest: "/opt"
+    owner: deploy
+    group: deploy
+  when: not st.stat.exists
+  become: yes
+
+- file:
+    src: "/opt/hadoop-{{hadoop_version}}"
+    dest: "/usr/local/hadoop"
+    owner: deploy
+    group: deploy
+    state: link
+  become: yes
+
+- blockinfile:
+    dest: /home/deploy/.bashrc
+    block: |
+      #HADOOP VARIABLES START
+      export JAVA_HOME={{JAVA_HOME}}
+      export HADOOP_INSTALL=/usr/local/hadoop
+      export PATH=$PATH:$HADOOP_INSTALL/bin
+      export PATH=$PATH:$HADOOP_INSTALL/sbin
+      export HADOOP_MAPRED_HOME=$HADOOP_INSTALL
+      export HADOOP_COMMON_HOME=$HADOOP_INSTALL
+      export HADOOP_HDFS_HOME=$HADOOP_INSTALL
+      export YARN_HOME=$HADOOP_INSTALL
+      export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native
+      export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib"
+      #HADOOP VARIABLES END
 
 - template: src="{{item}}" dest="/usr/local/hadoop/etc/hadoop/{{item}}"
   with_items:
