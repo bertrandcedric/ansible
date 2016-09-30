@@ -12,3 +12,5 @@
   become: yes
 
 - fetch: src=/home/deploy/.ssh/id_rsa.pub dest={{workspace}}/fetch
+
+- copy: src=hadoop-mapreduce-examples-2.7.3.jar dest=/tmp/hadoop-mapreduce-examples-2.7.3.jar owner=deploy group=deploy
