@@ -15,12 +15,20 @@
 -->
 
 <configuration>
-  <property>
-     <name>yarn.nodemanager.aux-services</name>
-     <value>mapreduce_shuffle</value>
-  </property>
-  <property>
-     <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
-     <value>org.apache.hadoop.mapred.ShuffleHandler</value>
-  </property>
+   <property>
+     <name>dfs.permissions</name>
+     <value>{{hadoop_dfs_permissions}}</value>
+   </property>
+   <property>
+     <name>dfs.replication</name>
+     <value>{{hadoop_dfs_replication}}</value>
+   </property>
+   <property>
+     <name>dfs.namenode.name.dir</name>
+     <value>file:/usr/local/hadoop_store/hdfs/namenode</value>
+   </property>
+   <property>
+     <name>dfs.datanode.data.dir</name>
+     <value>file:/usr/local/hadoop_store/hdfs/datanode</value>
+   </property>
 </configuration>

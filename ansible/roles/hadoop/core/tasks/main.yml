@@ -13,17 +13,20 @@
 
 - stat: path="/usr/local/hadoop"
   register: st
-  become: yes
 
 - unarchive:
     src: "{{workspace}}/hadoop-{{hadoop_version}}.tar.gz"
     dest: "/opt"
-  become: yes
+    owner: deploy
+    group: deploy
   when: not st.stat.exists
+  become: yes
 
 - file:
     src: "/opt/hadoop-{{hadoop_version}}"
     dest: "/usr/local/hadoop"
+    owner: deploy
+    group: deploy
     state: link
   become: yes
 
@@ -42,3 +45,11 @@
       export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native
       export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib"
       #HADOOP VARIABLES END
+
+- template: src="{{item}}" dest="/usr/local/hadoop/etc/hadoop/{{item}}"
+  with_items:
+    - hadoop-env.sh
+    - core-site.xml
+    - hdfs-site.xml
+    - mapred-site.xml
+    - yarn-site.xml

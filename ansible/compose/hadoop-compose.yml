@@ -5,6 +5,7 @@ services:
     image: centos_ssh
     ports:
       - "22"
+      - "50070"
 
   slave:
     image: centos_ssh

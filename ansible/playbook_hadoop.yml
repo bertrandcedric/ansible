@@ -15,4 +15,13 @@
   remote_user: deploy
   roles:
     - { role: jdk }
-    - { role: hadoop }
+    - { role: hadoop/core, tags: [core] }
+    - { role: hadoop/master, tags: [master] }
+
+- hosts: slave
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: jdk }
+    - { role: hadoop/core, tags: [core] }
+    - { role: hadoop/slave, tags: [slave] }

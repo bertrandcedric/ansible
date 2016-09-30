@@ -16,7 +16,7 @@
 
 <configuration>
   <property>
-     <name>fs.default.name</name>
-     <value>hdfs://localhost:9000</value>
+     <name>fs.defaultFS</name>
+     <value>hdfs://{{hostvars[groups['master'][0]]['ansible_hostname']}}:9000</value>
   </property>
 </configuration>

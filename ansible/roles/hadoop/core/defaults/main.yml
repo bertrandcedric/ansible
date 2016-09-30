@@ -1,3 +1,5 @@
+JAVA_HOME: /usr/java/jdk1.8.0_92/jre
 hadoop_url: http://apache.crihan.fr/dist/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz
 hadoop_version: 2.7.3
-JAVA_HOME: /usr/java/jdk1.8.0_92/jre
+hadoop_dfs_replication: 3
+hadoop_dfs_permissions: false

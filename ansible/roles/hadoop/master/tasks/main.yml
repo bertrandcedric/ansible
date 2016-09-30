@@ -1,0 +1,14 @@
+---
+- template: src="{{item}}" dest="/usr/local/hadoop/etc/hadoop/{{item}}"
+  with_items:
+    - masters
+    - slaves
+
+- file:
+    path=/usr/local/hadoop_store/hdfs/namenode
+    owner=deploy
+    group=deploy
+    state=directory
+  become: yes
+
+- fetch: src=/home/deploy/.ssh/id_rsa.pub dest={{workspace}}/fetch

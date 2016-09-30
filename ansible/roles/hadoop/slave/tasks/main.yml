@@ -1,0 +1,18 @@
+---
+- set_fact:
+   local_master_repository: "{{workspace}}/fetch/{{hostvars[groups['master'][0]]['inventory_hostname']}}"
+- authorized_key:
+    user: deploy
+    key: "{{ lookup('file', '{{local_master_repository}}/home/deploy/.ssh/id_rsa.pub') }}"
+
+- file:
+    path=/usr/local/hadoop_store/hdfs/datanode
+    owner=deploy
+    group=deploy
+    state=directory
+  become: yes
+
+- template: src="{{item}}" dest="/usr/local/hadoop/etc/hadoop/{{item}}"
+  with_items:
+    - masters
+    - slaves
