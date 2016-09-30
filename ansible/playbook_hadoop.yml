@@ -28,3 +28,4 @@
 
 # Faire un format du cluster => hdfs namenode -format
 # Démarrage sur le master (attention à l'autorisation des clefs) => start-dfs.sh / start-yarn.sh / mr-jobhistory-daemon.sh start historyserver
+# Test mapRed => hadoop jar /tmp/hadoop-mapreduce-examples-2.7.3.jar pi  2 5
