@@ -1,0 +1,42 @@
+---
+- get_url:
+    url: "{{hive_url}}"
+    mode: 0644
+    force: no
+    validate_certs: no
+    dest: "{{workspace}}/hive-{{hive_version}}.tar.gz"
+  delegate_to: localhost
+  run_once: true
+
+- stat:
+    path: "/tmp/hive-{{hive_version}}.tar.gz"
+  register: st
+  become: yes
+
+- unarchive:
+    src: "{{workspace}}/hive-{{hive_version}}.tar.gz"
+    dest: "/opt"
+    owner: deploy
+    group: deploy
+  when: not st.stat.exists
+  become: yes
+
+- file:
+    src: "/opt/apache-hive-{{hive_version}}-bin"
+    dest: "/opt/hive"
+    owner: deploy
+    group: deploy
+    state: link
+  become: yes
+
+- blockinfile:
+    dest: /home/deploy/.bashrc
+    marker: "#{mark} ANSIBLE HIVE MANAGED BLOCK"
+    block: |
+      #HIVE VARIABLES START
+      export HIVE_HOME=/opt/hive
+      export PATH=$HIVE_HOME/bin:$PATH
+      #HIVE VARIABLES END
+
+# init metastore => schematool -dbType derby -initSchema
+# lancement de hive => hive

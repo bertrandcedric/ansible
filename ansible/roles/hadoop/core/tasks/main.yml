@@ -32,6 +32,7 @@
 
 - blockinfile:
     dest: /home/deploy/.bashrc
+    marker: "#{mark} ANSIBLE HADOOP MANAGED BLOCK"
     block: |
       #HADOOP VARIABLES START
       export JAVA_HOME={{JAVA_HOME}}

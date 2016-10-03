@@ -13,3 +13,8 @@ services:
     image: centos_ssh
     ports:
       - "22"
+
+  hive:
+    image: centos_ssh
+    ports:
+      - "22"
