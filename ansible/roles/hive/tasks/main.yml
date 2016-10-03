@@ -38,5 +38,19 @@
       export PATH=$HIVE_HOME/bin:$PATH
       #HIVE VARIABLES END
 
+#
 # init metastore => schematool -dbType derby -initSchema
 # lancement de hive => hive
+#
+# CREATE TABLE IF NOT EXISTS employee ( eid int, name String, salary String, destination String) COMMENT 'Employee details' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' STORED AS TEXTFILE;
+#
+#1201,Gopal,45000,Technical manager
+#1202,Manisha,45000,Proof reader
+#1203,Masthanvali,40000,Technical writer
+#1204,Kiran,40000,Hr Admin
+#1205,Kranthi,30000,Op Admin
+#
+# LOAD DATA LOCAL INPATH '/home/deploy/sample.txt' OVERWRITE INTO TABLE employee;
+#
+# select * from employee where salary > 40000;
+#
