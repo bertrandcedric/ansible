@@ -14,16 +14,16 @@
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: jdk }
-    - { role: hadoop/core, tags: [core] }
+    - { role: jdk, tags: [master, jdk] }
+    - { role: hadoop/core, tags: [master, core] }
     - { role: hadoop/master, tags: [master] }
 
 - hosts: slave
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: jdk }
-    - { role: hadoop/core, tags: [core] }
+    - { role: jdk, tags: [slave, jdk] }
+    - { role: hadoop/core, tags: [slave, core] }
     - { role: hadoop/slave, tags: [slave] }
 
 # Faire un format du cluster => hdfs namenode -format
@@ -34,6 +34,6 @@
   gather_facts: no
   remote_user: deploy
   roles:
-    - { role: jdk }
-    - { role: hadoop/core, tags: [hive] }
+    - { role: jdk, tags: [hive, jdk] }
+    - { role: hadoop/core, tags: [hive, core] }
     - { role: hive, tags: [hive] }

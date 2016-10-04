@@ -6,13 +6,15 @@
     key: "{{ lookup('file', '{{local_master_repository}}/home/deploy/.ssh/id_rsa.pub') }}"
 
 - file:
-    path=/usr/local/hadoop_store/hdfs/datanode
-    owner=deploy
-    group=deploy
-    state=directory
+    path: /usr/local/hadoop_store/hdfs/datanode
+    owner: deploy
+    group: deploy
+    state: directory
   become: yes
 
-- template: src="{{item}}" dest="/usr/local/hadoop/etc/hadoop/{{item}}"
+- template:
+    src: "{{item}}"
+    dest: "/usr/local/hadoop/etc/hadoop/{{item}}"
   with_items:
     - masters
     - slaves

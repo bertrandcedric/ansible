@@ -47,7 +47,9 @@
       export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib"
       #HADOOP VARIABLES END
 
-- template: src="{{item}}" dest="/usr/local/hadoop/etc/hadoop/{{item}}"
+- template:
+    src: "{{item}}"
+    dest: "/usr/local/hadoop/etc/hadoop/{{item}}"
   with_items:
     - hadoop-env.sh
     - core-site.xml

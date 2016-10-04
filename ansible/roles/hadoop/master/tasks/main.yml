@@ -1,16 +1,24 @@
 ---
-- template: src="{{item}}" dest="/usr/local/hadoop/etc/hadoop/{{item}}"
+- template:
+    src: "{{item}}"
+    dest: "/usr/local/hadoop/etc/hadoop/{{item}}"
   with_items:
     - masters
     - slaves
 
 - file:
-    path=/usr/local/hadoop_store/hdfs/namenode
-    owner=deploy
-    group=deploy
-    state=directory
+    path: /usr/local/hadoop_store/hdfs/namenode
+    owner: deploy
+    group: deploy
+    state: directory
   become: yes
 
-- fetch: src=/home/deploy/.ssh/id_rsa.pub dest={{workspace}}/fetch
+- fetch:
+    src: /home/deploy/.ssh/id_rsa.pub
+    dest: "{{workspace}}/fetch"
 
-- copy: src=hadoop-mapreduce-examples-2.7.3.jar dest=/tmp/hadoop-mapreduce-examples-2.7.3.jar owner=deploy group=deploy
+- copy:
+    src: hadoop-mapreduce-examples-2.7.3.jar
+    dest: /tmp/hadoop-mapreduce-examples-2.7.3.jar
+    owner: deploy
+    group: deploy

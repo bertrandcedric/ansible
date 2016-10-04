@@ -38,9 +38,36 @@
       export PATH=$HIVE_HOME/bin:$PATH
       #HIVE VARIABLES END
 
+- template:
+    src: "{{item}}"
+    dest: "/opt/hive/conf/{{item}}"
+    owner: deploy
+    group: deploy
+  with_items:
+    - hive-site.xml
+    - tez-site.xml
+  become: yes
+
+- copy:
+    src: "tez/"
+    dest: "/opt/hive/lib"
+    owner: deploy
+    group: deploy
+  become: yes
+
+- copy:
+    src: "tez.tar.gz"
+    dest: "/tmp"
+    owner: deploy
+    group: deploy
+  become: yes
+
+#
+# hadoop dfs -mkdir /apps/tez
+# hadoop dfs -copyFromLocal /tmp/tez.tar.gz /apps/tez/
 #
 # init metastore => schematool -dbType derby -initSchema
-# lancement de hive => hive
+# lancement de hive server => hive
 #
 # CREATE TABLE IF NOT EXISTS employee ( eid int, name String, salary String, destination String) COMMENT 'Employee details' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' STORED AS TEXTFILE;
 #
@@ -52,5 +79,5 @@
 #
 # LOAD DATA LOCAL INPATH '/home/deploy/sample.txt' OVERWRITE INTO TABLE employee;
 #
-# select * from employee where salary > 40000;
+# hive -e 'select * from employee where salary > 40000;'
 #
