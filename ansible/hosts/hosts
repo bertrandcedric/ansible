@@ -5,7 +5,7 @@ SERVICES=$(docker-compose -f compose/${PROJECT}-compose.yml -p ${PROJECT} config
 
 for SERVICE in $SERVICES
 do
-    NB_MACHINES=$(docker-compose -f compose/${PROJECT}-compose.yml -p ${PROJECT} ps | grep ${PROJECT}_${SERVICE} | wc -l)
+    NB_MACHINES=$(docker-compose -f compose/${PROJECT}-compose.yml -p ${PROJECT} ps | grep Up | grep ${PROJECT}_${SERVICE} | wc -l)
     SERVICE_NAME="${SERVICE_NAME} \"${SERVICE}\":{ \"hosts\": ["
     i=1
     while [ $i -le ${NB_MACHINES} ]
