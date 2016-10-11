@@ -1,0 +1,57 @@
+---
+- get_url:
+    url: "{{hbase_url}}"
+    mode: 0644
+    force: no
+    validate_certs: no
+    dest: "{{workspace}}/hbase-{{hbase_version}}.tar.gz"
+  delegate_to: localhost
+  run_once: true
+
+- stat:
+    path: "/opt/hbase"
+  register: st
+  become: yes
+
+- unarchive:
+    src: "{{workspace}}/hbase-{{hbase_version}}.tar.gz"
+    dest: "/opt"
+    owner: deploy
+    group: deploy
+  when: not st.stat.exists
+  become: yes
+
+- file:
+    src: "/opt/hbase-{{hbase_version}}"
+    dest: "/opt/hbase"
+    owner: deploy
+    group: deploy
+    state: link
+  become: yes
+
+- template:
+    src: "{{item}}"
+    dest: "/opt/hbase/conf/{{item}}"
+    owner: deploy
+    group: deploy
+  with_items:
+    - hbase-site.xml
+  become: yes
+
+- file:
+    path: /opt/hbase/logs
+    state: directory
+    owner: deploy
+    group: deploy
+  become: yes
+
+# /opt/hbase/bin/start-hbase.sh
+# /opt/hbase/bin/hbase shell
+# create 'test', 'cf'
+# list 'test'
+# put 'test', 'row1', 'cf:a', 'value1'
+# put 'test', 'row2', 'cf:b', 'value2'
+# put 'test', 'row3', 'cf:c', 'value3'
+# scan 'test'
+# get 'test', 'row1'
+# drop 'test'

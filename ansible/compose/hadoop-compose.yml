@@ -8,13 +8,16 @@ services:
       - "50070"
       - "8088"
       - "19888"
-
   slave:
     image: centos_ssh
     ports:
       - "22"
-
   hive:
+    image: centos_ssh
+    ports:
+      - "22"
+      - "10002"
+  hbase:
     image: centos_ssh
     ports:
       - "22"

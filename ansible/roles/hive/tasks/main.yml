@@ -9,7 +9,7 @@
   run_once: true
 
 - stat:
-    path: "/tmp/hive-{{hive_version}}.tar.gz"
+    path: "/opt/hive"
   register: st
   become: yes
 

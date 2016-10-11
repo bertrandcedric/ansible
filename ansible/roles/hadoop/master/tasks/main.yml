@@ -22,3 +22,12 @@
     dest: /tmp/hadoop-mapreduce-examples-2.7.3.jar
     owner: deploy
     group: deploy
+
+- shell: start-dfs.sh
+  args:
+    chdir: "/home/deploy"
+    executable: /bin/bash
+  register: log-start-dfs
+
+- debug:
+    var: log-start-dfs
