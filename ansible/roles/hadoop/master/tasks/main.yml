@@ -27,7 +27,8 @@
   args:
     chdir: "/home/deploy"
     executable: /bin/bash
-  register: log-start-dfs
+  register: logStartDfs
+  changed_when: logStartDfs.stdout.find('starting datanode') != -1
 
 - debug:
-    var: log-start-dfs
+    var: logStartDfs.stdout_lines
