@@ -45,7 +45,16 @@
     group: deploy
   become: yes
 
-# /opt/hbase/bin/start-hbase.sh
+- shell: /opt/hbase/bin/start-hbase.sh
+  args:
+    chdir: "/home/deploy"
+    executable: /bin/bash
+  register: logStartHBase
+  changed_when: logStartHBase.stdout.find('starting') != -1
+
+- debug:
+    var: logStartHBase.stdout_lines
+
 # /opt/hbase/bin/hbase shell
 # create 'test', 'cf'
 # list 'test'
