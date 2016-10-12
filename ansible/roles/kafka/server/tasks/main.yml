@@ -18,10 +18,10 @@
 
 - debug: var=graphite_server
 
-- copy: src={{workspace}}/{{item}} dest=/opt/kafka/libs/{{item}}
-  with_items:
-    - graphite-assembly-0.1-SNAPSHOT.jar
-  become: yes
+#- copy: src={{workspace}}/{{item}} dest=/opt/kafka/libs/{{item}}
+#  with_items:
+#    - graphite-assembly-0.1-SNAPSHOT.jar
+#  become: yes
 
 - template: src=server.properties.j2 dest=/opt/kafka/config/server.properties
   become: yes
