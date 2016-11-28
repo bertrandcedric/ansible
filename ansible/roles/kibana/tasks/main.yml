@@ -41,5 +41,5 @@
   with_items:
     - "elastic/sense"
 
-- name: demarrage kibana
-  shell: "/opt/kibana/bin/kibana"
+# - name: demarrage kibana
+#   shell: "/opt/kibana/bin/kibana"

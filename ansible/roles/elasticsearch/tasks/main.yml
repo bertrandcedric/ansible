@@ -40,6 +40,15 @@
     group: deploy
   become: yes
 
+- stat:
+    path: "/opt/elasticsearch/elasticsearch.pid"
+  register: elasticsearch_st
+  become: yes
+
+- name: arret elasticsearch
+  shell: "kill `cat /opt/elasticsearch/elasticsearch.pid`"
+  when: elasticsearch_st.stat.exists
+
 - name: remove plugin
   shell: "/opt/elasticsearch/bin/plugin remove {{item}}"
   with_items:
@@ -51,15 +60,6 @@
   with_items:
     - "mobz/elasticsearch-head"
     - "lmenezes/elasticsearch-kopf"
-
-- stat:
-    path: "/opt/elasticsearch/elasticsearch.pid"
-  register: elasticsearch_st
-  become: yes
-
-- name: arret elasticsearch
-  shell: "kill `cat /opt/elasticsearch/elasticsearch.pid`"
-  when: elasticsearch_st.stat.exists
 
 - name: demarrage elasticsearch
   shell: "/opt/elasticsearch/bin/elasticsearch -d -p /opt/elasticsearch/elasticsearch.pid"
