@@ -1,0 +1,45 @@
+---
+- get_url:
+    url: "{{kibana_url}}"
+    mode: 0644
+    force: no
+    validate_certs: no
+    dest: "{{workspace}}/kibana-{{kibana_version}}.tar.gz"
+  delegate_to: localhost
+  run_once: true
+
+- stat:
+    path: "/opt/{{kibana_folder_name}}"
+  register: st
+  become: yes
+
+- unarchive:
+    src: "{{workspace}}/kibana-{{kibana_version}}.tar.gz"
+    dest: "/opt"
+  become: yes
+  when: not st.stat.exists
+
+- file:
+    src: "/opt/{{kibana_folder_name}}"
+    dest: "/opt/kibana"
+    state: link
+  become: yes
+
+- name: Create the kibana.yml file
+  template:
+    src: kibana.yml.j2
+    dest: /opt/kibana/config/kibana.yml
+  become: yes
+
+- name: remove plugin
+  shell: "/opt/kibana/bin/kibana plugin --remove {{item}}"
+  with_items:
+    - "sense"
+
+- name: installation plugin
+  shell: "/opt/kibana/bin/kibana plugin --install {{item}}"
+  with_items:
+    - "elastic/sense"
+
+- name: demarrage kibana
+  shell: "/opt/kibana/bin/kibana"

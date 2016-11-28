@@ -1,0 +1,25 @@
+---
+# Gather facts to be able to use them in next plays
+- hosts: all
+  gather_facts: yes
+  remote_user: deploy
+
+# - hosts: all
+#   gather_facts: no
+#   remote_user: deploy
+#   roles:
+#    - { role: etc_hosts, machines: all }
+
+- hosts: elasticsearch
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: jdk, tags: [jdk] }
+    - { role: elasticsearch, tags: [elasticsearch] }
+
+- hosts: kibana
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: jdk, tags: [jdk] }
+    - { role: kibana, tags: [kibana] }

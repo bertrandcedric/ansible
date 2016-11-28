@@ -1,0 +1,5 @@
+elasticsearch_url: https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.4.2/elasticsearch-2.4.2.tar.gz
+elasticsearch_version: 2.4.2
+
+cluster_name: formation
+node_name: node

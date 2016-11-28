@@ -1,0 +1,65 @@
+---
+- get_url:
+    url: "{{elasticsearch_url}}"
+    mode: 0644
+    force: no
+    validate_certs: no
+    dest: "{{workspace}}/elasticsearch-{{elasticsearch_version}}.tar.gz"
+  delegate_to: localhost
+  run_once: true
+
+- stat:
+    path: "/opt/elasticsearch-{{elasticsearch_version}}"
+  register: st
+  become: yes
+
+- unarchive:
+    src: "{{workspace}}/elasticsearch-{{elasticsearch_version}}.tar.gz"
+    dest: "/opt"
+  become: yes
+  when: not st.stat.exists
+
+- file:
+    src: "/opt/elasticsearch-{{elasticsearch_version}}"
+    dest: "/opt/elasticsearch"
+    state: link
+  become: yes
+
+- name: Create the elasticsearch.yml file
+  template:
+    src: elasticsearch.yml.j2
+    dest: /opt/elasticsearch/config/elasticsearch.yml
+  become: yes
+
+- name: change owner
+  file:
+    path: /opt/elasticsearch-{{elasticsearch_version}}
+    state: directory
+    recurse: yes
+    owner: deploy
+    group: deploy
+  become: yes
+
+- name: remove plugin
+  shell: "/opt/elasticsearch/bin/plugin remove {{item}}"
+  with_items:
+    - "head"
+    - "kopf"
+
+- name: installation plugin
+  shell: "/opt/elasticsearch/bin/plugin install {{item}}"
+  with_items:
+    - "mobz/elasticsearch-head"
+    - "lmenezes/elasticsearch-kopf"
+
+- stat:
+    path: "/opt/elasticsearch/elasticsearch.pid"
+  register: elasticsearch_st
+  become: yes
+
+- name: arret elasticsearch
+  shell: "kill `cat /opt/elasticsearch/elasticsearch.pid`"
+  when: elasticsearch_st.stat.exists
+
+- name: demarrage elasticsearch
+  shell: "/opt/elasticsearch/bin/elasticsearch -d -p /opt/elasticsearch/elasticsearch.pid"

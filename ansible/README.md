@@ -36,7 +36,9 @@ docker-compose -f compose/kafka-compose.yml -p kafka scale kafka=2 zoo_keeper=1 
 
 ENV_PROJECT=kafka ansible -m ping -i hosts/hosts all -u root -k
 
-ENV_PROJECT=kafka ansible-playbook prerequis.yml -i hosts/hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k
+ENV_PROJECT=kafka ansible-playbook playbook_prerequis.yml -i hosts/hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k
 
 ENV_PROJECT=kafka ansible -m debug -a "var=hostvars[inventory_hostname]" -i hosts/hosts all -u deploy
+
+ENV_PROJECT=kafka ansible-playbook playbook_kafka.yml -i hosts/hosts
 ```

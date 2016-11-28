@@ -1,0 +1,12 @@
+version: '2'
+services:
+  elasticsearch:
+    image: centos_ssh
+    ports:
+      - "22"
+      - "9200"
+  kibana:
+    image: centos_ssh
+    ports:
+      - "22"
+      - "5601"

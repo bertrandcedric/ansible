@@ -1,0 +1,3 @@
+kibana_url: https://download.elastic.co/kibana/kibana/kibana-4.6.3-linux-x86_64.tar.gz
+kibana_version: 4.6.3
+kibana_folder_name: kibana-4.6.3-linux-x86_64

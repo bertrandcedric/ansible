@@ -8,6 +8,7 @@ services:
       - "50070"
       - "8088"
       - "19888"
+      - "9000"
   slave:
     image: centos_ssh
     ports:
@@ -22,3 +23,4 @@ services:
     ports:
       - "22"
       - "10002"
+      - "2181"
