@@ -6,6 +6,6 @@ config:
 sharding:
   chunkSize: 1
 proxy_env:
-#  https_proxy: http://pcyvipncp2n.edf.fr:3128/
-#  http_proxy: http://pcyvipncp2n.edf.fr:3128/
+#  https_proxy: http://monproxy/
+#  http_proxy: http://monproxy/
 #  no_proxy: localhost

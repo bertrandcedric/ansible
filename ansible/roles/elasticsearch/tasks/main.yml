@@ -48,6 +48,7 @@
 - name: arret elasticsearch
   shell: "kill `cat /opt/elasticsearch/elasticsearch.pid`"
   when: elasticsearch_st.stat.exists
+  failed_when: false
 
 - name: remove plugin
   shell: "/opt/elasticsearch/bin/plugin remove {{item}}"

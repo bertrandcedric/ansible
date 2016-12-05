@@ -1,44 +1,16 @@
-# Utilisation du container docker avec CENTOS
-
-## 1. Build et lancement d'un container centos
-
-### => Build d'une image
+## Build d'une image CENTOS
 ```
 docker build --build-arg pwd=XXXX --no-cache -t centos_ssh centos_ssh/.
 ```
 
-### => Suppression des containers
+## Provisionning avec ansible pour l'exemple elasticsearch
+
 ```
-docker rm -f $(docker ps -a -q)
-```
+docker network create elasticsearch_default
+docker-compose -f ansible/compose/elasticsearch-compose.yml -p elasticsearch scale elasticsearch=2 kibana=1
 
-### => Lancement d'une image
-```
-docker run -ti centos_ssh /bin/sh
-docker run -ti --volume /data:/titi centos_ssh /bin/sh
-docker run -dP centos_ssh
-```
+ENV_PROJECT=elasticsearch ansible-playbook ansible/playbook_prerequis.yml -i ansible/hosts/hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k
+ENV_PROJECT=elasticsearch ansible-playbook ansible/playbook_elasticsearch.yml -i ansible/hosts/hosts
 
-## 2. Provisionning avec ansible
-
-### => Mise à jour ansible
-```
-git submodule update --init --recursive
-```
-
-### Test ansible sur une vm docker
-```
-docker-compose -f compose/kafka-compose.yml -p kafka stop
-docker-compose -f compose/kafka-compose.yml -p kafka rm
-docker network rm kafka_default
-docker network create kafka_default
-docker-compose -f compose/kafka-compose.yml -p kafka scale kafka=2 zoo_keeper=1 graphite=1 grafana=1 client=1
-
-ENV_PROJECT=kafka ansible -m ping -i hosts/hosts all -u root -k
-
-ENV_PROJECT=kafka ansible-playbook playbook_prerequis.yml -i hosts/hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k
-
-ENV_PROJECT=kafka ansible -m debug -a "var=hostvars[inventory_hostname]" -i hosts/hosts all -u deploy
-
-ENV_PROJECT=kafka ansible-playbook playbook_kafka.yml -i hosts/hosts
+ssh 127.0.0.1 -p `docker port elasticsearch_elasticsearch_1 22| sed 's/.*://'` -l deploy
 ```

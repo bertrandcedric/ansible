@@ -10,3 +10,7 @@ services:
     ports:
       - "22"
       - "5601"
+  logstash:
+    image: centos_ssh
+    ports:
+      - "22"

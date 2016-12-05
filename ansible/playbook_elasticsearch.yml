@@ -23,3 +23,10 @@
   roles:
     - { role: jdk, tags: [jdk] }
     - { role: kibana, tags: [kibana] }
+
+- hosts: logstash
+  gather_facts: no
+  remote_user: deploy
+  roles:
+    - { role: jdk, tags: [jdk] }
+    - { role: logstash, tags: [logstash] }
