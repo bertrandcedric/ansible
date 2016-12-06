@@ -5,6 +5,9 @@ services:
     ports:
       - "22"
       - "9200"
+      - "9201"
+      - "9300"
+      - "9301"
   kibana:
     image: centos_ssh
     ports:
