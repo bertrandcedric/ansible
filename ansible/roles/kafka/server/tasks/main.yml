@@ -1,32 +1,29 @@
 ---
-#- shell: bin/kafka-server-stop.sh
-#  args:
-#    chdir: "/opt/kafka"
-#  become: yes
-
-- set_fact: kafka_server_zookeeper_connect="{{hostvars[item]['ansible_hostname']}}:2181"
+- set_fact:
+    kafka_server_zookeeper_connect: "{{hostvars[item]['ansible_hostname']}}:2181"
   with_items:
-    - "{{groups['zoo_keeper']}}"
+    - "{{groups['zookeeper']}}"
 
 - set_fact: kafka_broker_id={{item.0 + 1}}
   with_indexed_items: "{{ groups['kafka'] }}"
   when: item.1 == inventory_hostname
 
-- set_fact: graphite_server="{{hostvars[item]['ansible_hostname']}}"
+- set_fact:
+    graphite_server: "{{hostvars[item]['ansible_hostname']}}"
   with_items:
     - "{{groups['graphite']}}"
-
-- debug: var=graphite_server
 
 #- copy: src={{workspace}}/{{item}} dest=/opt/kafka/libs/{{item}}
 #  with_items:
 #    - graphite-assembly-0.1-SNAPSHOT.jar
 #  become: yes
 
-- template: src=server.properties.j2 dest=/opt/kafka/config/server.properties
+- template:
+    src: server.properties.j2
+    dest: /opt/kafka/etc/kafka/server.properties
   become: yes
 
-- shell: bin/kafka-server-start.sh -daemon config/server.properties
+- shell: bin/kafka-server-start -daemon etc/kafka/server.properties
   args:
-    chdir: "/opt/kafka"
+    chdir: /opt/kafka
   become: yes

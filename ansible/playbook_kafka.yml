@@ -10,13 +10,13 @@
   roles:
     - { role: etc_hosts, machines: all, tags: [etc, zookeeper, graphite, grafana, kafka, client] }
 
-- hosts: zoo_keeper
+- hosts: zookeeper
   gather_facts: no
   remote_user: deploy
   roles:
     - { role: jdk, tags: [zookeeper] }
-    - { role: zookeeper/install, tags: [zookeeper] }
-    - { role: zookeeper/server, tags: [zookeeper] }
+    - { role: kafka/install, tags: [zookeeper] }
+    - { role: kafka/zookeeper, tags: [zookeeper] }
 
 - hosts: graphite
   gather_facts: no
@@ -44,4 +44,8 @@
   roles:
     - { role: jdk, tags: [client] }
     - { role: kafka/install, tags: [client] }
-    - { role: kafka/connect, tags: [client, connect] }
+#    - { role: kafka/connect, tags: [client, connect] }
+
+# docker-compose -f compose/kafka-compose.yml -p kafka scale zookeeper=1 kafka=3 client=1 graphite=1 grafana=1
+# ENV_PROJECT=kafka ansible-playbook playbook_prerequis.yml -i hosts/hosts --extra-vars "{\"public_ssh_key\" : \"$(cat ~/.ssh/id_rsa.pub)\"}" -k
+# ENV_PROJECT=kafka ansible-playbook playbook_kafka.yml -i hosts/hosts

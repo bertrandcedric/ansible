@@ -1,6 +1,6 @@
 version: '2'
 services:
-  zoo_keeper:
+  zookeeper:
     image: centos_ssh
     ports:
       - "22"

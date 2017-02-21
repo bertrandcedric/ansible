@@ -61,6 +61,8 @@
   with_items:
     - "mobz/elasticsearch-head"
     - "lmenezes/elasticsearch-kopf"
+    - "license"
+    - "marvel-agent"
 
 - name: demarrage elasticsearch
   shell: "/opt/elasticsearch/bin/elasticsearch -d -p /opt/elasticsearch/elasticsearch.pid"

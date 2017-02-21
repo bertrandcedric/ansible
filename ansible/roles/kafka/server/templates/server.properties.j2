@@ -19,24 +19,23 @@
 # The id of the broker. This must be set to a unique integer for each broker.
 broker.id={{kafka_broker_id}}
 
+# Switch to enable topic deletion or not, default value is false
+#delete.topic.enable=true
+
 ############################# Socket Server Settings #############################
 
-listeners=PLAINTEXT://:9092
+# The address the socket server listens on. It will get the value returned from
+# java.net.InetAddress.getCanonicalHostName() if not configured.
+#   FORMAT:
+#     listeners = security_protocol://host_name:port
+#   EXAMPLE:
+#     listeners = PLAINTEXT://your.host.name:9092
+#listeners=PLAINTEXT://:9092
 
-# The port the socket server listens on
-#port=9092
-
-# Hostname the broker will bind to. If not set, the server will bind to all interfaces
-#host.name=localhost
-
-# Hostname the broker will advertise to producers and consumers. If not set, it uses the
-# value for "host.name" if configured.  Otherwise, it will use the value returned from
-# java.net.InetAddress.getCanonicalHostName().
-advertised.host.name={{ansible_ssh_host}}
-
-# The port to publish to ZooKeeper for clients to use. If this is not set,
-# it will publish the same port that the broker binds to.
-advertised.port=9092
+# Hostname and port the broker will advertise to producers and consumers. If not set,
+# it uses the value for "listeners" if configured.  Otherwise, it will use the value
+# returned from java.net.InetAddress.getCanonicalHostName().
+#advertised.listeners=PLAINTEXT://your.host.name:9092
 
 # The number of threads handling network requests
 num.network.threads=3
@@ -118,23 +117,23 @@ zookeeper.connect={{ kafka_server_zookeeper_connect }}
 # Timeout in ms for connecting to zookeeper
 zookeeper.connection.timeout.ms=6000
 
+##################### Confluent Proactive Support ######################
+# If set to true, and confluent-support-metrics package is installed
+# then the feature to collect and report support metrics
+# ("Metrics") is enabled.  If set to false, the feature is disabled.
+#
+confluent.support.metrics.enable=true
 
-# Graphite configuration
-kafka.metrics.reporters=kafka.metrics.KafkaGraphiteMetricsReporter
-kafka.graphite.metrics.jvm.enabled=true
-metric.reporters=org.apache.kafka.common.metrics.GraphiteReporter
-
-#Polling interval that will be used for all Kafka metrics
-kafka.metrics.polling.interval.secs=60
-#Enables actual plugin (default: false)
-kafka.graphite.metrics.reporter.enabled=true
-#The graphite host to connect to (default: localhost)
-kafka.graphite.metrics.host:{{ graphite_server }}
-#The port to connect to (default: 2003)
-kafka.graphite.metrics.port:2003
-#The metric prefix that's sent with metric names (default: kafka)
-kafka.graphite.metrics.prefix:kafka
-#A regular expression allowing explicitly include certain metrics (default: null)
-kafka.graphite.metrics.include:kafka.*
-#A regular expression allowing you to exclude certain metrics (default: null)
-kafka.graphite.metrics.exclude:null
+# The customer ID under which support metrics will be collected and
+# reported.
+#
+# When the customer ID is set to "anonymous" (the default), then only a
+# reduced set of metrics is being collected and reported.
+#
+# Confluent customers
+# -------------------
+# If you are a Confluent customer, then you should replace the default
+# value with your actual Confluent customer ID.  Doing so will ensure
+# that additional support metrics will be collected and reported.
+#
+confluent.support.customer.id=anonymous

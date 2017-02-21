@@ -1,4 +1,4 @@
-kafka_version: 2.11-0.10.0.0
-kafka_url: http://apache.mirrors.ovh.net/ftp.apache.org/dist/kafka/0.10.0.0/kafka_2.11-0.10.0.0.tgz
+kafka_name: confluent-3.1.2
+kafka_url: http://packages.confluent.io/archive/3.1/confluent-oss-3.1.2-2.11.tar.gz
 kafka_broker_id: 0
 kafka_server_zookeeper_connect: localhost:2181

@@ -1,2 +1,2 @@
-zookeeper_version: 3.4.8
-zookeeper_url: http://apache.crihan.fr/dist/zookeeper/zookeeper-3.4.8/zookeeper-3.4.8.tar.gz
+zookeeper_version: 3.4.9
+zookeeper_url: http://apache.crihan.fr/dist/zookeeper/zookeeper-3.4.9/zookeeper-3.4.9.tar.gz

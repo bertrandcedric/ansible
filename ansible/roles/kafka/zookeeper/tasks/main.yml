@@ -1,0 +1,25 @@
+---
+- name: Create the data directory
+  file:
+    path: /data
+    state: directory
+    mode: 750
+  become: yes
+
+- name: Create the zookeeper.properties file
+  template:
+    src: zookeeper.properties.j2
+    dest: /opt/kafka/etc/kafka/zookeeper.properties
+  become: yes
+
+- name: Create the myid file
+  template:
+    src: myid.j2
+    dest: /data/myid
+  become: yes
+
+- name: Launch zookeeper
+  shell: bin/zookeeper-server-start -daemon etc/kafka/zookeeper.properties
+  args:
+      chdir: /opt/kafka
+  become: yes
