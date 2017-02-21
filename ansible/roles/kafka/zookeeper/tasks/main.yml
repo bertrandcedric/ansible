@@ -23,3 +23,5 @@
   args:
       chdir: /opt/kafka
   become: yes
+  tags:
+    - start
